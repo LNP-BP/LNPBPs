@@ -40,7 +40,7 @@ Number (bottom-up) | Title | Description | Fields
 
 Number | Layer | Field | Title | Owner | Type | Status
 ------:| ----- | ----- | ----- | ----- | ---- | ------
-1      | Transaction (1) | Cryptographic primitives | P2(W)PKH cryptographic commitment | n/a | Standard | Draft
+[1](lnpbps-0001.md) | Transaction (1) | Cryptographic primitives | Cryptographic commitments with public key tweaking | n/a | Standard | Draft
 2      | Transaction (1) | Cryptographic primitives | OP_RETURN cryptographic commitment | n/a | Standard | Draft
 3      | Transaction DAG (2) | Client-side validation | Simple single-use seal for LNP/BP | Maxim Orlovsky | Standard | Draft
 4      | Offchain data (3) | Consensus rules | State history directed acyclic graphs on Bitcoin | Maxim Orlovsky | Standard | Draft
