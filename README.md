@@ -41,13 +41,12 @@ Number (bottom-up) | Title | Description | Fields
 Number | Layer | Field | Title | Owner | Type | Status
 ------:| ----- | ----- | ----- | ----- | ---- | ------
 [1](lnpbps-0001.md) | Transaction (1) | Cryptographic primitives | Cryptographic commitments with public key tweaking | n/a | Standard | Draft
-2      | Transaction (1) | Cryptographic primitives | OP_RETURN cryptographic commitment | n/a | Standard | Draft
-3      | Transaction DAG (2) | Client-side validation | Simple single-use seal for LNP/BP | Maxim Orlovsky | Standard | Draft
-4      | Offchain data (3) | Consensus rules | State history directed acyclic graphs on Bitcoin | Maxim Orlovsky | Standard | Draft
-5      | Offchain data (3) | Serialization | Serialization for state history DAGs, LNPBPs-4 | Maxim Orlovsky | Standard | Draft
-6      | Offchain metadata (4) | Serialization | Schemata for rich state | Maxim Orlovsky | Standard | Draft
-7      | Application (5) | Assets | RGB, part 1: Fungible centrally-issued assets with client-side validation | Maxim Orlovsky | Standard | Draft
-8      | Offchain data & metadata (3-4) | P2P messaging | State announcements for Lightning Network gossip protocol | n/a | Standard | Draft
-9      | Offchain data & metadata (3-4) | P2P messaging | State updates over Lightning Network onion messaging | n/a | Standard | Draft
-10     | Application (5) | DEX/DMP | Spectrum: decentralized market / exchange over Lightning Network | Maxim Orlovsky | Standard | Draft
-11     | Offchain metadata (4) | Assets | RGB, part 2: Zero-knowledge proofs for asset transfers | n/a | Standard | Draft
+2      | Transaction DAG (2) | Client-side validation | Simple single-use seal for LNP/BP | n/a | Standard | Draft
+3      | Offchain data (3) | Consensus rules | State history directed acyclic graphs on Bitcoin | n/a | Standard | Draft
+4      | Offchain data (3) | Serialization | Serialization for state history DAGs, LNPBPs-4 | n/a | Standard | Draft
+5      | Offchain metadata (4) | Serialization | Schemata for rich state | n/a | Standard | Draft
+6      | Application (5) | Assets | RGB, part 1: Fungible centrally-issued assets with client-side validation | n/a | Standard | Draft
+7      | Offchain data & metadata (3-4) | P2P messaging | State announcements for Lightning Network gossip protocol | n/a | Standard | Draft
+8      | Offchain data & metadata (3-4) | P2P messaging | State updates over Lightning Network onion messaging | n/a | Standard | Draft
+9      | Application (5) | DEX/DMP | Spectrum: decentralized market / exchange over Lightning Network | n/a | Standard | Draft
+10     | Offchain metadata (4) | Assets | RGB, part 2: Zero-knowledge proofs for asset transfers | n/a | Standard | Draft
