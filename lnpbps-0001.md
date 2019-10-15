@@ -4,7 +4,7 @@ Layer: Transactions (1)
 Field: Cryptographic primitives
 Title: Key tweaking: collision-resistant elliptic curve-based commitments
 Author: Dr Maxim Orlovsky <orlovsky@pandoracore.com>
-Comments-URI: https://github.com/LNP-BP/lnpbps/issues/1
+Comments-URI: https://github.com/LNP-BP/lnpbps/issues/3
 Status: Draft
 Type: Standards Track
 Created: 2019-23-09
