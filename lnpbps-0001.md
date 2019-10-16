@@ -116,6 +116,7 @@ which increases compatibility and reduces chances of collisions with existing pr
 
 ## Reference implementations
 
+<https://github.com/LNP-BP/rust-lnpbp/blob/master/src/commitments/secp256k1.rs>
 
 ## Acknowledgements
 
