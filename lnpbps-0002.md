@@ -100,6 +100,10 @@ public keys, and also easily distinguishable from other protocols using OP_RETUR
 The author does not aware of any P2(W)SH or non-OP_RETURN P2S cryptographic commitment schemes existing before this
 proposal, and it is highly probable that the standard is not compatible with ones if they were existing.
 
+The proposed standard is compliant with current Taproot proposal [14], since it requires exposure of the complete
+script with all it branches, allowing verification that all public keys participating in the script were the part of
+the commitment procedure.
+
 
 ## Rationale
 
@@ -160,6 +164,8 @@ Authors would like to thank:
     <https://github.com/LNP-BP/lnpbps/blob/master/lnpbps-0001.md>
 13. RGB Protocol Specification, version 0.4. "Commitment Scheme" section.
     <https://github.com/rgb-org/spec/blob/old-master/01-rgb.md#commitment-scheme>
+14. Pieter Wuille. Taproot: SegWit version 1 output spending rules (BIP standard proposal).
+    <https://github.com/sipa/bips/blob/bip-schnorr/bip-taproot.mediawiki>
 
 
 ## Copyright

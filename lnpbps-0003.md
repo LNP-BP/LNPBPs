@@ -83,6 +83,13 @@ cryptographic commitment, namely:
 Nevertheless, use of protocol-specific pre-defined salt may be utilised as a flag signalling the support of the current
 standard, which will help to avoid possible commitment collisions across different protocols.
 
+Future SIGHASH_NOINPUT standard BIP-118 [12] MAY BE compatible with this proposal, since a protocol utilizing the present
+standard MAY define that any transaction commitment with an input signature flag set to SIGHASH_NOINPUT MUST default to
+the zero value of commitment-specific parameter `c`. This will still preserve the privacy from the onchain analysis 
+tools due to the presence of the protocol-specific parameter `s`, which will be unknown for any party that does know
+which protocol is used by some transaction (given the fact that the used protocol can't be guessed from the transaction 
+itself).
+
 
 ## Rationale
 
@@ -115,10 +122,14 @@ of early RGB effort [7].
 6. Peter Todd. Scalable Semi-Trustless Asset Transfer via Single-Use-Seals and Proof-of-Publication.
    <https://petertodd.org/2017/scalable-single-use-seal-asset-transfer>
 7. OpenSeals Framework <https://github.com/rgb-org/spec/blob/v1.0/01-OpenSeals.md>
-8. OMNI
-9. RGB
-10. BIP deterministic output ordering
-11. LN transactions
+8. Omni Protocol Specification (formerly Mastercoin). <https://github.com/OmniLayer/spec>
+9. RGB Protocol Specification, version 0.4.
+   <https://github.com/rgb-org/spec/blob/old-master/01-rgb.md>
+10. Lexicographical Indexing of Transaction Inputs and Outputs (BIP-69 standard).
+    <https://github.com/bitcoin/bips/blob/master/bip-0069.mediawiki>
+10. Lightning Network BOLT-3 standard.
+    <https://github.com/lightningnetwork/lightning-rfc/blob/v1.0/03-transactions.md>
+12. Christian Decker. SIGHASH_NOINPUT. <https://github.com/bitcoin/bips/blob/master/bip-0118.mediawiki>
 
 ## Copyright
 
