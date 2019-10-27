@@ -114,20 +114,24 @@ which increases compatibility and reduces chances of collisions with existing pr
 ### Use of nonce
 
 
-## Reference implementations
+## Reference implementation
 
 <https://github.com/LNP-BP/rust-lnpbp/blob/master/src/commitments/secp256k1.rs>
+
 
 ## Acknowledgements
 
 Authors would like to thank:
 * Alekos Filini for his initial work on the commitment schemes as a part of early RGB effort [6]; 
-* ZmnSCPxj for bringing attention to possible Taproot-compatilibity issues [7];
+* ZmnSCPxj for bringing attention to possible Taproot-compatibility issues [7];
+* Peter Wuille for a proposal on the tagged hashes, preventing reply-type of attacks [5];
+* Authors of Sidechains whitepaper for paying attention to the potential length-extension attacks and the introduction
+  of HMAC-based commitments to the original public key [3];
 
 
 ## References
 
-1. Ilja Gerhardt, Timo Hanke. Homomorphic Payment Addresses and the Pay-to-Contract Protocol. arXiv:1212.3257 [cs.CR] 
+1. Ilja Gerhardt, Timo Hanke. Homomorphic Payment Addresses and the Pay-to-Contract Protocol. arXiv:1212.3257 \[cs.CR\] 
    <https://arxiv.org/pdf/1212.3257.pdf>
 2. [Eternity Wall's "sign-to-contract" article](https://blog.eternitywall.com/2018/04/13/sign-to-contract/)
 3. Adam Back, Matt Corallo, Luke Dashjr, et al. Enabling Blockchain Innovations with Pegged Sidechains (commit5620e43).
@@ -136,10 +140,16 @@ Authors would like to thank:
    <https://github.com/sipa/bips/blob/bip-schnorr/bip-schnorr.mediawiki#Public_Key_Generation>
 5. Pieter Wuille. Taproot: SegWit version 1 output spending rules.
    <https://github.com/sipa/bips/blob/bip-schnorr/bip-taproot.mediawiki#Specification>
-6. <https://github.com/rgb-org/spec/blob/old-master/01-rgb.md#commitment-scheme>
+6. RGB Protocol Specification, version 0.4. "Commitment Scheme" section.
+   <https://github.com/rgb-org/spec/blob/old-master/01-rgb.md#commitment-scheme>
 7. <https://github.com/rgb-org/spec/issues/61>
 
 
 ## Copyright
 
+This document is licensed under the Creative Commons CC0 1.0 Universal license.
+
+
 ## Test vectors
+
+TBD
