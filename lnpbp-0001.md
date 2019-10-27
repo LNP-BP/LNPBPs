@@ -1,5 +1,5 @@
 ```
-LNPBPS: 0001
+LNPBP: 0001
 Layer: Transactions (1)
 Field: Cryptographic primitives
 Title: Key tweaking: collision-resistant elliptic curve-based commitments
@@ -68,7 +68,7 @@ For a given message `msg` and original public key `P` the **commit procedure** i
 2. Define a protocol-specific unique tag `tag` and compute concatenation of its two single SHA256 hashes 
    (after a duplicated tag procedure from Peter Wuille's tagged hash function [4, 5]): `t = SHA256(tag) || SHA256(tag)`
 3. Compute a random 8-bit nonce `n`
-4. Compute tweaking string `s = t || SHA256('LNPBPS-0001') || hmac || n`. The length of the string MUST BE 129 bytes.
+4. Compute tweaking string `s = t || SHA256('LNPBP-0001') || hmac || n`. The length of the string MUST BE 129 bytes.
 5. Compute tweaking factor `h = SHA256(s)`
 6. If the factor value is equal of greater than the elliptic curve order repeat from step 3 with a different nonce
 7. Compute tweaked public `T = P + h * G` and (if necessary) private key `t = p + h` according to standard 
@@ -80,7 +80,7 @@ as follows:
 1. Make sure that the provided tweaked public key `T` lies on the elliptic curve
 2. Compute HMAC-SHA256 of the `msg` and `P`: `hmac = HMAC_SHA256(msg, P)`
 3. Compute duplicated SHA256 of the protocol tag `t = SHA256(tag) || SHA256(tag)`
-4. Compute tweaking string `s = t || SHA256('LNPBPs-0001') || hmac || n`. The length of the string MUST BE 129 bytes.
+4. Compute tweaking string `s = t || SHA256('LNPBP-0001') || hmac || n`. The length of the string MUST BE 129 bytes.
 5. Compute tweaking factor `h = SHA256(s)`
 6. If the factor value is equal of greater than the elliptic curve order fail the reveal procedure
 7. Compute tweaked public key `T' = P + h * G`. Fail the procedure if it does not match the provided tweaked key `T`.

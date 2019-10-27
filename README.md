@@ -21,7 +21,7 @@ physical goods)
 * Must not depend on non-bitcoin blockchains (but may be applicable to bitcoin-compatible blockchains)
 
 
-## Layers and fields for LNPBPs proposals:
+## Layers and fields for LNP/BP proposals:
 
 Number (bottom-up) | Title | Description | Fields
 ------------------:| ----- | ----------- | ------
@@ -40,9 +40,9 @@ Number (bottom-up) | Title | Description | Fields
 
 Number | Layer | Field | Title | Owner | Type | Status
 ------:| ----- | ----- | ----- | ----- | ---- | ------
-[1](lnpbps-0001.md) | Transaction (1) | Cryptographic primitives | Key tweaking: collision-resistant elliptic curve-based commitments | Maxim Orlovsky | Standard | Draft
-[2](lnpbps-0002.md) | Transaction (1) | Cryptographic primitives | Deterministic embedding of elliptic curve-based commitments into transaction outputs | Maxim Orlovsky | Standard | Draft
-[3](lnpbps-0003.md) | Transaction (1) | Cryptographic primitives | Deterministic definition of transaction output containing cryptographic commitment | Maxim Orlovsky | Standard | Draft
+[1](lnpbp-0001.md) | Transaction (1) | Cryptographic primitives | Key tweaking: collision-resistant elliptic curve-based commitments | Maxim Orlovsky | Standard | Draft
+[2](lnpbp-0002.md) | Transaction (1) | Cryptographic primitives | Deterministic embedding of elliptic curve-based commitments into transaction outputs | Maxim Orlovsky | Standard | Draft
+[3](lnpbp-0003.md) | Transaction (1) | Cryptographic primitives | Deterministic definition of transaction output containing cryptographic commitment | Maxim Orlovsky | Standard | Draft
 
 
 ### List work-in-progress of LNP/BP proposals without an assigned standard number

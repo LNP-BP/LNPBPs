@@ -1,5 +1,5 @@
 ```
-LNPBPS: 0003
+LNPBP: 0003
 Layer: Transaction (1)
 Field: Cryptographic primitives
 Title: Deterministic definition of transaction output containing cryptographic commitment
@@ -14,7 +14,7 @@ License: CC0-1.0
 ## Abstract
 
 The standard defines an algorithm for deterministic definition of the transaction output containing cryptographic
-commitments made under the standards LNPBPS-1 [1] and LNPBPS-2 [2].
+commitments made under the standards LNPBP-1 [1] and LNPBP-2 [2].
 
 
 ## Background
@@ -22,7 +22,7 @@ commitments made under the standards LNPBPS-1 [1] and LNPBPS-2 [2].
 Embedding cryptographic commitments into Bitcoin blockchain has become a common practice [3]. Bitcoin blockchain provides
 strong guarantees on the underlying data immutability, presenting a reliable, distributed and censorship-resitent 
 proof-of-publication [4] medium. While existing standards defines how the cryptographical commitments can be used with
-public keys on Secp356k1 elliptic curve (used by Bitcoin) and embedded withing transaction outputs, it still has to be
+public keys on SECP356k1 elliptic curve (used by Bitcoin) and embedded withing transaction outputs, it still has to be
 defined how the interested parties may detect which of a Bitcoin transaction output contains the commitment, presenting
 an interest to the party under some given protocol.
 
@@ -45,9 +45,9 @@ transaction output ordering and will not work with Lightning Network, following 
 
 ## Specification
 
-Cryptographic commitments under this standard are made according to LNPBPS-1 [1] and LNPBPS-2 [2] standards.
+Cryptographic commitments under this standard are made according to LNPBP-1 [1] and LNPBP-2 [2] standards.
 
-To deterministically define the number of transaction output that contains CC under some protocol `P`, the commiting
+To deterministically define the number of transaction output that contains CC under some protocol `P`, the committing
 party "Alice" `A` (which may be represented by a single person or some m-of-n federation) and the verifying  party "Bob" 
 `B` (which may be represented by a single person or some m-of-n federation) need to agree  on three parameters:
 1. A protocol-defined parameter `s`, acting as a seed for all protocol-wide commitments, this must be a 8-bit value;
@@ -109,10 +109,10 @@ of early RGB effort [7].
 
 ## References
 
-1. Maxim Orlovsky. Key tweaking: collision-resistant elliptic curve-based commitments (LNPBPS-1 Standard). 
-   <https://github.com/LNP-BP/lnpbps/blob/master/lnpbps-0001.md>
-2. Maxim Orlovsky. Deterministic embedding of elliptic curve-based commitments into transaction outputs (LNPBPS-2 
-   standard). <https://github.com/LNP-BP/lnpbps/blob/master/lnpbps-0002.md>
+1. Maxim Orlovsky. Key tweaking: collision-resistant elliptic curve-based commitments (LNPBP-1 Standard). 
+   <https://github.com/LNP-BP/lnpbps/blob/master/lnpbp-0001.md>
+2. Maxim Orlovsky. Deterministic embedding of elliptic curve-based commitments into transaction outputs (LNPBP-2 
+   standard). <https://github.com/LNP-BP/lnpbps/blob/master/lnpbp-0002.md>
 3. Peter Todd. OpenTimestamps: Scalable, Trust-Minimized, Distributed Timestamping with Bitcoin. 
    <https://petertodd.org/2016/opentimestamps-announcement>
 4. Peter Todd. Setting the record straight on Proof-of-Publication.

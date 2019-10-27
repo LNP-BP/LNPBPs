@@ -1,5 +1,5 @@
 ```
-LNPBPS: 0002
+LNPBP: 0002
 Layer: Transactions (1)
 Field: Cryptographic commitments
 Title: Deterministic embedding of elliptic curve-based commitments into transaction outputs
@@ -78,11 +78,11 @@ before the patter-matching with the above given instructions can be performed.
 ### Deterministic cryptographic commitments to public key fingerprints within transaction output
 
 For all public keys fingerprints defined according to the procedure described above a cryptographic commitment procedure
-via key tweaking (as defined in LNPBPS-1 [12]) MUST BE applied.
+via key tweaking (as defined in LNPBP-1 [12]) MUST BE applied.
 
 To verify the commitment, the original public keys (before the tweaking procedure applied) and the source data for which
 the commitment is constructed for MUST BE presented to the verifier. The verifier to make sure that the commitment is
-valid MUST apply the algorithm from LNPBPS-1 [12] to each of the public keys.
+valid MUST apply the algorithm from LNPBP-1 [12] to each of the public keys.
 
 
 ## Compatibility
@@ -93,7 +93,7 @@ P2PKH and P2WPH transaction outputs, since they always contain only a single pub
 The standard is not compliant with previously used OP_RETURN-based cryptographic commitments, like OpenTimestamps [1],
 since it utilises a hash of the tweaked public key for the OP_RETURN push data, and not the the actual commitment value
 (cryptographic digest of the message to which the party commits to). In order to avoid any ambiguity, we are proposing
-first, to use with OP_RETURN data a protocol-tagged hash, according to LNPBPS-1 [12], and also to add a special two-byte
+first, to use with OP_RETURN data a protocol-tagged hash, according to LNPBP-1 [12], and also to add a special two-byte
 prefix `0xFFFF` to render total OP_RETURN data size incompatible with either 32-bytes hashes or 33/32-bytes serialized
 public keys, and also easily distinguishable from other protocols using OP_RETURN, to the best author's knowledge.
 
@@ -161,7 +161,7 @@ Authors would like to thank:
 11. Rusty Russel. [Lightning-RFC (BOLTs) pull request #513]
     <https://github.com/lightningnetwork/lightning-rfc/pull/513>
 12. Maxim Orlovsky. Key tweaking: collision-resistant elliptic curve-based commitments (LNPBP-1 Standard). 
-    <https://github.com/LNP-BP/lnpbps/blob/master/lnpbps-0001.md>
+    <https://github.com/LNP-BP/lnpbps/blob/master/lnpbp-0001.md>
 13. RGB Protocol Specification, version 0.4. "Commitment Scheme" section.
     <https://github.com/rgb-org/spec/blob/old-master/01-rgb.md#commitment-scheme>
 14. Pieter Wuille. Taproot: SegWit version 1 output spending rules (BIP standard proposal).
