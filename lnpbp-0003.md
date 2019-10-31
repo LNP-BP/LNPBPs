@@ -69,7 +69,7 @@ Alice, creating the transaction containing CC, and Bob, verifying it, must use t
    by default. This will give a commitment-factor `x = a + s + c`. Since `s` and `c` is a 8-bit numbers and `a` is a
    32-bit number, the result MUST BE a 64-bit number, which will prevent any possible number overflows.
 4. Get the number of outputs `n` for the transaction containing the output with the given cryptographic commitment
-5. Compute `d` as `d = n mod x`. The `d` will represent a number of transaction output which MUST contain a cryptographic
+5. Compute `d` as `d = x mod n`. The `d` will represent a number of transaction output which MUST contain a cryptographic
    commitment. All other transaction outputs under this protocol MUST NOT contain cryptographic commitments.
 
 
