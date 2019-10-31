@@ -22,7 +22,7 @@ commitments made under the standards LNPBP-1 [1] and LNPBP-2 [2].
 Embedding cryptographic commitments into Bitcoin blockchain has become a common practice [3]. Bitcoin blockchain provides
 strong guarantees on the underlying data immutability, presenting a reliable, distributed and censorship-resitent 
 proof-of-publication [4] medium. While existing standards defines how the cryptographical commitments can be used with
-public keys on SECP356k1 elliptic curve (used by Bitcoin) and embedded withing transaction outputs, it still has to be
+public keys on SECP256k1 elliptic curve (used by Bitcoin) and embedded withing transaction outputs, it still has to be
 defined how the interested parties may detect which of a Bitcoin transaction output contains the commitment, presenting
 an interest to the party under some given protocol.
 
