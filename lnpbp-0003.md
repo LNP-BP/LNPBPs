@@ -22,7 +22,7 @@ commitments made under the standards LNPBP-1 [1] and LNPBP-2 [2].
 Embedding cryptographic commitments into Bitcoin blockchain has become a common practice [3]. Bitcoin blockchain provides
 strong guarantees on the underlying data immutability, presenting a reliable, distributed and censorship-resitent 
 proof-of-publication [4] medium. While existing standards defines how the cryptographical commitments can be used with
-public keys on SECP356k1 elliptic curve (used by Bitcoin) and embedded withing transaction outputs, it still has to be
+public keys on SECP256k1 elliptic curve (used by Bitcoin) and embedded within transaction outputs, it still has to be
 defined how the interested parties may detect which of a Bitcoin transaction output contains the commitment, presenting
 an interest to the party under some given protocol.
 
@@ -69,7 +69,7 @@ Alice, creating the transaction containing CC, and Bob, verifying it, must use t
    by default. This will give a commitment-factor `x = a + s + c`. Since `s` and `c` is a 8-bit numbers and `a` is a
    32-bit number, the result MUST BE a 64-bit number, which will prevent any possible number overflows.
 4. Get the number of outputs `n` for the transaction containing the output with the given cryptographic commitment
-5. Compute `d` as `d = n mod x`. The `d` will represent a number of transaction output which MUST contain a cryptographic
+5. Compute `d` as `d = x mod n`. The `d` will represent a number of transaction output which MUST contain a cryptographic
    commitment. All other transaction outputs under this protocol MUST NOT contain cryptographic commitments.
 
 
