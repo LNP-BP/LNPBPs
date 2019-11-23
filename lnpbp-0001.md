@@ -64,26 +64,38 @@ a single algorithm, that avoids all of those issues.
 
 For a given message `msg` and original public key `P` the **commit procedure** is defined as follows:
 
-1. Compute HMAC-SHA256 of the `msg` and `P`: `hmac = HMAC_SHA256(msg, P)`
-2. Define a protocol-specific unique tag `tag` and compute concatenation of its two single SHA256 hashes 
-   (after a duplicated tag procedure from Peter Wuille's tagged hash function [4, 5]): `t = SHA256(tag) || SHA256(tag)`
-3. Compute a random 8-bit nonce `n`
-4. Compute tweaking string `s = t || SHA256('LNPBP-0001') || hmac || n`. The length of the string MUST BE 129 bytes.
-5. Compute tweaking factor `h = SHA256(s)`
-6. If the factor value is equal of greater than the elliptic curve order repeat from step 3 with a different nonce
-7. Compute tweaked public `T = P + h * G` and (if necessary) private key `t = p + h` according to standard 
+1. Construct according to a tagged hash proposal given in [4] a string, composed of the original message hash prefixed
+   with two hashes of a protocol tag: `s = SHA256(SHA256("LNPBP-1") || SHA256("LNPBP-1") || SHA256(msg))`
+2. Compute HMAC-SHA256 of the `s` and `P`, named **tweaking factor**: `f = HMAC_SHA256(s, P)`
+3. Compute tweaked public `T = P + f * G` and (if necessary) private key `t = p + f` according to standard 
    elliptic-curve private and public key addition procedures.
+4. If the resulting key `T` is corresponding to the point at infinity, chose another public key `P'` and repeat
+   the procedure from the step 1.
 
-**Reveal procedure** must be provided with the value of the original public key `P`, nonce `n`, message `msg` and runs 
-as follows:
+The final formula for the commitment is: 
+`T = P + G * HMAC_SHA256(SHA256("LNPBP-1") || SHA256("LNPBP-1") || SHA256(msg), P)`
+
+**Reveal procedure** over the commitment (the tweaked public key `T`) can be performed with the provision of the 
+original public key `P` and message `msg` (assuming that the verifying party is aware of the protocol tag `LNPBP-1`) 
+and runs as follows:
 
 1. Make sure that the provided tweaked public key `T` lies on the elliptic curve
-2. Compute HMAC-SHA256 of the `msg` and `P`: `hmac = HMAC_SHA256(msg, P)`
-3. Compute duplicated SHA256 of the protocol tag `t = SHA256(tag) || SHA256(tag)`
-4. Compute tweaking string `s = t || SHA256('LNPBP-0001') || hmac || n`. The length of the string MUST BE 129 bytes.
-5. Compute tweaking factor `h = SHA256(s)`
-6. If the factor value is equal of greater than the elliptic curve order fail the reveal procedure
-7. Compute tweaked public key `T' = P + h * G`. Fail the procedure if it does not match the provided tweaked key `T`.
+2. Compute `T' = P + G * HMAC_SHA256(SHA256("LNPBP-1") || SHA256("LNPBP-1") || SHA256(msg), P)`
+3. Make sure that `T' = T`, otherwise fail the procedure
+
+Alternatively, verifier may be provided with the tweaking factor (value of HMAC of the tagged message) `f` and the 
+message `msg`. In this case the procedure will be:
+
+1. Compute `P = T - f * G`, i.e. invert the public key `F = f * G` on the x-axis and obtain value for `-F`; then
+   add `-F` and `T` which will result `P`: `-F + T = P`
+2. Compute `T' = P + G * HMAC_SHA256(SHA256("LNPBP-1") || SHA256("LNPBP-1") || SHA256(msg), P)`
+3. Make sure that `T' = T`, otherwise fail the procedure
+
+The second option of a commitment proof consisting of the tweaking factor `f` (256-bit HMAC value) has a bigger 
+computational overhead, however the proof may be serialized utilizing one byte less, since the public key `P`
+requires 33 bytes for serialization (in a compressed form). Alternatively, if the key `P` is selected and serialized
+according to the Secp256k1 Schnorr's signature rules [4] the first reveal scheme will utilize the same proof storage
+space and will be more advantageous.
 
 
 ## Compatibility
@@ -99,8 +111,6 @@ approach [4, 5].
 
 ## Rationale
 
-### Use of EC point addition instead of multiplication
-
 ### Use of HMAC: prevention of length extension attacks and multiple commitments
 
 ### Use of protocol tags: prevention of inter-protocol collision attacks
@@ -110,8 +120,10 @@ prevent potential reply-attacks for interpreting message under different protoco
 SHA256 hash is made due to the fact that according to Peter Wuille it is not yet used in any existing bitcoin protocol, 
 which increases compatibility and reduces chances of collisions with existing protocols.
 
+### No nonce
 
-### Use of nonce
+Nonce is not required since the original public key, hidden in the resulting tweaked key, presents sufficient entropy
+for an attacker to be not able to guess the original message even for short and standard messages.
 
 
 ## Reference implementation
