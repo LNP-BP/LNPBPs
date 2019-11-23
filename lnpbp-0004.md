@@ -21,19 +21,19 @@ information about the other messages and used protocols.
 ## Background and Motivation
 
 LNPBP-3 defines a standard for embedding cryptographic commitment into bitcoin transaction in a deterministic provable 
-way [lnpbp3]. The standard is based on LNPBP-1 public key tweaking procedure [lnpbp1], which prevents multiple 
-commitments inside a tweak. However it is possible that some protocol may require to commit to a number of messages 
-within a single transaction and public key with the requirement that some dedicated information from this messages (like 
-the message type) should be unique across the whole message set. For instance, this is required for state updates, where
-the updates are separated into different blocks (messages) and kept private, such that a single party will know 
-information about a single update and should not be exposed any information about the rest. However, in such a case,
-there should be a proof that other state updates does not affect the state of the analyzed update, excluding state 
-collisions. In such a setup, each state may be assigned a unique integer identifier (like cryptographic digest) and
-a special form of zero-knowledge proof should be utilized to proof the fact that all of the states are different
-without exposing the actual state ids. While this is impossible at the level of LNPBP-3 & LNPBP-1 standards, the current
-proposal defines a procedure for structuring multiple independent messages in a privacy-preserving (zero-knowledge)
-way, allowing that some properties of the committed messages may be proven in a zero-knowledge way, i.e. without 
-revealing any information about the the source messages or the properties themselves.
+way [2]. The standard is based on LNPBP-1 public key tweaking procedure [1], which prevents multiple commitments inside 
+a tweak. However it is possible that some protocol may require to commit to a number of messages within a single 
+transaction and public key with the requirement that some dedicated information from this messages (like the message 
+type) should be unique across the whole message set. For instance, this is required for state updates, where the updates 
+are separated into different blocks (messages) and kept private, such that a single party will know information about a 
+single update and should not be exposed any information about the rest. However, in such a case, there should be a proof 
+that other state updates does not affect the state of the analyzed update, excluding state collisions. In such a setup, 
+each state may be assigned a unique integer identifier (like cryptographic digest) and a special form of zero-knowledge 
+proof should be utilized to proof the fact that all of the states are different without exposing the actual state ids. 
+While this is impossible at the level of LNPBP-3 & LNPBP-1 standards, the current proposal defines a procedure for 
+structuring multiple independent messages in a privacy-preserving (zero-knowledge) way, allowing that some properties of 
+the committed messages may be proven in a zero-knowledge way, i.e. without revealing any information about the the 
+source messages or the properties themselves.
 
 
 ## Design
@@ -69,8 +69,8 @@ as a binary string in form of
 `s = <C_1> <c_1> <C_2> <c_2> .. <C_n> <c_n>`
 
 where each `<x>` block represents a 256-bit (8-byte) number with highest significant bytes first. The string is double
-hashed with SHA256 tagged-hash function from [bip-schnorr] using tag 'LNPBP-4' and the resulting digest represents the 
-actual commitment message that can be utilized with other protocols, like LNPBP-1.
+hashed with SHA256 tagged-hash function from [3] using tag 'LNPBP-4' and the resulting digest represents the actual
+commitment message that can be utilized with other protocols, like LNPBP-1.
 
 
 ### Partial-reveal and proof procedure
@@ -112,12 +112,12 @@ TBD
 
 ## References
 
-lnpbp1. Maxim Orlovsky. Key tweaking: collision-resistant elliptic curve-based commitments (LNPBP-1 Standard). 
+1. Maxim Orlovsky. Key tweaking: collision-resistant elliptic curve-based commitments (LNPBP-1 Standard). 
    <https://github.com/LNP-BP/lnpbps/blob/master/lnpbp-0001.md>
-lnpbp3. Maxim Orlovsky. Deterministic definition of transaction output containing cryptographic commitment
-    (LNPBP-3 Standard). <https://github.com/LNP-BP/lnpbps/blob/master/lnpbp-0003.md>
-bip-schnorr. Pieter Wuille. Schnorr Signatures for secp256k1.
-    <https://github.com/sipa/bips/blob/bip-schnorr/bip-schnorr.mediawiki>
+2. Maxim Orlovsky. Deterministic definition of transaction output containing cryptographic commitment
+   (LNPBP-3 Standard). <https://github.com/LNP-BP/lnpbps/blob/master/lnpbp-0003.md>
+3. Pieter Wuille. Schnorr Signatures for secp256k1.
+   <https://github.com/sipa/bips/blob/bip-schnorr/bip-schnorr.mediawiki>
 
 
 ## Copyright
