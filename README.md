@@ -43,6 +43,7 @@ Number | Layer | Field | Title | Owner | Type | Status
 [1](lnpbp-0001.md) | Transaction (1) | Cryptographic primitives | Key tweaking: collision-resistant elliptic curve-based commitments | Maxim Orlovsky | Standard | Draft
 [2](lnpbp-0002.md) | Transaction (1) | Cryptographic primitives | Deterministic embedding of elliptic curve-based commitments into transaction outputs | Maxim Orlovsky | Standard | Draft
 [3](lnpbp-0003.md) | Transaction (1) | Cryptographic primitives | Deterministic definition of transaction output containing cryptographic commitment | Maxim Orlovsky | Standard | Draft
+[4](lnpbp-0004.md) | Transaction (1) | Cryptographic primitives | Multi-message commitment scheme with provable zero-knowledge properties | Maxim Orlovsky | Standard | Draft
 
 
 ### List work-in-progress of LNP/BP proposals without an assigned standard number
