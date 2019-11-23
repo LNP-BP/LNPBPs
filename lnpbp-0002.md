@@ -22,17 +22,18 @@ and Bitcoin scripts.
 
 Cryptographic commitments embedded into bitcoin transactions is a widely-used practice. It's application include
 timestamping [1], single-use seals [2], pay-to-contract settlement schemes [3], sidechains [4], blockchain anchoring [5],
-Taproot, Graftroot [6, 7, 8], Scriptless scripts [9] and many others. 
+Taproot, Graftroot proposals [6, 7, 8], Scriptless scripts [9] and many others. 
 
 
 ## Motivation
 
-A number of cryptographic commitment (CC) use cases require the commitment to be present within non-P2(W)PK(H) outputs. 
-For instance, embedding CC into Lightning Network (LN) payment channel state updates in the current version require 
-modification of an offered HTLC and received HTLC transaction outputs [10], and these transactions contain only a single 
-P2WSH output. With the following updates [11] LN will likely will change a single P2WPKH (named `to_remote`) output 
-within the commitment transaction, also leading to a requirement for a standard and secure way of making CC inside 
-P2(W)SH outputs.
+A number of cryptographic commitment (CC) use cases require the commitment to be present within non-P2(W)PK(H) outputs,
+which may contain multiple public keys and need a more clear definition of how the public key can be found within the
+the bitcoin script itself. For instance, embedding CC into Lightning Network (LN) payment channel state updates in the 
+current version require modification of an offered HTLC and received HTLC transaction outputs [10], and these 
+transactions contain only a single P2WSH output. With the following updates [11] LN will likely will change a single 
+P2WPKH (named `to_remote`) output within the commitment transaction, also leading to a requirement for a standard and 
+secure way of making CC inside P2(W)SH outputs.
 
 At the same time, P2(W)SH and other non-standard outputs (like explicit P2S outputs, including OP_RETURN type) are not
 trivial to use in CC commitments, since CC requires deterministic definition of the actual commitment case. Normally,
@@ -48,41 +49,85 @@ standard on the use of public-key based CC [12] withing all possible transaction
 
 ## Specification
 
-In order to create a deterministic way for CC within transaction output first we have to address two main issues:
-1. Create a definition for what is a public key that may be used for a CC for all possible types of transaction outputs.
-2. Define which of the public keys has to participate in a given CC for the outputs that may contain more than a single
-   public key.
-   
-### Deterministic definition for a cryptographically-committable public key fingerprint within transaction output
+The **committing party** has:
+1. To decide on the type of transaction output `scriptPubkey` that will contain the commitment.
+2. To construct and keep a set `S` of the original public keys that will be used in the output construction according
+   to the selected type.
+3. To commit to the message and put the commitment into EACH of the public keys from the set `S` according to the
+   selected procedure. We recommend using the procedure defined in LNPBP-1 [12] and choose the first reveal scheme.
+5. Construct the transaction output and (if required) the associated `redeemScript` using the version of public keys
+   containing commitment.
 
-A public key fingerprint within a given bitcoin script bytecode is defined as anything satisfying any of the following
-conditions:
-1. A topmost stack element before an execution of Bitcoin script matching the pattern 
-   `OP_HASH160 OP_PUSH <32-bytes of data> OP_EQUALVERIFY OP_CHECKSIG[VERIFY]`
-2. A topmost stack element before an execution of Bitcoin script matching the pattern 
-   `OP_PUSH <32- or 33-bytes of data> [OP_EQUALVERIFY] OP_CHECKSIG[VERIFY]`, when the previously executed command
-   was not `OP_HASH160`
-3. Each of the `n` topmost 33-byte-long stack elements before an execution of Bitcoin script matching the pattern 
-   `OP_PUSH <n> OP_CHECKMULTISIG[VERIFY]`
-4. An OP_RETURN code followed by 34 bytes, with the first two bytes set to `0xFFFF` means that the following 32 bytes
-   represent a tagged hash (according to the procedure described in [12]) of a public key.
+The **verifying party** SHOULD be provided with the transaction output and supplementary data, which structure depends on 
+the structure of `scriptPubkey` of the transaction output, after which it has to perform the following actions:
+1. Extract (for a verifying party) from the `scriptPubkey` field and provided supplementary data a set `S` of eligible 
+   public keys for the cryptographic commitment with the following procedure, depending on the script type within 
+   `scriptPubkey`:
+    - **P2PK**: take a single public key `P` from the `scriptPubkey` itself; `S = { P }`
+    - **P2PKH**: the supplementary data MUST provide a public key `O` matching the hash `h` within 
+      `scriptPubkey`; then `S = { O: RIPEMD160(SHA256(O)) = h }`
+    - **V0 witness, P2WPKH variant**: the supplementary data MUST provide the original public key `O` matching the hash
+      `h` within the witness program inside the `scriptPubkey`; `S = { O: RIPEMD160(SHA256(O)) = h }`
+    - **V0 witness, P2WSH variant**: the supplementary data MUST provide the set `S` plus a `redeemScript`
+      (corresponding  to the last item inside the `witnessScript`) matching the script hash contained in the
+      `scriptPubkey`. The set `S`  MUST be verified against the provided `redeemScript` according to
+      [the procedure](#verification-of-public-keys-against-bitcoin-script) described below.
+    - **V1 witness, P2TP** [**work in progress**: this part has to be revised following the acceptance of BIP-Taproot 
+      proposal [14]]: the supplementary data MUST provide an intermediate public key `I` and Taproot tweak public key
+      `T` such that `I + T` MUST equal to the public key serialized within the `scriptPubkey`. Then, `S = { I }`.
+    - **P2SH**: the supplementary data MUST provide either:
+        * for a ***V0 P2WPKH embedded into P2SH***, an original public key `O`, which, when serialized according to the 
+          [rule from BIP141](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki#p2wpkh-nested-in-bip16-p2sh) 
+          first into a string `s = 0x160014<RIPEMD160(SHA256(O))>` and then hashed as `h' = RIPEMD160(SHA256(s))`. 
+          The hash `h'` MUST match the hash `h` from the original P2SH: `h == h'`, and
+          `S = { O: RIPEMD160(SHA256(0x160014<RIPEMD160(SHA256(O))>)) = h }`
+        * for a ***V0 P2WSH embedded into P2SH***, the supplementary data MUST provide the set `S` plus a `redeemScript`, 
+          corresponding to the last item in the `witnessScript`, which, when is serialized according to the 
+          [rule from BIP141](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki#p2wsh-nested-in-bip16-p2sh)
+          first into a string `s = 0x220020<SHA256(SHA256(<redeemScript>))>` and then hashed as
+          `h = RIPEMD160(SHA256((s))`. The hash `h'` MUST match the hash `h` from the original P2SH: `h == h'`. The set 
+          `S` MUST be verified against the provided `redeemScript` according to
+          [the procedure](#verification-of-public-keys-against-bitcoin-script) described below.
+        * for a ***native P2SH***, the supplementary data MUST provide the set `S` plus a `redeemScript` matching the 
+          script hash contained in the `scriptPubkey`. The set `S` MUST be verified against the provided `redeemScript`
+          according to [the procedure](#verification-of-public-keys-against-bitcoin-script) described below.
+    - **OP_RETURN**: the `scriptPubkey` MUST start with `OP_RETURN` code followed by a 32-byte push of the public key
+      `R` serialized according to the BIP-Schnorr serialization rules [15], representing a sole member of the set `S`. 
+    - **Other (non-standard) scripts**: the supplementary data MUST provide the set `S`, which `S` MUST be verified 
+      against the provided `scriptPubkey` according to 
+      [the procedure](#verification-of-public-keys-against-bitcoin-script) described below.
 
-It follows, that the CC for non-P2(W)PK(H) and non-P2S outputs can be verified only if the whole source script is 
-presented. In case of usage of Taproot, MAST or other technology hiding some parts of the script, a whole source script 
-MUST BE presented to a verifier in order to verify the actual cryptographic commitment.
+2. The supplementary data MUST contain for each of the public keys in the set `∀ P ∈ S` a corresponding original public 
+   key `{ P' } = S'` and a message `msg` to which the commitment was created. Each of the public keys within the set `S` 
+   MUST be verified to contain the commitment to the message `msg` basing on the original public key from `S'` according 
+   to the selected commitment procedure.  We recommend using the procedure defined in LNPBP-1 [12] and choose the first 
+   reveal scheme.
 
-The CC verification requires all parts of scripts (lockScript, witnessScript, sigScript etc) to be assembled together,
-before the patter-matching with the above given instructions can be performed.
 
+### Verification of public keys against Bitcoin Script
 
-### Deterministic cryptographic commitments to public key fingerprints within transaction output
-
-For all public keys fingerprints defined according to the procedure described above a cryptographic commitment procedure
-via key tweaking (as defined in LNPBP-1 [12]) MUST BE applied.
-
-To verify the commitment, the original public keys (before the tweaking procedure applied) and the source data for which
-the commitment is constructed for MUST BE presented to the verifier. The verifier to make sure that the commitment is
-valid MUST apply the algorithm from LNPBP-1 [12] to each of the public keys.
+A verifier SHOULD be provided with the bitcoin script bytecode and a set of public keys `S`. The verifying party has to
+make sure that the script does not contain any other public keys or their hashes, and that all public keys presented
+in the script are present in the provided set `S`. In order to detect public keys and their hashes inside the bitcoin
+script the verifier MUST follow the given procedure:
+1. Start with an empty set of script-extracted public key hashes `H`
+2. Scan the script for the presence of `OP_HASH160 OP_PUSH32 <32-bytes of data> OP_EQUALVERIFY OP_CHECKSIG[VERIFY]`
+   template, extract the 32-byte sequences from the pattern and put each of them into the set `H`. Splice out each of
+   the found script patterns from the script before the further processing.
+3. Scan the script for the presence of `OP_PUSH32 <33-bytes of data> [OP_EQUALVERIFY] OP_CHECKSIG[VERIFY]`
+   and `OP_PUSH <n> [<33-bytes of data>]+ OP_PUSH <m> OP_CHECKMULTISIG[VERIFY]`
+   template, extract the 33-byte sequences from the pattern and make sure that they represent a valid x-coordinates of 
+   Secp256k1 cure points. Compute a double SHA-256 hash of them and put each of the resulting values into the set `H`. 
+   Splice out each of the found script patterns from the script before the further processing.
+4. Scan the script for the presence of `OP_PUSH32 <65-bytes of data> [OP_EQUALVERIFY] OP_CHECKSIG[VERIFY]`
+   and `OP_PUSH <n> [<65-bytes of data>]+ OP_PUSH <m> OP_CHECKMULTISIG[VERIFY]`
+   template, extract the 65-byte sequences from the pattern and make sure that they represent a valid uncompressed
+   public keys for the Secp256k1 curve points. Take their x-coordinates and compute a double SHA-256 hash of them and 
+   put each of the resulting values into the set `H`. Splice out each of the found script patterns from the script 
+   before the further processing.
+5. Compute double SHA-256 hash of each of the public keys in set `S` and put it into the set `H'`.
+6. Ensure that `H' = H`, i.e. they have the same number of elements and there is exactly one element from the set `H'`
+   that is equal to an element from the set `H`. Otherwise, fail the verification procedure.
 
 
 ## Compatibility
@@ -104,6 +149,7 @@ The proposed standard is compliant with current Taproot proposal [14], since it 
 script with all it branches, allowing verification that all public keys participating in the script were the part of
 the commitment procedure.
 
+TODO: Schnorr compatibility, Taproot compatibility
 
 ## Rationale
 
@@ -166,6 +212,8 @@ Authors would like to thank:
     <https://github.com/rgb-org/spec/blob/old-master/01-rgb.md#commitment-scheme>
 14. Pieter Wuille. Taproot: SegWit version 1 output spending rules (BIP standard proposal).
     <https://github.com/sipa/bips/blob/bip-schnorr/bip-taproot.mediawiki>
+15. Pieter Wuille. Schnorr Signatures for secp256k1.
+    <https://github.com/sipa/bips/blob/bip-schnorr/bip-schnorr.mediawiki>
 
 
 ## Copyright
