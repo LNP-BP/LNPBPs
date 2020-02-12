@@ -3,8 +3,13 @@ LNPBP: 0001
 Layer: Transactions (1)
 Field: Cryptographic primitives
 Title: Key tweaking: collision-resistant elliptic curve-based commitments
-Author: Dr Maxim Orlovsky <orlovsky@pandoracore.com>
-Contributors: Rene Pickhardt, Federico Tenga, Martino Salveti, Giacomo Zucco, Max Hillebrand, Christophe Diederichs
+Author: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
+        Rene Pickhardt, 
+        Federico Tenga, 
+        Martino Salveti, 
+        Giacomo Zucco, 
+        Max Hillebrand,
+        Christophe Diederichs
 Comments-URI: https://github.com/LNP-BP/lnpbps/issues/3
 Status: Draft
 Type: Standards Track
@@ -76,7 +81,7 @@ For a given message `msg` and original public key `P` the **commit procedure** i
    point-at-infinity; otherwise fail the protocol, indicating the reason of failure, such that the protocol may be run 
    with another initial public key `P'` value.
 4. Add two elliptic curve points, the original public key `P` and tweaking-factor based point `F`, obtaining the
-   resulting tweaked public key `T`: `T = P + G`. Check that the result not equal to the point-at-infinity; otherwise 
+   resulting tweaked public key `T`: `T = P + F`. Check that the result not equal to the point-at-infinity; otherwise 
    fail the protocol, indicating the reason of failure, such that the protocol may be run with another initial
    public key `P'` value.
 
