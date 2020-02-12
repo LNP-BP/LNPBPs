@@ -2,8 +2,8 @@
 LNPBP: 0004
 Layer: Transaction (1)
 Field: Cryptographic primitives
-Title: Multi-message commitment scheme with provable zero-knowledge properties
-Author: Dr Maxim Orlovsky <orlovsky@pandoracore.com>
+Title: Multi-message commitment scheme with zero-knowledge provable unique properties
+Author: Dr Maxim Orlovsky <orlovsky@protonmail.ch>
 Comments-URI: https://github.com/LNP-BP/lnpbps/issues/8
 Status: Draft
 Type: Standards Track
@@ -38,59 +38,86 @@ source messages or the properties themselves.
 
 ## Design
 
-Let's represent a set of messages (like state update transactions) as a set of binary strings m_1 .. m_n. Let's define
-p_1 .. p_n to be a property in form of a binary strings, that must uniquely identify those messages, such as no two 
-messages may share the same value for the property, i.e. for any given p_i, p_j, i ≠ j -> p_i ≠ p_j.
+The protocol follows dea of Bloom filters [5], which are already used for keeping confidentiality of the information 
+requested from Bitcoin Core by SPV clients [6].
 
-In order to construct the proof, first we convert the properties into a 256-bit integers, for instance with 
-cryptographic digest, like SHA256 hash function, such as d_i = SHA256(p_i). For a given digests d_1 .. d_n we create 
-Pedersen commitments C_1 .. C_n with blinding factors b_1 .. b_n. Then, for each pair of the commitments, C_i and C_j, 
-we do provide a co-factor C_i,j such as C_i - C_j = C_i,j. Next, we disclose b_i,j to a verifier, so it may check that 
-C_i,j ≠ b_i,j * G, implying d_i - d_j = d_i,j ≠ 0 and proving d_i and d_j to be distinct numbers.
+Multiple commitments under different protocols are identified with a unique per-protocol 32-byte identifiers (like tagged
+hashes of protocol name and/or characteristic parameters) and serialized into a 32-byte slots within `N * 32` byte buffer
+such as `N >> M`, where `M` is the number of the individual commitments. The rest of slots are filled with random data
+deterministically generated from a single entropy source. The position `n` for a commitment with the identifier `id`
+is computed as `n = id mod N`, guaranteeing that no two commitments under the same protocol with a given `id` may be
+simultaneously present.
 
-We also have to prove that blinding factors b_i,j are actual blinding factors used in construction of C_i,j, and not
-just some random numbers. In order to do that we do another round of Pedersen commitments to the x-coordinates of 
-Dx_i,j = (d_i,j * G).x, Bx_i,j = (b_i,j * G).x and Cx_i,j = (C_i,j).x points, so the verifier is able to make sure that 
-the sum of the P_Bx_ij + P_Dx_ij commitments is equal to P_Cx_ij.
-
-the commitments to d_i,j and b_i,j is equal to the C_i,j commitment.
-
+```
+      Protocol-1 -+                                 Protocol-2 -+
+  MSG-1   |       V                             MSG-2   |       V
+    V     V     Id-1                              V     V     Id-2
+[Tagged SHA256]   V                           [Tagged SHA256]   V
+       |       [mod 3]                               |       [mod 3]
+       |          V                                  |          V
+       V          1                                  V          3
++----------------------+----------------------+----------------------+
+| MSG-1 commitment     | Random hash          | MSG-2 commitment     |
++----------------------+----------------------+----------------------+
+0 byte                  32 byte                64 byte
+```
 
 ## Specification
 
-### Commitment procedure
+### Commitment
 
-Each message m_i and it's unique property p_i (like state indentifier, protocol identifier etc) are serialized as a 
-binary strings according to some consensus serialization rules. Then, a double SHA256 hash is computed for each of the
-message and property string, producing 256-bit values c_i and d_i correspondingly. For a given digests d_1 .. d_n 
-Pedersen commitments C_1 .. C_n are created with random non-zero blinding factors b_1 .. b_n. The data are serialized
-as a binary string in form of
+For a given set of `M` messages `msg1`..`msgM` under protocols with corresponding unique ids `id`..`idM` the commitment
+procedure runs as follows:
+1. Pick a 32-bytes of entropy from uniform entropy source (like the same which is used for generating private keys)
+   and compute SHA256-tagged hash according to BIP-340 tagged hash procedure [4] with prefix `LNPBP4:random`.
+2. Generate a corresponding public key on Secp256k1 elliptic curve (`R`) and compute it's 256-bit bitcoin hash 
+   (`HASH256(R)`).
+3. Pick a number `N >> M`, for instance `N = M * 2` and allocate `32 * N` byte buffer.
+4. For each of the messages:
+   - create a corresponding cryptographic commitment `cI` according to the per-message protocol,
+   - compute it's BIP-340 tagged hash [4] using the value of the protocol id `idI` as the protocol-specific tag,
+   - compute `n = idI mod N`,
+   - if the slot `n` is not used, serialize a `cI` hash into it using bitcoin-style hash serialization format;
+     otherwise go to step 3 and generate a new `N' >> N`.
+5. For each of the slots that remain empty (the slot number is represented by `j`):
+   - tweak public key `R` with it's own hash `H(R)` `j` times: `Rj = R + J * H(R) * G)`
+   - compute a 256-bit bitcoin hash of `Rj` and serialize it into the slot `j` using bitcoin-style hash serialization 
+     format.
+6. Compute commitment to the resulting buffer with LNPBP-1, LNPBP-2 or other protocol using `LNPBP4` as the 
+   protocol-specific tag.
 
-`s = <C_1> <c_1> <C_2> <c_2> .. <C_n> <c_n>`
+### Partial reveal
 
-where each `<x>` block represents a 256-bit (8-byte) number with highest significant bytes first. The string is double
-hashed with SHA256 tagged-hash function from [3] using tag 'LNPBP-4' and the resulting digest represents the actual
-commitment message that can be utilized with other protocols, like LNPBP-1.
+A party needing to reveal the proofs for the commitment to the message `msgA` under this scheme and conceal the rest
+of the messages and protocols participating in the commitment has to publish the following data:
+1. A source of the message `msgA` and information about it's protocol with id `idA`.
+2. A full byte sequence of the buffer resulting from the step 5 of the [commitment procedure](#commitment).
 
+### Reveal with full disclosure
 
-### Partial-reveal and proof procedure
+A party needing to reveal the proofs for all commitments to all of the messages and also prove that there were no
+other commitments made must publish the following data:
+1. A source of the messages `msg1`..`msgM` and information about their protocols with id `id1`..`idM`.
+2. A full byte sequence of the buffer resulting from the step 5 of the [commitment procedure](#commitment).
+3. An original public key `R` from the step 2 of the [commitment procedure](#commitment).
 
-To proof the commitment for the message number `k` and the uniqueness of it's property `p_k` the committing party must 
-provide verifying party with:
-- the binary string `s`
-- source message `m_k`
-- value for the `p_k` property
-- set of `n-1` blinding factors b_i,k for `i` in 1 .. n range with the exception of i=k case
-- Pedersen commitments P_Bx_ik, P_Dx_ik and P_Cx_ik to b_i,k * G, d_i,k * G and C_i,k x-coordinate points
+### Per-message verification
 
-The verifying party must make sure that:
-1. Tagged double SHA-256 hash of the string `s` corresponds to the actual commitment
-2. The source message `m_k` double SHA-256 hash corresponds to the `c_k` value from the `s`
-3. None of the differences between C_k and each other C_i commitment are equal to b_i,k * G values
-4. Check that the sum of P_Bx_ik + P_Dx_ik = P_Cx_ik
+A party provided with the data from the [partial reveal procedure](#partial-reveal) and wishing to verify the commitment
+to the message MUST use the following procedure:
+1. Compute `n = idA mod N`, where `idA` is the message-specific protocol id and `N` is the length of the commitment
+   buffer in bytes divided on 32.
+2. Compute commitment to the message by following the procedure from the step 3 of the [commitment scheme](#commitment)
+3. Verify that the resulting 32-bit commitment is equal to the commitment stored in `n`'s 32-byte slot of the commitment
+   buffer; fail verification otherwise.
 
-This proves that the message `m_k` was commited under the procedure and no other message with the same property `p_k`
-was a part of this multi-message commitment.
+### Verification of the full disclosure
+
+A party provided with the data from the [reveal with full disclosure procedure](#reveal-with-full-disclosure) may verify
+that the provided commitment buffer contains only commitment to the provided messages (and no other commitments) by
+allocating a new empty (all bytes set to `0x00`) commitment buffer of the same length as the revealed commitment buffer, 
+and re-running steps 4-6 from the [commitment procedure](#commitment). If the new buffer match per-byte the revealed 
+commitment buffer, then the verification succeeded; otherwise it has failed.
 
 
 ## Compatibility
@@ -112,12 +139,19 @@ TBD
 
 ## References
 
-1. Maxim Orlovsky. Key tweaking: collision-resistant elliptic curve-based commitments (LNPBP-1 Standard). 
+1. Maxim Orlovsky, et al. Key tweaking: collision-resistant elliptic curve-based commitments (LNPBP-1 Standard). 
    <https://github.com/LNP-BP/lnpbps/blob/master/lnpbp-0001.md>
-2. Maxim Orlovsky. Deterministic definition of transaction output containing cryptographic commitment
+2. Maxim Orlovsky, et al. Deterministic embedding of LNPBP1-type commitments into `scriptPubkey` of a transaction output
+   (LNPBP-2 Standard). <https://github.com/LNP-BP/lnpbps/blob/master/lnpbp-0002.md>
+3. Giacomo Zucco, et al. Deterministic definition of transaction output containing cryptographic commitment
    (LNPBP-3 Standard). <https://github.com/LNP-BP/lnpbps/blob/master/lnpbp-0003.md>
-3. Pieter Wuille. Schnorr Signatures for secp256k1.
-   <https://github.com/sipa/bips/blob/bip-schnorr/bip-schnorr.mediawiki>
+4. Pieter Wuille, et al. BIP-340: Schnorr Signatures for secp256k1.
+   <https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki>
+5. Bloom, Burton H. (1970), "Space/Time Trade-offs in Hash Coding with Allowable Errors", 
+   Communications of the ACM, 13 (7): 422–426, doi:10.1145/362686.362692.
+   <https://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.641.9096>
+6. Mike Hearn, Matt Corallo. BIP-37: Connection Bloom filtering. 
+   <https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki>
 
 
 ## Copyright

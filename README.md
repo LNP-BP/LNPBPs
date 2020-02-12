@@ -40,13 +40,13 @@ Number (bottom-up) | Title | Description | Fields
 
 Number | Layer | Field | Title | Owner | Type | Status
 ------:| ----- | ----- | ----- | ----- | ---- | ------
-[1](lnpbp-0001.md) | Transaction (1) | Cryptographic primitives | Key tweaking: collision-resistant elliptic curve-based commitments | Maxim Orlovsky | Standard | Draft
-[2](lnpbp-0002.md) | Transaction (1) | Cryptographic primitives | Deterministic embedding of elliptic curve-based commitments into transaction outputs | Maxim Orlovsky | Standard | Draft
-[3](lnpbp-0003.md) | Transaction (1) | Cryptographic primitives | Deterministic definition of transaction output containing cryptographic commitment | Giacomo Zucco | Standard | Draft
+[1](lnpbp-0001.md) | Transaction (1) | Cryptographic primitives | Key tweaking: collision-resistant elliptic curve-based commitments | Maxim Orlovsky et al | Standard | Draft
+[2](lnpbp-0002.md) | Transaction (1) | Cryptographic primitives | Deterministic embedding of elliptic curve-based commitments into transaction outputs | Maxim Orlovsky et al | Standard | Draft
+[3](lnpbp-0003.md) | Transaction (1) | Cryptographic primitives | Deterministic definition of transaction output containing cryptographic commitment | Giacomo Zucco et al | Standard | Draft
 [4](lnpbp-0004.md) | Transaction (1) | Cryptographic primitives | Multi-message commitment scheme with zero-knowledge provable unique properties | Maxim Orlovsky | Standard | Draft
-[5](lnpbp-0005.md) | Transaction graph (2) | Client-side validation | Single-use seals with bitcoin transaction graph | Peter Todd | Concept | Draft
+[5](lnpbp-0005.md) | Transaction graph (2) | Client-side validation | Single-use seals with bitcoin transaction graph | Peter Todd et al | Informational | Draft
 [6](lnpbp-0006.md) | Off-chain data (3) | Cryptographic primitives | Confidential amounts for client-validated data | Maxim Orlovsky | Standard | Draft
-[7](lnpbp-0007.md) | Off-chain data (3) | Serialization | Types and requirements for off-chain data serialization | Maxim Orlovsky, Peter Todd | Best practices | Draft
+[7](lnpbp-0007.md) | Off-chain data (3) | Serialization | Types and requirements for off-chain data serialization | Maxim Orlovsky, Peter Todd | Informational | Draft
 [8](lnpbp-0008.md) | Off-chain data (3) | Serialization | Extra-transaction proof serialization for LNPBP-2 | Maxim Orlovsky | Standard | Draft
 [9](lnpbp-0009.md) | Client-validated graphs (4) | Commitments | RGB: Client-validated rich state and smart contract system based on LNPBP1-8 standards | Maxim Orlovsky | Standard | Draft
 [10](lnpbp-0010.md) | Client-validated graphs (4) | Serialization | Network serialization standards for RGB-related data structures | Maxim Orlovsky | Standard | Draft
