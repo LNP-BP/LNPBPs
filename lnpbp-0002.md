@@ -2,8 +2,12 @@
 LNPBP: 0002
 Layer: Transactions (1)
 Field: Cryptographic commitments
-Title: Deterministic embedding of elliptic curve-based commitments into transaction outputs
-Author: Dr Maxim Orlovsky <orlovsky@pandoracore.com>
+Title: Deterministic embedding of LNPBP1-type commitments into `scriptPubkey` of a transaction output
+Authors: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
+         Giacomo Zucco, 
+         Alekos Filini, 
+         Martino Salveti, 
+         Federico Tenga
 Comments-URI: https://github.com/LNP-BP/lnpbps/issues/4
 Status: Draft
 Type: Standards Track
@@ -14,7 +18,7 @@ License: CC0-1.0
 ## Abstract
 
 The standard defines an algorithm for deterministic embedding and verification of cryptographic commitments based
-on elleptic-curve public and private key modifications (tweaks) inside the existing types of Bitcoin transaction output
+on elliptic-curve public and private key modifications (tweaks) inside the existing types of Bitcoin transaction output
 and Bitcoin scripts.
 
 
@@ -47,100 +51,119 @@ some best practices for CC in non-P2(W)PK(H) outputs. This proposal tries to add
 standard on the use of public-key based CC [12] withing all possible transaction output types.
 
 
+## Design
+
+The protocol requires that exactly one public key of all keys present or referenced in `scriptPubkey` and `redeemScript`
+must contain the commitment (made with LNPBP-1 procedure) to a given message. This commitment is deterministically 
+singular, i.e. it can be proven that there is no other alternative message that the given transaction output commits 
+to under this protocol. The singularity is achieved by committing to the sum of all original (i.e. before the message 
+commitment procedure) public keys controlling the spending of a given transaction output. Thus, the given protocol 
+modifies LNPBP-1 standard [12] for the case of multiple public keys and covers all possible options for `scriptPubkey` 
+transaction output types.
+
+The commitment consists of the new version of `scriptPubkey`, which may be embed into the transaction output, and an
+extra-transaction proof (ETP), required for the verification of the commitment. The structure and information in the 
+proof depends on the used `scriptPubkey` type.
+
+The protocol includes an algorithm for deterministic extraction of public keys from a given Bitcoin script, based on
+Miniscript [16].
+
+
 ## Specification
 
-The **committing party** has:
-1. To decide on the type of transaction output `scriptPubkey` that will contain the commitment.
-2. To construct and keep a set `S` of the original public keys that will be used in the output construction according
-   to the selected type.
-3. To commit to the message and put the commitment into EACH of the public keys from the set `S` according to the
-   selected procedure. We recommend using the procedure defined in LNPBP-1 [12] and choose the first reveal scheme.
-5. Construct the transaction output and (if required) the associated `redeemScript` using the version of public keys
-   containing commitment.
+### Commitment
 
-The **verifying party** SHOULD be provided with the transaction output and supplementary data, which structure depends on 
-the structure of `scriptPubkey` of the transaction output, after which it has to perform the following actions:
-1. Extract (for a verifying party) from the `scriptPubkey` field and provided supplementary data a set `S` of eligible 
-   public keys for the cryptographic commitment with the following procedure, depending on the script type within 
-   `scriptPubkey`:
-    - **P2PK**: take a single public key `P` from the `scriptPubkey` itself; `S = { P }`
-    - **P2PKH**: the supplementary data MUST provide a public key `O` matching the hash `h` within 
-      `scriptPubkey`; then `S = { O: RIPEMD160(SHA256(O)) = h }`
-    - **V0 witness, P2WPKH variant**: the supplementary data MUST provide the original public key `O` matching the hash
-      `h` within the witness program inside the `scriptPubkey`; `S = { O: RIPEMD160(SHA256(O)) = h }`
-    - **V0 witness, P2WSH variant**: the supplementary data MUST provide the set `S` plus a `redeemScript`
-      (corresponding  to the last item inside the `witnessScript`) matching the script hash contained in the
-      `scriptPubkey`. The set `S`  MUST be verified against the provided `redeemScript` according to
-      [the procedure](#verification-of-public-keys-against-bitcoin-script) described below.
-    - **V1 witness, P2TP** [**work in progress**: this part has to be revised following the acceptance of BIP-Taproot 
-      proposal [14]]: the supplementary data MUST provide an intermediate public key `I` and Taproot tweak public key
-      `T` such that `I + T` MUST equal to the public key serialized within the `scriptPubkey`. Then, `S = { I }`.
-    - **P2SH**: the supplementary data MUST provide either:
-        * for a ***V0 P2WPKH embedded into P2SH***, an original public key `O`, which, when serialized according to the 
-          [rule from BIP141](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki#p2wpkh-nested-in-bip16-p2sh) 
-          first into a string `s = 0x160014<RIPEMD160(SHA256(O))>` and then hashed as `h' = RIPEMD160(SHA256(s))`. 
-          The hash `h'` MUST match the hash `h` from the original P2SH: `h == h'`, and
-          `S = { O: RIPEMD160(SHA256(0x160014<RIPEMD160(SHA256(O))>)) = h }`
-        * for a ***V0 P2WSH embedded into P2SH***, the supplementary data MUST provide the set `S` plus a `redeemScript`, 
-          corresponding to the last item in the `witnessScript`, which, when is serialized according to the 
-          [rule from BIP141](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki#p2wsh-nested-in-bip16-p2sh)
-          first into a string `s = 0x220020<SHA256(SHA256(<redeemScript>))>` and then hashed as
-          `h = RIPEMD160(SHA256((s))`. The hash `h'` MUST match the hash `h` from the original P2SH: `h == h'`. The set 
-          `S` MUST be verified against the provided `redeemScript` according to
-          [the procedure](#verification-of-public-keys-against-bitcoin-script) described below.
-        * for a ***native P2SH***, the supplementary data MUST provide the set `S` plus a `redeemScript` matching the 
-          script hash contained in the `scriptPubkey`. The set `S` MUST be verified against the provided `redeemScript`
-          according to [the procedure](#verification-of-public-keys-against-bitcoin-script) described below.
-    - **OP_RETURN**: the `scriptPubkey` MUST start with `OP_RETURN` code followed by a 32-byte push of the public key
-      `R` serialized according to the BIP-Schnorr serialization rules [15], representing a sole member of the set `S`. 
-    - **Other (non-standard) scripts**: the supplementary data MUST provide the set `S`, which `S` MUST be verified 
-      against the provided `scriptPubkey` according to 
-      [the procedure](#verification-of-public-keys-against-bitcoin-script) described below.
-
-2. The supplementary data MUST contain for each of the public keys in the set `∀ P ∈ S` a corresponding original public 
-   key `{ P' } = S'` and a message `msg` to which the commitment was created. Each of the public keys within the set `S` 
-   MUST be verified to contain the commitment to the message `msg` basing on the original public key from `S'` according 
-   to the selected commitment procedure.  We recommend using the procedure defined in LNPBP-1 [12] and choose the first 
-   reveal scheme.
+The **committing party**, having a message `msg`
+1. Collects all public keys (named **original public keys**) related to the given transaction output under this standard, 
+   namely:
+   - a single public key for P2PK, P2PKH, P2WPK, P2WPK-in-P2SH type of outputs, `redeemScripts` or custom non-P2(W)SH
+     `scriptPubkey` requiring a single signature;
+   - an arbitrary public key (even with an unknown corresponding private key), if `OP_RETURN` `scriptPubkey` is used;
+   - an intermediate public key for the Taproot;
+   - all signing public keys from a `redeemScript` or custom non-P2(W)SH `scriptPubkey`, defined according to the
+     [algorithm](#deterministic-public-key-extraction-from-bitcoin-script).
+2. Computes en elliptic curve point and its corresponding public key `S` as sum of elliptic curve points corresponding 
+   to the original public keys.
+3. Selects a single public key `P` from the set of the original public keys, which will contain the commitment.
+4. Runs LNPBP-1 commitment protocol on message `msg`, the selected public key `P` and public key `S` with the following 
+   modification:
+   - on the second step of the protocol (according to LNPBP-1 specification [12]) HMAC-SHA256 is provided with the value
+     of `S` (instead of `P`), i.e. hence we commit to the sum of all the original public keys;
+   - on the forth step of the protocol the tweaking-factor based point `F` is added to the `P` (a single original public 
+     key), resulting in key `T`;
+   - if the number of original public keys defined at step 1 exceeds one, `LNPBP2` tag MUST BE used instead of `LNPBP1`;
+   - a protocol-specific tag is provided by the upstream protocol using this standard.
+5. Constructs necessary scripts and generates `scriptPubkey` of the required type. If OP_RETURN `scriptPubkey` format is
+   used, it MUST be serialized according to the following rules:
+   - only a single `OP_RETURN` code MUST be present in the `scriptPubkey` and it MUST be the first byte of it;
+   - it must be followed by 32-byte push of the public key value `P` from the step 2 of the algorithm, serialized
+     according to from [15]; if the resulting public key containing the commitment is non-square, a new public key MUST
+     be picked and procedure from step 4 MUST BE repeated once more.
+6. Constructs and stores an **extra-transaction proof** (ETP), which structure depends on the generated `scriptPubkey`
+   type:
+   a) value of `S`, corresponding to:
+      * single original public key for P2PK, P2PKH, P2WPK, P2WPK-in-P2SH and OP_RETURN-type of outputs;
+      * the original intermediary public key for P2TR (V1 witness Taproot output);
+      * sum of all public keys required to spend P2SH, P2WSH or P2WSH-in-P2SH output;
+   b) deterministic script reconstruction data, i.e.:
+      * untweaked `redeemScript` for P2SH, P2WSH or P2WSH-in-P2SH `scriptPubkey`, constructed using the *original 
+        public keys*, which MUST be ordered within the script in exactly the same way they are ordered in the actual
+        `redeemScript` containing the public key with the commitment;
+      * the "taptweak" hash (i.e. the tagged hash of the Merkle root of the TapScript branches) for P2TR (V1 witness 
+        output);
+      * for other types of outputs no data are provided in this section of ETP.
 
 
-### Verification of public keys against Bitcoin Script
+### Reveal
 
-A verifier SHOULD be provided with the bitcoin script bytecode and a set of public keys `S`. The verifying party has to
-make sure that the script does not contain any other public keys or their hashes, and that all public keys presented
-in the script are present in the provided set `S`. In order to detect public keys and their hashes inside the bitcoin
-script the verifier MUST follow the given procedure:
-1. Start with an empty set of script-extracted public key hashes `H`
-2. Scan the script for the presence of `OP_HASH160 OP_PUSH32 <32-bytes of data> OP_EQUALVERIFY OP_CHECKSIG[VERIFY]`
-   template, extract the 32-byte sequences from the pattern and put each of them into the set `H`. Splice out each of
-   the found script patterns from the script before the further processing.
-3. Scan the script for the presence of `OP_PUSH32 <33-bytes of data> [OP_EQUALVERIFY] OP_CHECKSIG[VERIFY]`
-   and `OP_PUSH <n> [<33-bytes of data>]+ OP_PUSH <m> OP_CHECKMULTISIG[VERIFY]`
-   template, extract the 33-byte sequences from the pattern and make sure that they represent a valid x-coordinates of 
-   Secp256k1 cure points. Compute a double SHA-256 hash of them and put each of the resulting values into the set `H`. 
-   Splice out each of the found script patterns from the script before the further processing.
-4. Scan the script for the presence of `OP_PUSH32 <65-bytes of data> [OP_EQUALVERIFY] OP_CHECKSIG[VERIFY]`
-   and `OP_PUSH <n> [<65-bytes of data>]+ OP_PUSH <m> OP_CHECKMULTISIG[VERIFY]`
-   template, extract the 65-byte sequences from the pattern and make sure that they represent a valid uncompressed
-   public keys for the Secp256k1 curve points. Take their x-coordinates and compute a double SHA-256 hash of them and 
-   put each of the resulting values into the set `H`. Splice out each of the found script patterns from the script 
-   before the further processing.
-5. Compute double SHA-256 hash of each of the public keys in set `S` and put it into the set `H'`.
-6. Ensure that `H' = H`, i.e. they have the same number of elements and there is exactly one element from the set `H'`
-   that is equal to an element from the set `H`. Otherwise, fail the verification procedure.
+The **revel protocol** is usually run between the committing and verifying parties; however it may be used by the 
+committing party to publicaly revel the proofs of the commitment. These proofs include:
+* `scriptPubkey` from the transaction output containing the commitment;
+* *original message* to which the *comitting party* has committed;
+* *extra-transaction proof* (ETP), constructed at the 6th step of the [commitment protocol](#commitment);
+* (optional) proofs that the `scriptPubkey` is a part of the transaction included into the bitcoin chain containing
+  the largest known amount of work at depth satisfying a *verifying party* security policy (these proofs may be 
+  reconstructed/verified by the verifying party itself using its trusted Bitcoin Core server);
+
+
+### Verify
+
+The verification process runs by repeating steps of the commitment protocol using the information provided during the 
+*revel phase* and verifying the results for their internal consistency; specifically:
+1. Public key consistency verification:
+   - collect all the original public keys from the deterministic script reconstruction data of the *extra-transaction 
+     proof* (ETP), if present; and
+   - check that the sum of these public keys `Z'` equals to the value of `S` from the ETP, otherwise fail the 
+     verification.
+2. For each of the original public keys (or `S`, if there were no other original public keys provided in ETP):
+   - construct a commitment to the `msg` according to the commitment procedure described at the step 4 of the 
+     [commitment protocol](#commitment);
+   - construct `scriptPubkey'`, matching the type of the `scriptPubkey` provided during the *revel phase*, using the 
+     tweaked version of this public key and ETP data for deterministic script reconstruction.
+3. Make sure that one, and only one value of `scriptPubkey'` generated at previous step, byte by byte matches 
+   the `scriptPubkey` provided during the *revel phase*; otherwise (if no matches found or multiple matches are present)
+   fail the verification.
+
+
+### Deterministic public key extraction from Bitcoin Script
+
+1. The provided script MUST be parsed with Miniscript [16] parser; if the parser fails the procedure MUST fail.
+2. Iterate over all branches of the abstract syntax tree generated by the Miniscript parser, running the following
+   algorithm for each node:
+   - if a public key hash is met (`pk_h` Miniscript command) fail the procedure;
+   - if a public key is found (`pk`) add it to the list of the collected public keys;
+   - for all other types of Miniscript commands iterate over their branches.
+3. If no public keys were found fail the procedure; return the collected keys otherwise.
 
 
 ## Compatibility
 
-The proposed cryptographic commitment scheme is fully compatible with all previously-existed commitments for P2PK,
-P2PKH and P2WPH transaction outputs, since they always contain only a single public key.
+The proposed cryptographic commitment scheme is fully compatible with any other LNPBP1-based commitments for the
+case of P2PK, P2PKH and P2WPH transaction outputs, since they always contain only a single public key and the original
+`LNPBP1` tag is preserved for the commitment procedure in this case.
 
 The standard is not compliant with previously used OP_RETURN-based cryptographic commitments, like OpenTimestamps [1],
-since it utilises a hash of the tweaked public key for the OP_RETURN push data, and not the the actual commitment value
-(cryptographic digest of the message to which the party commits to). In order to avoid any ambiguity, we are proposing
-first, to use with OP_RETURN data a protocol-tagged hash, according to LNPBP-1 [12], and also to add a special two-byte
-prefix `0xFFFF` to render total OP_RETURN data size incompatible with either 32-bytes hashes or 33/32-bytes serialized
-public keys, and also easily distinguishable from other protocols using OP_RETURN, to the best author's knowledge.
+since it utilises plain value of the public key with the commitment for the OP_RETURN push data.
 
 The author does not aware of any P2(W)SH or non-OP_RETURN P2S cryptographic commitment schemes existing before this
 proposal, and it is highly probable that the standard is not compatible with ones if they were existing.
@@ -149,7 +172,7 @@ The proposed standard is compliant with current Taproot proposal [14], since it 
 script with all it branches, allowing verification that all public keys participating in the script were the part of
 the commitment procedure.
 
-TODO: Schnorr compatibility, Taproot compatibility
+TODO: Schnorr compatibility
 
 ## Rationale
 
@@ -164,11 +187,31 @@ commitment code branching, preventing potential bugs in the implementations.
 While P2PK outputs are considered obsolete and are vulnerable to a potential quantum computing attacks, it was decided
 to include them into the specification for unification purposes.
 
-### Committing to all public keys present in the script
+### Committing to the sum all public keys present in the script
 
 With partial commitments, having some of the public keys tweaked with the message digest, and some left intact, it will
 be impossible to define a simple and deterministic commitment scheme for an arbitrary script and output type that will
 prevent any potential double-commitments.
+
+### Deterministic public key extraction for a Bitcoin script
+
+We use determinism of the proposed Miniscript standard to parse the Bitcoin script in an implementation-idependet way
+and in order to avoid the requirement of the full-fledged Bitcoin Script interpreter for the commitment verification.
+
+The procedure fails on any public key hash present in the script, which prevents multiple commitment vulnerability,
+when different parties may be provided with different *extra-transaction proof* (ETP) data, such that they will
+use different value for the `S` public key matching two partial set of the public keys (containing and not containing
+public keys for the hashed values).
+
+The algorithm does not require that all of the public keys will be used in signature verification for spending the
+given transaction output (i.e. public keys may not be prefixed with `[v]c:` code in Miniscript [16]), so the committing 
+parties may have a special public key shared across them for embedding the commitment, without requiring to know the
+corresponding private key to spend the output. 
+
+### Use of the intermediate public key for Taproot
+
+
+### Support of non-SegWit outputs
 
 
 ## Reference implementation
@@ -180,8 +223,8 @@ prevent any potential double-commitments.
 
 Authors would like to thank:
 * Giacomo Zucco and Alekos Filini for their initial work on the commitment schemes as a part of early RGB effort [13]; 
-* Christian Decker for pointing out on Lightning Network incompatibility with all existing cryptographic commitment 
-  schemes;
+* Dr Christian Decker for pointing out on Lightning Network incompatibility with all existing cryptographic commitment 
+  schemes.
 
 
 ## References
@@ -214,7 +257,7 @@ Authors would like to thank:
     <https://github.com/sipa/bips/blob/bip-schnorr/bip-taproot.mediawiki>
 15. Pieter Wuille. Schnorr Signatures for secp256k1.
     <https://github.com/sipa/bips/blob/bip-schnorr/bip-schnorr.mediawiki>
-
+16. Pieter Wuille, Andrew Poelsta. Miniscript. <http://bitcoin.sipa.be/miniscript/>
 
 ## Copyright
 
