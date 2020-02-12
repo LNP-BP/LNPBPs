@@ -4,6 +4,7 @@ Layer: Transactions (1)
 Field: Cryptographic primitives
 Title: Key tweaking: collision-resistant elliptic curve-based commitments
 Author: Dr Maxim Orlovsky <orlovsky@pandoracore.com>
+Contributors: Rene Pickhardt, Federico Tenga, Martino Salveti, Giacomo Zucco, Max Hillebrand, Christophe Diederichs
 Comments-URI: https://github.com/LNP-BP/lnpbps/issues/3
 Status: Draft
 Type: Standards Track
@@ -64,36 +65,45 @@ a single algorithm, that avoids all of those issues.
 
 For a given message `msg` and original public key `P` the **commit procedure** is defined as follows:
 
-1. Construct according to a tagged hash proposal given in [4] a string, composed of the original message hash prefixed
-   with two hashes of a protocol tag: `s = SHA256(SHA256("LNPBP-1") || SHA256("LNPBP-1") || SHA256(msg))`
-2. Compute HMAC-SHA256 of the `s` and `P`, named **tweaking factor**: `f = HMAC_SHA256(s, P)`
-3. Compute tweaked public `T = P + f * G` and (if necessary) private key `t = p + f` according to standard 
-   elliptic-curve private and public key addition procedures.
-4. If the resulting key `T` is corresponding to the point at infinity, chose another public key `P'` and repeat
-   the procedure from the step 1.
+1. Construct a byte string `lnbp1_msg`, composed of the original message prefixed with a single SHA256 hash of `LNPBP1` 
+   string and a single SHA256 hash of protocol-specific tag: 
+   `lnbp1_msg = SHA256("LNPBP1") || SHA256(<protocol-specific-tag>) || msg`
+2. Compute HMAC-SHA256 of the `lnbp1_msg` and `P`, named **tweaking factor**: `f = HMAC_SHA256(s, P)`
+3. Make sure that the tweaking factor is less than order `p` of Zp prime number set used in Secp256k1 curve; otherwise
+   fail the protocol.
+3. Multiply the tweaking factor on Secp256k1 generator point `G`: `F = G * f` ignoring the possible overflow of the 
+   resulting elliptic curve point `F` over the order `n` of `G`. Check that the result not equal to the 
+   point-at-infinity; otherwise fail the protocol, indicating the reason of failure, such that the protocol may be run 
+   with another initial public key `P'` value.
+4. Add two elliptic curve points, the original public key `P` and tweaking-factor based point `F`, obtaining the
+   resulting tweaked public key `T`: `T = P + G`. Check that the result not equal to the point-at-infinity; otherwise 
+   fail the protocol, indicating the reason of failure, such that the protocol may be run with another initial
+   public key `P'` value.
 
 The final formula for the commitment is: 
-`T = P + G * HMAC_SHA256(SHA256("LNPBP-1") || SHA256("LNPBP-1") || SHA256(msg), P)`
+`T = P + G * HMAC_SHA256(SHA256("LNPBP1") || SHA256(<protocol-specific-tag>) || msg, P)`
 
 **Reveal procedure** over the commitment (the tweaked public key `T`) can be performed with the provision of the 
-original public key `P` and message `msg` (assuming that the verifying party is aware of the protocol tag `LNPBP-1`) 
-and runs as follows:
+original public key `P` and message `msg` (assuming that the verifying party is aware of the protocol-specific tag 
+and `LNPBP1` tag) and runs as follows:
 
-1. Make sure that the provided tweaked public key `T` lies on the elliptic curve
-2. Compute `T' = P + G * HMAC_SHA256(SHA256("LNPBP-1") || SHA256("LNPBP-1") || SHA256(msg), P)`
+1. Make sure that the provided tweaked public key `T` lies on the elliptic curve and is not the point at infinity.
+2. Compute `T' = P + G * HMAC_SHA256(SHA256("LNPBP1") || SHA256(<protocol-specific-tag>) || msg, P)` according to the
+   rules of the **commit procedure** described above.
 3. Make sure that `T' = T`, otherwise fail the procedure
 
 Alternatively, verifier may be provided with the tweaking factor (value of HMAC of the tagged message) `f` and the 
 message `msg`. In this case the procedure will be:
 
 1. Compute `P = T - f * G`, i.e. invert the public key `F = f * G` on the x-axis and obtain value for `-F`; then
-   add `-F` and `T` which will result `P`: `-F + T = P`
-2. Compute `T' = P + G * HMAC_SHA256(SHA256("LNPBP-1") || SHA256("LNPBP-1") || SHA256(msg), P)`
+   add `-F` and `T` which will give the value of `P`: `-F + T = P`
+2. Compute `T' = P + G * HMAC_SHA256(SHA256("LNPBP1") || SHA256(<protocol-specific-tag>) || msg, P)` according to the
+   rules of the **commit procedure** described above.
 3. Make sure that `T' = T`, otherwise fail the procedure
 
 The second option of a commitment proof consisting of the tweaking factor `f` (256-bit HMAC value) has a bigger 
 computational overhead, however the proof may be serialized utilizing one byte less, since the public key `P`
-requires 33 bytes for serialization (in a compressed form). Alternatively, if the key `P` is selected and serialized
+requires 33 bytes for serialization (in the compressed form). Alternatively, if the key `P` is selected and serialized
 according to the Secp256k1 Schnorr's signature rules [4] the first reveal scheme will utilize the same proof storage
 space and will be more advantageous.
 
@@ -119,6 +129,23 @@ The use of duplicated protocol-specific tag hash is originally proposed by Peter
 prevent potential reply-attacks for interpreting message under different protocols. The choice of duplicate single 
 SHA256 hash is made due to the fact that according to Peter Wuille it is not yet used in any existing bitcoin protocol, 
 which increases compatibility and reduces chances of collisions with existing protocols.
+
+### Protocol failures
+
+The protocol may fail during three of **commitment* procedure steps:
+* when the *tweaking factor* `f` exceeds Zp order `p` for Secp256k1
+* when the multiplication of Secp256k1 generator point `G` on the *tweaking factor* `f` results in `F` equal to the
+  point at infinity
+* when additions of the point `F` and the original public key `P` results in `T` equal to the point at infinity
+
+The probabilities of these failures are infinitesimal; for instance the probability of SHA256 hash value of a random
+message exceeding Zp order `p` is `(2^256 - p) / p`, which is less than `3.7*10^-66`, i.e. lower than probability of CPU 
+failure. The probability of the second and third failure is even lower, since the point at infinity may be obtained only
+if `F` will be equal to `-G` or `-P`, i.e. the probability of private key collision, equal to the inverse of Secp256k1
+curve generator point order `n`.
+
+These cases may be ignored by a protocol user -- or, alternatively, in case of the protocol failure the user may
+change `P` value and re-run the protocol.
 
 ### No nonce
 
