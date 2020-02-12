@@ -3,7 +3,10 @@ LNPBP: 0003
 Layer: Transaction (1)
 Field: Cryptographic primitives
 Title: Deterministic definition of transaction output containing cryptographic commitment
-Author: Dr Maxim Orlovsky <orlovsky@pandoracore.com>
+Authors: Giacomo Zucco,
+         Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
+         Federico Tenga,
+         Martino Salveti
 Comments-URI: https://github.com/LNP-BP/lnpbps/issues/5
 Status: Draft
 Type: Standards Track
@@ -21,7 +24,7 @@ commitments made under the standards LNPBP-1 [1] and LNPBP-2 [2].
 
 Embedding cryptographic commitments into Bitcoin blockchain has become a common practice [3]. Bitcoin blockchain provides
 strong guarantees on the underlying data immutability, presenting a reliable, distributed and censorship-resitent 
-proof-of-publication [4] medium. While existing standards defines how the cryptographical commitments can be used with
+proof-of-publication [4] medium. While existing standards defines how the cryptographic commitments can be used with
 public keys on SECP256k1 elliptic curve (used by Bitcoin) and embedded within transaction outputs, it still has to be
 defined how the interested parties may detect which of a Bitcoin transaction output contains the commitment, presenting
 an interest to the party under some given protocol.
@@ -98,7 +101,7 @@ The rationale for the technical decision is provided within the specification te
 
 ## Reference implementation
 
-<https://github.com/LNP-BP/rust-lnpbp/blob/master/src/commitments/tx.rs>
+<https://github.com/LNP-BP/rust-lnpbp/blob/master/src/cmt/tx.rs>
 
 
 ## Acknowledgements
@@ -109,9 +112,9 @@ of early RGB effort [7].
 
 ## References
 
-1. Maxim Orlovsky. Key tweaking: collision-resistant elliptic curve-based commitments (LNPBP-1 Standard). 
+1. Maxim Orlovsky, et al. Key tweaking: collision-resistant elliptic curve-based commitments (LNPBP-1 Standard). 
    <https://github.com/LNP-BP/lnpbps/blob/master/lnpbp-0001.md>
-2. Maxim Orlovsky. Deterministic embedding of elliptic curve-based commitments into transaction outputs (LNPBP-2 
+2. Maxim Orlovsky, et al. Deterministic embedding of elliptic curve-based commitments into transaction outputs (LNPBP-2 
    standard). <https://github.com/LNP-BP/lnpbps/blob/master/lnpbp-0002.md>
 3. Peter Todd. OpenTimestamps: Scalable, Trust-Minimized, Distributed Timestamping with Bitcoin. 
    <https://petertodd.org/2016/opentimestamps-announcement>

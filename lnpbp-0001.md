@@ -3,13 +3,13 @@ LNPBP: 0001
 Layer: Transactions (1)
 Field: Cryptographic primitives
 Title: Key tweaking: collision-resistant elliptic curve-based commitments
-Author: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
-        Rene Pickhardt, 
-        Federico Tenga, 
-        Martino Salveti, 
-        Giacomo Zucco, 
-        Max Hillebrand,
-        Christophe Diederichs
+Authors: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
+         Rene Pickhardt, 
+         Federico Tenga, 
+         Martino Salveti, 
+         Giacomo Zucco, 
+         Max Hillebrand,
+         Christophe Diederichs
 Comments-URI: https://github.com/LNP-BP/lnpbps/issues/3
 Status: Draft
 Type: Standards Track
@@ -160,7 +160,7 @@ for an attacker to be not able to guess the original message even for short and 
 
 ## Reference implementation
 
-<https://github.com/LNP-BP/rust-lnpbp/blob/master/src/commitments/secp256k1.rs>
+<https://github.com/LNP-BP/rust-lnpbp/blob/master/src/cmt/pubkey.rs>
 
 
 ## Acknowledgements

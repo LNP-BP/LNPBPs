@@ -216,7 +216,7 @@ corresponding private key to spend the output.
 
 ## Reference implementation
 
-<https://github.com/LNP-BP/rust-lnpbp/blob/master/src/commitments/script.rs>
+<https://github.com/LNP-BP/rust-lnpbp/blob/master/src/cmt/txout.rs>
 
 
 ## Acknowledgements
@@ -249,7 +249,7 @@ Authors would like to thank:
     <https://github.com/lightningnetwork/lightning-rfc/blob/v1.0/03-transactions.md#received-htlc-outputs>.
 11. Rusty Russel. [Lightning-RFC (BOLTs) pull request #513]
     <https://github.com/lightningnetwork/lightning-rfc/pull/513>
-12. Maxim Orlovsky. Key tweaking: collision-resistant elliptic curve-based commitments (LNPBP-1 Standard). 
+12. Maxim Orlovsky, et al. Key tweaking: collision-resistant elliptic curve-based commitments (LNPBP-1 Standard). 
     <https://github.com/LNP-BP/lnpbps/blob/master/lnpbp-0001.md>
 13. RGB Protocol Specification, version 0.4. "Commitment Scheme" section.
     <https://github.com/rgb-org/spec/blob/old-master/01-rgb.md#commitment-scheme>
