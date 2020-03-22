@@ -1,12 +1,12 @@
 # LNP/BP Specifications
 
-LNP/BP stands for "Bitcoin Protocol / Lightning Network Protocol". This set of specifications covers standards & best 
-practices for Layer 2, 3 solutions (and above) in cases when they do not require soft- or hard-forks on the Bitcoin 
+LNP/BP stands for "Bitcoin Protocol / Lightning Network Protocol". This set of specifications covers standards & best
+practices for Layer 2, 3 solutions (and above) in cases when they do not require soft- or hard-forks on the Bitcoin
 blockchain level and are not directly related to issues covered in Lightning Network RFCs (BOLTs).
 
 Basically, LNP/BPs cover everything that can be anchored to Bitcoin transactions, defines primitives for L2+ solution
-design and describes complex use cases which can be built from some primitives. This allows such solutions as financial 
-assets, storage, messaging, computing and different forms of secondary markets leveraging Bitcoin security model and 
+design and describes complex use cases which can be built from some primitives. This allows such solutions as financial
+assets, storage, messaging, computing and different forms of secondary markets leveraging Bitcoin security model and
 Bitcoin as a method of payment/medium of exchange.
 
 Criteria for a LNP/BP specification proposal:
@@ -16,7 +16,7 @@ Criteria for a LNP/BP specification proposal:
 * Should not pollute Bitcoin blockchain with unnecessary non-transaction related data or have to maintain such pollution
   as low as possible
 * Should not be covered by existing or proposed BOLTs
-* Must not require a utility or security tokens to function (but may enable creation of digital assets or tokenized 
+* Must not require a utility or security tokens to function (but may enable creation of digital assets or tokenized
 physical goods)
 * Must not depend on non-bitcoin blockchains (but may be applicable to bitcoin-compatible blockchains)
 
@@ -44,17 +44,18 @@ Number | Layer | Field | Title | Owner | Type | Status
 [2](lnpbp-0002.md) | Transaction (1) | Cryptographic primitives | Deterministic embedding of elliptic curve-based commitments into transaction outputs | Maxim Orlovsky et al | Standard | Draft
 [3](lnpbp-0003.md) | Transaction (1) | Cryptographic primitives | Deterministic definition of transaction output containing cryptographic commitment | Giacomo Zucco et al | Standard | Draft
 [4](lnpbp-0004.md) | Transaction (1) | Cryptographic primitives | Multi-message commitment scheme with zero-knowledge provable unique properties | Maxim Orlovsky | Standard | Draft
-[5](lnpbp-0005.md) | Transaction graph (2) | Client-side validation | Single-use seals with bitcoin transaction graph | Peter Todd et al | Informational | Draft
-[6](lnpbp-0006.md) | Off-chain data (3) | Cryptographic primitives | Confidential amounts for client-validated data | Maxim Orlovsky | Standard | Draft
-[7](lnpbp-0007.md) | Off-chain data (3) | Serialization | Types and requirements for off-chain data serialization | Maxim Orlovsky, Peter Todd | Informational | Draft
-[8](lnpbp-0008.md) | Off-chain data (3) | Serialization | Extra-transaction proof serialization for LNPBP-2 | Maxim Orlovsky | Standard | Draft
-[9](lnpbp-0009.md) | Client-validated graphs (4) | Commitments | RGB: Client-validated rich state and smart contract system based on LNPBP1-8 standards | Maxim Orlovsky | Standard | Draft
-[10](lnpbp-0010.md) | Client-validated graphs (4) | Serialization | Network serialization standards for RGB-related data structures | Maxim Orlovsky | Standard | Draft
-[11](lnpbp-0011.md) | Client-validated graphs (4) | Schemata | RGB Schema: presets for RGB smart contracting and state transitions | Maxim Orlovsky | Standard | Draft
-[12](lnpbp-0012.md) | Client-validated graphs (4) | Serialization | Network serialization standards for RGB schema | Maxim Orlovsky | Standard | Draft
-[13](lnpbp-0013.md) | Transaction graph (2) | State channels | Prometheus: trustless multiparty computing with escrow & arbitration | Maxim Orlovsky | Standard | Draft
-[14](lnpbp-0014.md) | Transaction graph (2) | State channels | Storm: trustless storage with escrow contracts | Maxim Orovsky | Standard | Draft
-[15](lnpbp-0015.md) | Transaction (1) | Transaction structure | ECDSA-based discrete-log contract transactions |  | Standard | Draft
+[5](lnpbp-0005.md) | Transaction graph (2) | Client-side validation | Universal short Bitcoin identifiers for blocks, transactions and transaction inputs & outputs | Christian Decker et al | Standard | Draft
+[6](lnpbp-0006.md) | Transaction graph (2) | Client-side validation | Single-use seals with bitcoin transaction graph | Peter Todd et al | Informational | Draft
+[7](lnpbp-0007.md) | Off-chain data (3) | Cryptographic primitives | Confidential amounts for client-validated data | Maxim Orlovsky | Standard | Draft
+[8](lnpbp-0008.md) | Off-chain data (3) | Serialization | Types and requirements for off-chain data serialization | Maxim Orlovsky, Peter Todd | Informational | Draft
+[9](lnpbp-0009.md) | Off-chain data (3) | Serialization | Extra-transaction proof serialization for LNPBP-2 | Maxim Orlovsky | Standard | Draft
+[10](lnpbp-0010.md) | Client-validated graphs (4) | Commitments | RGB: Client-validated rich state and smart contract system based on LNPBP1-8 standards | Maxim Orlovsky | Standard | Draft
+[11](lnpbp-0011.md) | Client-validated graphs (4) | Serialization | Network serialization standards for RGB-related data structures | Maxim Orlovsky | Standard | Draft
+[12](lnpbp-0012.md) | Client-validated graphs (4) | Schemata | RGB Schema: presets for RGB smart contracting and state transitions | Maxim Orlovsky | Standard | Draft
+[13](lnpbp-0013.md) | Client-validated graphs (4) | Serialization | Network serialization standards for RGB schema | Maxim Orlovsky | Standard | Draft
+[14](lnpbp-0014.md) | Transaction graph (2) | State channels | Prometheus: trustless multiparty computing with escrow & arbitration | Maxim Orlovsky | Standard | Draft
+[15](lnpbp-0015.md) | Transaction graph (2) | State channels | Storm: trustless storage with escrow contracts | Maxim Orovsky | Standard | Draft
+[16](lnpbp-0016.md) | Transaction (1) | Transaction structure | ECDSA-based discrete-log contract transactions |  | Standard | Draft
 
 
 ### List work-in-progress of LNP/BP proposals without an assigned standard number
