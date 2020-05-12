@@ -34,8 +34,8 @@ No | Layer | Vertical | Title | Author(s) | Type | Status
 7 | Client-validated data (3) | Consensus layer | Strict encoding | Peter Todd, Maxim Orlovsky | Standard | Planned
 8 | Transaction (1) | Bitcoin protocol | Deterministic bitcoin commitments | Maxim Orlovsky | Standard | Draft
 [9](https://diyhpl.us/wiki/transcripts/scalingbitcoin/milan/client-side-validation/) | Client-validated data (3) | Consensus layer | Client-side validation | Peter Todd, Maxim Orlovsky | Informational | Planned
-[10](lnpbp-0010.md) | Transaction graph (2) | Bitcoin protocol | Bitcoin transaction output-based single-use-seals | Peter Todd et al | Standard | Draft
-11 | Client-validated graphs (4) | Smart contracts | RGB: Client-validated confidential smart contracts using bitcoin transaction graphs for Bitcoin and Lightning Network | Maxim Orlovsky et al | Informational | Planned
+[10](lnpbp-0010.md) | Transaction graph (2) | Bitcoin protocol | Bitcoin transaction output-based single-use-seals | Peter Todd et al | Standard | Proposal
+[11](lnpbp-0011.md) | Client-validated graphs (4) | Smart contracts | RGB: Client-validated confidential smart contracts using bitcoin transaction graphs for Bitcoin and Lightning Network | Maxim Orlovsky et al | Informational | Proposal
 12| Client-validated graphs (4) | Consensus layer | RGB Schema: client-side validation rules for RGB smart contracts | Maxim Orlovsky | Standard | Planned
 13 | Client-validated graphs (4) | Consensus layer | RGB client-side verification and data structures | Maxim Orlovsky | Standard | Planned
 14 | Client-validated data (3) | Smart contracts | Bech32 encoding of RGB data | Maxim Orlovsky | Standard | Planned

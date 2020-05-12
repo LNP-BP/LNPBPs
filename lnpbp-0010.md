@@ -80,7 +80,7 @@ validated with bitcoin consensus rules using libbitcoinconsensus or Bitcoin
 Core.
 
 NP: Parties participating the protocol MUST agree on an implementatio-specific
-entropy used in deterministic bitcoin commiemtnes as required by 
+entropy used in deterministic bitcoin commiemtnes as required by
 [LNPBP-8](lnpbp-0008.md) and [LNPBP-3](lnpbp-0003.md) protocols.
 
 ### Closing seal over a message
@@ -179,5 +179,7 @@ output with index number >2^32).
 ## References
 
 ## Copyright
+
+This document is licensed under the Creative Commons CC0 1.0 Universal license.
 
 ## Test vectors

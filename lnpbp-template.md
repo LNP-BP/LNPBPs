@@ -31,4 +31,6 @@ License: CC0-1.0
 
 ## Copyright
 
+This document is licensed under the Creative Commons CC0 1.0 Universal license.
+
 ## Test vectors
