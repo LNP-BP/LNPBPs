@@ -39,7 +39,7 @@ No | Layer | Vertical | Title | Author(s) | Type | Status
 12| Client-validated graphs (4) | Consensus layer | RGB Schema: client-side validation rules for RGB smart contracts | Maxim Orlovsky | Standard | Planned
 13 | Client-validated graphs (4) | Consensus layer | RGB client-side verification and data structures | Maxim Orlovsky | Standard | Planned
 14 | Client-validated data (3) | Smart contracts | Bech32 encoding of RGB data | Maxim Orlovsky | Standard | Planned
-15 | OSI Session (i5) | Lightning network protocol | LNP handshake and encryption in network communications based on Noise_XK (BOLT-8 extract) | Multiple peers | Standard | Planned
+[15](lnpbp-0015.md) | OSI Session (i5) | Lightning network protocol | LNP handshake and encryption in network communications based on Noise_XK (BOLT-8 extract) | Multiple peers | Standard | Proposal
 16 | OSI Session (i5) | Lightning network protocol | LNP handshake over WebSockets | Maxim Orlovsky | Standard | Planned
 17 | OSI Session (i5) | Lightning network protocol | LNP handshake over ZMQ sockets | Maxim Orlovsky | Standard | Planned
 18 | OSI Transport (i4) | Lightning network protocol | LNP native message framing protocol (BOLT-8 extract) | Multiple peers | Standard | Planned

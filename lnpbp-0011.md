@@ -15,7 +15,7 @@ Authors: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
 Comments-URI:
 Status: Proposal
 Type: Informational
-Created: 2019-23-09
+Created: 2020-05-12
 License: CC0-1.0
 Related standards: LNPBP1-4, 6-10, 12-14, 20-29, 33-35, 37
 ```
@@ -108,6 +108,9 @@ Ethereum-like smart contract system, providing more layered, scalable, private
 and safe approach, where the ownership of the smart contract state is separated
 from the smart contract creation.
 
+TBD:
+* data confidentiality management
+* state isolation
 
 ## Specification
 

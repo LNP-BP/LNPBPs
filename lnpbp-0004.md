@@ -7,7 +7,7 @@ Author: Dr Maxim Orlovsky <orlovsky@protonmail.ch>
 Comments-URI: https://github.com/LNP-BP/lnpbps/issues/8
 Status: Proposal
 Type: Standards Track
-Created: 2019-28-10
+Created: 2019-10-28
 License: CC0-1.0
 ```
 
