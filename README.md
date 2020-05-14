@@ -25,29 +25,29 @@ physical goods)
 
 No | Layer | Vertical | Title | Author(s) | Type | Status
 ------:| ----- | -------- | ----- | ----- | ---- | ------
-[1](lnpbp-0001.md) | Transaction (1) | Bitcoin protocol | Key tweaking: collision-resistant elliptic curve-based commitments | Maxim Orlovsky et al | Standard | Draft
+[1](lnpbp-0001.md) | Transaction (1) | Bitcoin protocol | Key tweaking: collision-resistant elliptic curve-based commitments | Maxim Orlovsky et al | Standard | Proposal
 [2](lnpbp-0002.md) | Transaction (1) | Bitcoin protocol | Deterministic embedding of cryptographic ommitments into transaction output scriptPubkey | Maxim Orlovsky et al | Standard | Proposal
 [3](lnpbp-0003.md) | Transaction (1) | Bitcoin protocol | Deterministic definition of transaction output containing cryptographic commitment | Giacomo Zucco et al | Standard | Proposal
 [4](lnpbp-0004.md) | Client-validated data (3) | Cryptographic primitives | Multi-message commitment scheme with zero-knowledge provable unique properties | Maxim Orlovsky | Standard | Proposal
 [5](lnpbp-0005.md) | Transaction graph (2) | Bitcoin protocol | Universal short Bitcoin identifiers for blocks, transactions and their inputs & outputs | Christian Decker et al | Standard | Proposal
-[6](https://petertodd.org/2016/commitments-and-single-use-seals) | Client-validated data (3) | Cryptographic primitives | Single-use-seals | Peter Todd, Maxim Orlovsky | Informational | Planned
+[6](https://petertodd.org/2016/commitments-and-single-use-seals) | Client-validated data (3) | Cryptographic primitives | Single-use-seals | Peter Todd, Maxim Orlovsky | Informational | Draft
 7 | Client-validated data (3) | Consensus layer | Strict encoding | Peter Todd, Maxim Orlovsky | Standard | Planned
 8 | Transaction (1) | Bitcoin protocol | Deterministic bitcoin commitments | Maxim Orlovsky | Standard | Draft
-[9](https://diyhpl.us/wiki/transcripts/scalingbitcoin/milan/client-side-validation/) | Client-validated data (3) | Consensus layer | Client-side validation | Peter Todd, Maxim Orlovsky | Informational | Planned
+[9](https://diyhpl.us/wiki/transcripts/scalingbitcoin/milan/client-side-validation/) | Client-validated data (3) | Consensus layer | Client-side validation | Peter Todd, Maxim Orlovsky | Informational | Draft
 [10](lnpbp-0010.md) | Transaction graph (2) | Bitcoin protocol | Bitcoin transaction output-based single-use-seals | Peter Todd et al | Standard | Proposal
 [11](lnpbp-0011.md) | Client-validated graphs (4) | Smart contracts | RGB: Client-validated confidential smart contracts using bitcoin transaction graphs for Bitcoin and Lightning Network | Maxim Orlovsky et al | Informational | Proposal
-12| Client-validated graphs (4) | Consensus layer | RGB Schema: client-side validation rules for RGB smart contracts | Maxim Orlovsky | Standard | Planned
+12 | Client-validated graphs (4) | Consensus layer | RGB Schema: client-side validation rules for RGB smart contracts | Maxim Orlovsky | Standard | Planned
 13 | Client-validated graphs (4) | Consensus layer | RGB client-side verification and data structures | Maxim Orlovsky | Standard | Planned
 14 | Client-validated data (3) | Smart contracts | Bech32 encoding of RGB data | Maxim Orlovsky | Standard | Planned
 [15](lnpbp-0015.md) | OSI Session (i5) | Lightning network protocol | LNP handshake and encryption in network communications based on Noise_XK (BOLT-8 extract) | Multiple peers | Standard | Proposal
 16 | OSI Session (i5) | Lightning network protocol | LNP handshake over WebSockets | Maxim Orlovsky | Standard | Planned
 17 | OSI Session (i5) | Lightning network protocol | LNP handshake over ZMQ sockets | Maxim Orlovsky | Standard | Planned
-18 | OSI Transport (i4) | Lightning network protocol | LNP native message framing protocol (BOLT-8 extract) | Multiple peers | Standard | Planned
-19 | OSI Presentation (i6) | Lightning network protocol | LNP P2P remote procedure call protocol (BOLT-1 & BOLT-9 extracts) | Multiple peers | Standard | Planned
+[18](lnpbp-0018.md) | OSI Transport (i4) | Lightning network protocol | LNP native message framing protocol (BOLT-8 extract) | Multiple peers | Standard | Planned
+[19](lnpbp-0019.md) | OSI Presentation (i6) | Lightning network protocol | LNP P2P remote procedure call protocol (BOLT-1 & BOLT-9 extracts) | Multiple peers | Standard | Planned
 20 | Application (5) | Smart contracts | RGB fungible assets schema (RGB-20) | Multiple peers | Standard | Planned
 21 | Application (5) | Smart contracts | RGB non-fungible assets schema for collectibles (RGB-21) | Multiple peers | Standard | Planned
-[22](https://github.com/LNP-BP/LNPBPs/issues/29) | Application (5) | Smart contracts | RGB reputation and identity schema (RGB-22) | Multiple peers | Standard | Planned
-23 | Application (5) | Smart contracts | RGB verifiably-unique history log for audited data (RGB-23) | Multiple peers | Standard | Draft
+[22](https://github.com/LNP-BP/LNPBPs/issues/29) | Application (5) | Smart contracts | RGB reputation and identity schema (RGB-22) | Multiple peers | Standard | Draft
+23 | Application (5) | Smart contracts | RGB verifiably-unique history log for audited data (RGB-23) | Multiple peers | Standard | Planned
 [30](https://github.com/pandoracore/prometheus-spec) | Transaction graph (2) | State channels | Prometheus: trustless multiparty computing with escrow & arbitration | Maxim Orlovsky | Standard | Draft
 [31](https://github.com/storm-org/storm-spec) | Transaction graph (2) | State channels | Storm: trustless storage with escrow contracts | Maxim Orlovsky | Standard | Draft
 [32](https://github.com/pandoracore/ibiss-spec) | Client-validated data (3) | Game theory | Incentive-based interactive settlement scheme for computation integrity arguments | Maxim Orlovsky, Sabina Sachtachtinskagia | Informational | Draft
