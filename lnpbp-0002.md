@@ -1,17 +1,17 @@
 ```
 LNPBP: 0002
 Layer: Transactions (1)
-Field: Cryptographic commitments
-Title: Deterministic embedding of LNPBP1-type commitments into `scriptPubkey` of a transaction output
+Vertical: Bitcoin protocol
+Title: Deterministic embedding of cryptographic ommitments into transaction output scriptPubkey
 Authors: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
          Giacomo Zucco,
          Alekos Filini,
          Martino Salveti,
          Federico Tenga
 Comments-URI: https://github.com/LNP-BP/lnpbps/issues/4
-Status: Draft
+Status: Proposal
 Type: Standards Track
-Created: 2019-27-10
+Created: 2019-10-27
 License: CC0-1.0
 ```
 

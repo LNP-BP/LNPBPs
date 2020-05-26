@@ -1,13 +1,13 @@
 ```
 LNPBP: 0005
 Layer: Transaction graph (2)
-Field: Client-side validation
+Vertical: Bitcoin protocol
 Title: Universal short Bitcoin identifiers for blocks, transactions and
        transaction inputs & outputs
 Author: Dr Christian Decker <decker.christian@gmail.com>,
         Dr Maxim Orlovsky <orlovsky@protonmail.ch>
 Comments-URI: https://github.com/LNP-BP/lnpbps/issues/<____>
-Status: Draft
+Status: Proposal
 Type: Standards Track
 Created: 2020-02-17
 License: CC0-1.0
