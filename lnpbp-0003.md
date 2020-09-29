@@ -6,7 +6,7 @@ Title: Deterministic definition of transaction output containing cryptographic c
 Authors: Giacomo Zucco,
          Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
          Federico Tenga,
-         Martino Salveti
+         Martino Salvetti
 Comments-URI: https://github.com/LNP-BP/lnpbps/issues/5
 Status: Proposal
 Type: Standards Track

@@ -6,7 +6,7 @@ Title: Key tweaking: collision-resistant elliptic curve-based commitments
 Authors: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
          Rene Pickhardt,
          Federico Tenga,
-         Martino Salveti,
+         Martino Salvetti,
          Giacomo Zucco,
          Max Hillebrand,
          Christophe Diederichs

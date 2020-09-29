@@ -6,7 +6,7 @@ Title: Deterministic embedding of cryptographic ommitments into transaction outp
 Authors: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
          Giacomo Zucco,
          Alekos Filini,
-         Martino Salveti,
+         Martino Salvetti,
          Federico Tenga
 Comments-URI: https://github.com/LNP-BP/lnpbps/issues/4
 Status: Proposal
