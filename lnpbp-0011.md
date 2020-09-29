@@ -10,7 +10,7 @@ Authors: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
          Peter Todd <pete@petertodd.org>,
          Federico Tenga,
          Marco Amadori,
-         Martino Salveti,
+         Martino Salvetti,
          Nicola Busanello
 Comments-URI:
 Status: Proposal
