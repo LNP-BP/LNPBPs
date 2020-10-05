@@ -171,7 +171,7 @@ case of P2PK, P2PKH and P2WPH transaction outputs, since they always contain onl
 The standard is not compliant with previously used OP_RETURN-based cryptographic commitments, like OpenTimestamps [1],
 since it utilises plain value of the public key with the commitment for the OP_RETURN push data.
 
-The author does not aware of any P2(W)SH or non-OP_RETURN P2S cryptographic commitment schemes existing before this
+The author is not aware of any P2(W)SH or non-OP_RETURN P2S cryptographic commitment schemes existing before this
 proposal, and it is highly probable that the standard is not compatible with ones if they were existing.
 
 The proposed standard is compliant with current Taproot proposal [14], since it requires exposure of the complete
