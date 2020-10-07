@@ -25,7 +25,7 @@ physical goods)
 
 No | Layer | Vertical | Title | Author(s) | Type | Status
 ------:| ----- | -------- | ----- | ----- | ---- | ------
-[1](lnpbp-0001.md) | Transaction (1) | Bitcoin protocol | Key tweaking: collision-resistant elliptic curve-based commitments | Maxim Orlovsky et al | Standard | Proposal
+[1](lnpbp-0001.md) | Transaction (1) | Bitcoin protocol | Key tweaking: collision-resistant elliptic curve-based commitments | Maxim Orlovsky et al | Standard | Final
 [2](lnpbp-0002.md) | Transaction (1) | Bitcoin protocol | Deterministic embedding of cryptographic ommitments into transaction output scriptPubkey | Maxim Orlovsky et al | Standard | Proposal
 [3](lnpbp-0003.md) | Transaction (1) | Bitcoin protocol | Deterministic definition of transaction output containing cryptographic commitment | Giacomo Zucco et al | Standard | Proposal
 [4](lnpbp-0004.md) | Client-validated data (3) | Cryptographic primitives | Multi-message commitment scheme with zero-knowledge provable unique properties | Maxim Orlovsky | Standard | Proposal
