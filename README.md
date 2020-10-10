@@ -44,8 +44,8 @@ No | Layer | Vertical | Title | Author(s) | Type | Status
 17 | OSI Session (i5) | Lightning network protocol | LNP handshake over ZMQ sockets | Maxim Orlovsky | Standard | Planned
 [18](lnpbp-0018.md) | OSI Transport (i4) | Lightning network protocol | LNP native message framing protocol (BOLT-8 extract) | Multiple peers | Standard | Planned
 [19](lnpbp-0019.md) | OSI Presentation (i6) | Lightning network protocol | LNP P2P remote procedure call protocol (BOLT-1 & BOLT-9 extracts) | Multiple peers | Standard | Planned
-[20](lnpbp-0020.md) | Application (5) | Smart contracts | RGB fungible assets schema (RGB-20) | Multiple peers | Standard | Planned
-21 | Application (5) | Smart contracts | RGB non-fungible assets schema for collectibles (RGB-21) | Multiple peers | Standard | Planned
+[20](lnpbp-0020.md) | Application (5) | Smart contracts | RGB fungible assets schema (RGB-20) | Multiple peers | Standard | Final
+[21](lnpbp-0021.md) | Application (5) | Smart contracts | RGB non-fungible assets schema for collectibles (RGB-21) | Multiple peers | Standard | Proposal
 [22](https://github.com/LNP-BP/LNPBPs/issues/29) | Application (5) | Smart contracts | RGB reputation and identity schema (RGB-22) | Multiple peers | Standard | Draft
 23 | Application (5) | Smart contracts | RGB verifiably-unique history log for audited data (RGB-23) | Multiple peers | Standard | Planned
 [30](https://github.com/pandoracore/prometheus-spec) | Transaction graph (2) | State channels | Prometheus: trustless multiparty computing with escrow & arbitration | Maxim Orlovsky | Standard | Draft
