@@ -6,7 +6,7 @@ Title: RGB fungible assets schema (RGB-20)
 Authors: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
          Giacomo Zucco,
          Marco Amadori,
-         Nicola Busanello
+         Nicola Busanello,
          Federico Tenga,
          Sabina Sachtachtinskagia,
          Martino Salvetti
@@ -18,6 +18,11 @@ Finalized: 2020-10-10
 License: CC0-1.0
 ```
 
+Schema ID: `sch1lp4jj5xlnvkuzxgl9lrjsahxczex5x90s9j3s2ak3r4zk72akf5s8dqzun`
+
+Encoded schema data: `schema1qxj49kgdcgcqcl2d2g5rwc5zemqn9ryzmzjgt0lk5lr3ptxrqszfhdxy85jzuju4n607mearc9deh5m8ygzrqzq53j634e8vez9ld47ns9f6evmrqfzx6kwrm93gg2c32uy2mtdpkuj2ddqfylfksdjl93t7kn2gafjqn49szpyzjw4q48qqvxfnhy95cq98sgnhss096lffudg7y63jeumham8fv75cpkhn2m2656cx643qfwwx6j2anp5dfxgsw2zmzl0ymzyucyywlej8304qugcvxnq7fjjwtldkvad28uxf5h0mnunadgu40hn40gfaqcacls36nexecl2x7pxr4ll2k58eh8gttrce8sqqah9tnl`
+
+Schema source:
 ```rust
 Schema {
     rgb_features: features::FlagVec::new(),
@@ -80,7 +85,7 @@ Schema {
             abi: bmap! {}
         }
     },
-    public_right_types: bset![],
+    public_right_types: bset! [],
     genesis: GenesisSchema {
         metadata: type_map! {
             FieldType::Ticker => Once,
