@@ -30,9 +30,9 @@ No | Layer | Vertical | Title | Author(s) | Type | Status
 [3](lnpbp-0003.md) | Transaction (1) | Bitcoin protocol | Deterministic definition of transaction output containing cryptographic commitment | Giacomo Zucco et al | Standard | Proposal
 [4](lnpbp-0004.md) | Client-validated data (3) | Cryptographic primitives | Multi-message commitment scheme with zero-knowledge provable unique properties | Maxim Orlovsky | Standard | Proposal
 [5](lnpbp-0005.md) | Transaction graph (2) | Bitcoin protocol | Universal short Bitcoin identifiers for blocks, transactions and their inputs & outputs | Christian Decker et al | Standard | Proposal
-[6](https://petertodd.org/2016/commitments-and-single-use-seals) | Client-validated data (3) | Cryptographic primitives | Single-use-seals | Peter Todd, Maxim Orlovsky | Informational | Draft
+6 | Transaction (1) | Bitcoin protocol | Deterministic bitcoin commitments | Maxim Orlovsky | Standard | Draft
 7 | Client-validated data (3) | Consensus layer | Strict encoding | Peter Todd, Maxim Orlovsky | Standard | Planned
-8 | Transaction (1) | Bitcoin protocol | Deterministic bitcoin commitments | Maxim Orlovsky | Standard | Draft
+[8](https://petertodd.org/2016/commitments-and-single-use-seals) | Client-validated data (3) | Cryptographic primitives | Single-use-seals | Peter Todd, Maxim Orlovsky | Informational | Draft
 [9](https://diyhpl.us/wiki/transcripts/scalingbitcoin/milan/client-side-validation/) | Client-validated data (3) | Consensus layer | Client-side validation | Peter Todd, Maxim Orlovsky | Informational | Draft
 [10](lnpbp-0010.md) | Transaction graph (2) | Bitcoin protocol | Bitcoin transaction output-based single-use-seals | Peter Todd et al | Standard | Proposal
 [11](lnpbp-0011.md) | Client-validated graphs (4) | Smart contracts | RGB: Client-validated confidential smart contracts using bitcoin transaction graphs for Bitcoin and Lightning Network | Maxim Orlovsky et al | Informational | Proposal
@@ -44,7 +44,7 @@ No | Layer | Vertical | Title | Author(s) | Type | Status
 17 | OSI Session (i5) | Lightning network protocol | LNP handshake over ZMQ sockets | Maxim Orlovsky | Standard | Planned
 [18](lnpbp-0018.md) | OSI Transport (i4) | Lightning network protocol | LNP native message framing protocol (BOLT-8 extract) | Multiple peers | Standard | Planned
 [19](lnpbp-0019.md) | OSI Presentation (i6) | Lightning network protocol | LNP P2P remote procedure call protocol (BOLT-1 & BOLT-9 extracts) | Multiple peers | Standard | Planned
-20 | Application (5) | Smart contracts | RGB fungible assets schema (RGB-20) | Multiple peers | Standard | Planned
+[20](lnpbp-0020.md) | Application (5) | Smart contracts | RGB fungible assets schema (RGB-20) | Multiple peers | Standard | Planned
 21 | Application (5) | Smart contracts | RGB non-fungible assets schema for collectibles (RGB-21) | Multiple peers | Standard | Planned
 [22](https://github.com/LNP-BP/LNPBPs/issues/29) | Application (5) | Smart contracts | RGB reputation and identity schema (RGB-22) | Multiple peers | Standard | Draft
 23 | Application (5) | Smart contracts | RGB verifiably-unique history log for audited data (RGB-23) | Multiple peers | Standard | Planned
