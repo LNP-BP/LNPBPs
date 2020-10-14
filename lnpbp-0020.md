@@ -25,8 +25,161 @@ Encoded schema data: `schema1qxj49kgdcgcqcl2d2g5rwc5zemqn9ryzmzjgt0lk5lr3ptxrqsz
 Schema source:
 ```rust
 Schema {
-    rgb_features: features::FlagVec::new(),
-    root_id: Default::default(),
+    rgb_features: features::FlagVec::none(),
+    root_id: SchemaId::zeroed(),
+    genesis: GenesisSchema {
+        metadata: type_map! {
+            FieldType::Ticker => Once,
+            FieldType::Name => Once,
+            FieldType::ContractText => NoneOrOnce,
+            FieldType::Precision => Once,
+            FieldType::Timestamp => Once,
+            FieldType::IssuedSupply => Once
+        },
+        owned_rights: type_map! {
+            OwnedRightsType::Inflation => NoneOrAny,
+            OwnedRightsType::Epoch => NoneOrOnce,
+            OwnedRightsType::Assets => NoneOrAny,
+            OwnedRightsType::Renomination => NoneOrOnce
+        },
+        public_rights: none!,
+        abi: none!,
+    },
+    extensions: none!,
+    transitions: type_map! {
+        TransitionType::Issue => TransitionSchema {
+            metadata: type_map! {
+                FieldType::IssuedSupply => Once
+            },
+            closes: type_map! {
+                OwnedRightsType::Inflation => Once
+            },
+            owned_rights: type_map! {
+                OwnedRightsType::Inflation => NoneOrAny,
+                OwnedRightsType::Epoch => NoneOrOnce,
+                OwnedRightsType::Assets => NoneOrAny
+            },
+            public_rights: none!,
+            abi: bmap! {
+                // sum(in(inflation)) >= sum(out(inflation), out(assets))
+                TransitionAction::Validate => Procedure::Embedded(StandardProcedure::FungibleInflation)
+            }
+        },
+        TransitionType::Transfer => TransitionSchema {
+            metadata: type_map! {},
+            closes: type_map! {
+                OwnedRightsType::Assets => NoneOrAny
+            },
+            owned_rights: type_map! {
+                OwnedRightsType::Assets => NoneOrAny
+            },
+            public_rights: none!,
+            abi: none!
+        },
+        TransitionType::Epoch => TransitionSchema {
+            metadata: none!,
+            closes: type_map! {
+                OwnedRightsType::Epoch => Once
+            },
+            owned_rights: type_map! {
+                OwnedRightsType::Epoch => NoneOrOnce,
+                OwnedRightsType::BurnReplace => NoneOrOnce
+            },
+            public_rights: none!,
+            abi: none!
+        },
+        TransitionType::Burn => TransitionSchema {
+            metadata: type_map! {
+                FieldType::BurnedSupply => Once,
+                // Normally issuer should aggregate burned assets into a
+                // single UTXO; however if burn happens as a result of
+                // mistake this will be impossible, so we allow to have
+                // multiple burned UTXOs as a part of a single operation
+                FieldType::BurnUtxo => OnceOrUpTo(None),
+                FieldType::HistoryProofFormat => Once,
+                FieldType::HistoryProof => NoneOrAny,
+            },
+            closes: type_map! {
+                OwnedRightsType::BurnReplace => Once
+            },
+            owned_rights: type_map! {
+                OwnedRightsType::BurnReplace => NoneOrOnce
+            },
+            public_rights: none!,
+            abi: bmap! {
+                TransitionAction::Validate => Procedure::Embedded(StandardProcedure::ProofOfBurn)
+            }
+        },
+        TransitionType::BurnAndReplace => TransitionSchema {
+            metadata: type_map! {
+                FieldType::BurnedSupply => Once,
+                // Normally issuer should aggregate burned assets into a
+                // single UTXO; however if burn happens as a result of
+                // mistake this will be impossible, so we allow to have
+                // multiple burned UTXOs as a part of a single operation
+                FieldType::BurnUtxo => OnceOrMore,
+                FieldType::HistoryProofFormat => Once,
+                FieldType::HistoryProof => NoneOrAny
+            },
+            closes: type_map! {
+                OwnedRightsType::BurnReplace => Once
+            },
+            owned_rights: type_map! {
+                OwnedRightsType::BurnReplace => NoneOrOnce,
+                OwnedRightsType::Assets => OnceOrMore
+            },
+            public_rights: empty!,
+            abi: bmap! {
+                TransitionAction::Validate => Procedure::Embedded(StandardProcedure::ProofOfBurn)
+            }
+        },
+        TransitionType::Renomination => TransitionSchema {
+            metadata: type_map! {
+                FieldType::Ticker => NoneOrOnce,
+                FieldType::Name => NoneOrOnce,
+                FieldType::ContractText => NoneOrOnce,
+                FieldType::Precision => NoneOrOnce
+            },
+            closes: type_map! {
+                OwnedRightsType::Renomination => Once
+            },
+            owned_rights: type_map! {
+                OwnedRightsType::Renomination => NoneOrOnce
+            },
+            public_rights: empty!,
+            abi: empty!
+        },
+        // Allows split of rights if they were occasionally allocated to the
+        // same UTXO, for instance both assets and issuance right. Without
+        // this type of transition either assets or inflation rights will be
+        // lost.
+        TransitionType::RightsSplit => TransitionSchema {
+            metadata: empty!,
+            closes: type_map! {
+                OwnedRightsType::Inflation => NoneOrAny,
+                OwnedRightsType::Assets => NoneOrAny,
+                OwnedRightsType::Epoch => NoneOrOnce,
+                OwnedRightsType::BurnReplace => NoneOrOnce,
+                OwnedRightsType::Renomination => NoneOrOnce
+            },
+            owned_rights: type_map! {
+                OwnedRightsType::Inflation => NoneOrAny,
+                OwnedRightsType::Assets => NoneOrAny,
+                OwnedRightsType::Epoch => NoneOrOnce,
+                OwnedRightsType::BurnReplace => NoneOrOnce,
+                OwnedRightsType::Renomination => NoneOrOnce
+            },
+            public_rights: empty!,
+            abi: bmap! {
+                // We must allocate exactly one or none rights per each
+                // right used as input (i.e. closed seal); plus we need to
+                // control that sum of inputs is equal to the sum of outputs
+                // for each of state types having assigned confidential
+                // amounts
+                TransitionAction::Validate => Procedure::Embedded(StandardProcedure::RightsSplit)
+            }
+        }
+    },
     field_types: type_map! {
         // Rational: if we will use just 26 letters of English alphabet (and
         // we are not limited by them), we will have 26^8 possible tickers,
@@ -63,7 +216,7 @@ Schema {
             format: StateFormat::CustomData(DataFormat::Unsigned(Bits::Bit64, 0, core::u64::MAX as u128)),
             // Validation involves other state data, so it is performed
             // at the level of `issue` state transition
-            abi: bmap! {}
+            abi: empty!
         },
         OwnedRightsType::Assets => StateSchema {
             format: StateFormat::DiscreteFiniteField(DiscreteFiniteFieldFormat::Unsigned64bit),
@@ -74,171 +227,18 @@ Schema {
         },
         OwnedRightsType::Epoch => StateSchema {
             format: StateFormat::Declarative,
-            abi: bmap! {}
+            abi: empty!
         },
         OwnedRightsType::BurnReplace => StateSchema {
             format: StateFormat::Declarative,
-            abi: bmap! {}
+            abi: empty!
         },
         OwnedRightsType::Renomination => StateSchema {
             format: StateFormat::Declarative,
-            abi: bmap! {}
+            abi: empty!
         }
     },
-    public_right_types: bset! [],
-    genesis: GenesisSchema {
-        metadata: type_map! {
-            FieldType::Ticker => Once,
-            FieldType::Name => Once,
-            FieldType::ContractText => NoneOrOnce,
-            FieldType::Precision => Once,
-            FieldType::Timestamp => Once,
-            FieldType::IssuedSupply => Once
-        },
-        owned_rights: type_map! {
-            OwnedRightsType::Inflation => NoneOrUpTo(None),
-            OwnedRightsType::Epoch => NoneOrOnce,
-            OwnedRightsType::Assets => NoneOrUpTo(None),
-            OwnedRightsType::Renomination => NoneOrOnce
-        },
-        public_rights: bset![],
-        abi: bmap! {},
-    },
-    extensions: bmap![],
-    transitions: type_map! {
-        TransitionType::Issue => TransitionSchema {
-            metadata: type_map! {
-                FieldType::IssuedSupply => Once
-            },
-            closes: type_map! {
-                OwnedRightsType::Inflation => Once
-            },
-            owned_rights: type_map! {
-                OwnedRightsType::Inflation => NoneOrUpTo(None),
-                OwnedRightsType::Epoch => NoneOrOnce,
-                OwnedRightsType::Assets => NoneOrUpTo(None)
-            },
-            public_rights: bset! [],
-            abi: bmap! {
-                // sum(in(inflation)) >= sum(out(inflation), out(assets))
-                TransitionAction::Validate => Procedure::Embedded(StandardProcedure::FungibleInflation)
-            }
-        },
-        TransitionType::Transfer => TransitionSchema {
-            metadata: type_map! {},
-            closes: type_map! {
-                OwnedRightsType::Assets => OnceOrUpTo(None)
-            },
-            owned_rights: type_map! {
-                OwnedRightsType::Assets => NoneOrUpTo(None)
-            },
-            public_rights: bset! [],
-            abi: bmap! {}
-        },
-        TransitionType::Epoch => TransitionSchema {
-            metadata: type_map! {},
-            closes: type_map! {
-                OwnedRightsType::Epoch => Once
-            },
-            owned_rights: type_map! {
-                OwnedRightsType::Epoch => NoneOrOnce,
-                OwnedRightsType::BurnReplace => NoneOrOnce
-            },
-            public_rights: bset! [],
-            abi: bmap! {}
-        },
-        TransitionType::Burn => TransitionSchema {
-            metadata: type_map! {
-                FieldType::BurnedSupply => Once,
-                // Normally issuer should aggregate burned assets into a
-                // single UTXO; however if burn happens as a result of
-                // mistake this will be impossible, so we allow to have
-                // multiple burned UTXOs as a part of a single operation
-                FieldType::BurnUtxo => OnceOrUpTo(None),
-                FieldType::HistoryProofFormat => Once,
-                FieldType::HistoryProof => NoneOrUpTo(None)
-            },
-            closes: type_map! {
-                OwnedRightsType::BurnReplace => Once
-            },
-            owned_rights: type_map! {
-                OwnedRightsType::BurnReplace => NoneOrOnce
-            },
-            public_rights: bset! [],
-            abi: bmap! {
-                TransitionAction::Validate => Procedure::Embedded(StandardProcedure::ProofOfBurn)
-            }
-        },
-        TransitionType::BurnAndReplace => TransitionSchema {
-            metadata: type_map! {
-                FieldType::BurnedSupply => Once,
-                // Normally issuer should aggregate burned assets into a
-                // single UTXO; however if burn happens as a result of
-                // mistake this will be impossible, so we allow to have
-                // multiple burned UTXOs as a part of a single operation
-                FieldType::BurnUtxo => OnceOrUpTo(None),
-                FieldType::HistoryProofFormat => Once,
-                FieldType::HistoryProof => NoneOrUpTo(None)
-            },
-            closes: type_map! {
-                OwnedRightsType::BurnReplace => Once
-            },
-            owned_rights: type_map! {
-                OwnedRightsType::BurnReplace => NoneOrOnce,
-                OwnedRightsType::Assets => OnceOrUpTo(None)
-            },
-            public_rights: bset! [],
-            abi: bmap! {
-                TransitionAction::Validate => Procedure::Embedded(StandardProcedure::ProofOfBurn)
-            }
-        },
-        TransitionType::Renomination => TransitionSchema {
-            metadata: type_map! {
-                FieldType::Ticker => NoneOrOnce,
-                FieldType::Name => NoneOrOnce,
-                FieldType::ContractText => NoneOrOnce,
-                FieldType::Precision => NoneOrOnce
-            },
-            closes: type_map! {
-                OwnedRightsType::Renomination => Once
-            },
-            owned_rights: type_map! {
-                OwnedRightsType::Renomination => NoneOrOnce
-            },
-            public_rights: bset! [],
-            abi: bmap! {}
-        },
-        // Allows split of rights if they were occasionally allocated to the
-        // same UTXO, for instance both assets and issuance right. Without
-        // this type of transition either assets or inflation rights will be
-        // lost.
-        TransitionType::RightsSplit => TransitionSchema {
-            metadata: type_map! {},
-            closes: type_map! {
-                OwnedRightsType::Inflation => NoneOrUpTo(None),
-                OwnedRightsType::Assets => NoneOrUpTo(None),
-                OwnedRightsType::Epoch => NoneOrOnce,
-                OwnedRightsType::BurnReplace => NoneOrOnce,
-                OwnedRightsType::Renomination => NoneOrOnce
-            },
-            owned_rights: type_map! {
-                OwnedRightsType::Inflation => NoneOrUpTo(None),
-                OwnedRightsType::Assets => NoneOrUpTo(None),
-                OwnedRightsType::Epoch => NoneOrOnce,
-                OwnedRightsType::BurnReplace => NoneOrOnce,
-                OwnedRightsType::Renomination => NoneOrOnce
-            },
-            public_rights: bset! [],
-            abi: bmap! {
-                // We must allocate exactly one or none rights per each
-                // right used as input (i.e. closed seal); plus we need to
-                // control that sum of inputs is equal to the sum of outputs
-                // for each of state types having assigned confidential
-                // amounts
-                TransitionAction::Validate => Procedure::Embedded(StandardProcedure::RightsSplit)
-            }
-        }
-    },
+    public_right_types: empty!,
 }
 ```
 
