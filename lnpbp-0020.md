@@ -42,10 +42,10 @@ Schema {
             OwnedRightsType::Assets => NoneOrAny,
             OwnedRightsType::Renomination => NoneOrOnce
         },
-        public_rights: none!,
-        abi: none!,
+        public_rights: none!(),
+        abi: none!(),
     },
-    extensions: none!,
+    extensions: none!(),
     transitions: type_map! {
         TransitionType::Issue => TransitionSchema {
             metadata: type_map! {
@@ -59,7 +59,7 @@ Schema {
                 OwnedRightsType::Epoch => NoneOrOnce,
                 OwnedRightsType::Assets => NoneOrAny
             },
-            public_rights: none!,
+            public_rights: none!(),
             abi: bmap! {
                 // sum(in(inflation)) >= sum(out(inflation), out(assets))
                 TransitionAction::Validate => Procedure::Embedded(StandardProcedure::FungibleInflation)
@@ -73,11 +73,11 @@ Schema {
             owned_rights: type_map! {
                 OwnedRightsType::Assets => NoneOrAny
             },
-            public_rights: none!,
-            abi: none!
+            public_rights: none!(),
+            abi: none!()
         },
         TransitionType::Epoch => TransitionSchema {
-            metadata: none!,
+            metadata: none!(),
             closes: type_map! {
                 OwnedRightsType::Epoch => Once
             },
@@ -85,8 +85,8 @@ Schema {
                 OwnedRightsType::Epoch => NoneOrOnce,
                 OwnedRightsType::BurnReplace => NoneOrOnce
             },
-            public_rights: none!,
-            abi: none!
+            public_rights: none!(),
+            abi: none!()
         },
         TransitionType::Burn => TransitionSchema {
             metadata: type_map! {
@@ -105,7 +105,7 @@ Schema {
             owned_rights: type_map! {
                 OwnedRightsType::BurnReplace => NoneOrOnce
             },
-            public_rights: none!,
+            public_rights: none!(),
             abi: bmap! {
                 TransitionAction::Validate => Procedure::Embedded(StandardProcedure::ProofOfBurn)
             }
@@ -128,7 +128,7 @@ Schema {
                 OwnedRightsType::BurnReplace => NoneOrOnce,
                 OwnedRightsType::Assets => OnceOrMore
             },
-            public_rights: empty!,
+            public_rights: none!(),
             abi: bmap! {
                 TransitionAction::Validate => Procedure::Embedded(StandardProcedure::ProofOfBurn)
             }
@@ -146,15 +146,15 @@ Schema {
             owned_rights: type_map! {
                 OwnedRightsType::Renomination => NoneOrOnce
             },
-            public_rights: empty!,
-            abi: empty!
+            public_rights: none!(),
+            abi: none!()
         },
         // Allows split of rights if they were occasionally allocated to the
         // same UTXO, for instance both assets and issuance right. Without
         // this type of transition either assets or inflation rights will be
         // lost.
         TransitionType::RightsSplit => TransitionSchema {
-            metadata: empty!,
+            metadata: none!(),
             closes: type_map! {
                 OwnedRightsType::Inflation => NoneOrAny,
                 OwnedRightsType::Assets => NoneOrAny,
@@ -169,7 +169,7 @@ Schema {
                 OwnedRightsType::BurnReplace => NoneOrOnce,
                 OwnedRightsType::Renomination => NoneOrOnce
             },
-            public_rights: empty!,
+            public_rights: none!(),
             abi: bmap! {
                 // We must allocate exactly one or none rights per each
                 // right used as input (i.e. closed seal); plus we need to
@@ -216,7 +216,7 @@ Schema {
             format: StateFormat::CustomData(DataFormat::Unsigned(Bits::Bit64, 0, core::u64::MAX as u128)),
             // Validation involves other state data, so it is performed
             // at the level of `issue` state transition
-            abi: empty!
+            abi: none!()
         },
         OwnedRightsType::Assets => StateSchema {
             format: StateFormat::DiscreteFiniteField(DiscreteFiniteFieldFormat::Unsigned64bit),
@@ -227,18 +227,18 @@ Schema {
         },
         OwnedRightsType::Epoch => StateSchema {
             format: StateFormat::Declarative,
-            abi: empty!
+            abi: none!()
         },
         OwnedRightsType::BurnReplace => StateSchema {
             format: StateFormat::Declarative,
-            abi: empty!
+            abi: none!()
         },
         OwnedRightsType::Renomination => StateSchema {
             format: StateFormat::Declarative,
-            abi: empty!
+            abi: none!()
         }
     },
-    public_right_types: empty!,
+    public_right_types: none!(),
 }
 ```
 
