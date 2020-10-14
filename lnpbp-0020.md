@@ -18,15 +18,15 @@ Finalized: 2020-10-10
 License: CC0-1.0
 ```
 
-Schema ID: `sch1lp4jj5xlnvkuzxgl9lrjsahxczex5x90s9j3s2ak3r4zk72akf5s8dqzun`
+Schema ID: `sch19s8js2gyxvtyzztp82l4tt4gr3x8m28yrgks93exsfuwc5u4fqlqf46ah5`
 
-Encoded schema data: `schema1qxj49kgdcgcqcl2d2g5rwc5zemqn9ryzmzjgt0lk5lr3ptxrqszfhdxy85jzuju4n607mearc9deh5m8ygzrqzq53j634e8vez9ld47ns9f6evmrqfzx6kwrm93gg2c32uy2mtdpkuj2ddqfylfksdjl93t7kn2gafjqn49szpyzjw4q48qqvxfnhy95cq98sgnhss096lffudg7y63jeumham8fv75cpkhn2m2656cx643qfwwx6j2anp5dfxgsw2zmzl0ymzyucyywlej8304qugcvxnq7fjjwtldkvad28uxf5h0mnunadgu40hn40gfaqcacls36nexecl2x7pxr4ll2k58eh8gttrce8sqqah9tnl`
+Encoded schema data: `schema1qxx4qkgjsgcqcl2atrzgmugynnpuk7q5c7dcplkppl9jr0ywx75xnk3zyvup3p3ke99auju22h9734efqs6gfppkg6qcyy69a8uhnw7czt37ckszd950xwwn9mjr59payf3sd2yuezjdy5vu5jdkew7mr78prvvnjkg0x34qyf6fdfsxyd4fk6guzrpuuxp7exgkyhlntx8ruw9j2s2e7dt8sgjhczjkk5e2a3np886u86mq5ge92r5ckde9gr4htt2td66gkzvypm2hwpsr8gdm6vqzmgca3ltn8j0qqkd0rl5s6f3nllngjfldlt7kz7uarne8w0zkhwpr90k0smcxk48dx`
 
 Schema source:
 ```rust
 Schema {
-    rgb_features: features::FlagVec::none(),
-    root_id: SchemaId::zeroed(),
+    rgb_features: none!(),
+    root_id: none!(),
     genesis: GenesisSchema {
         metadata: type_map! {
             FieldType::Ticker => Once,
@@ -37,9 +37,9 @@ Schema {
             FieldType::IssuedSupply => Once
         },
         owned_rights: type_map! {
-            OwnedRightsType::Inflation => NoneOrAny,
+            OwnedRightsType::Inflation => NoneOrMore,
             OwnedRightsType::Epoch => NoneOrOnce,
-            OwnedRightsType::Assets => NoneOrAny,
+            OwnedRightsType::Assets => NoneOrMore,
             OwnedRightsType::Renomination => NoneOrOnce
         },
         public_rights: none!(),
@@ -55,9 +55,9 @@ Schema {
                 OwnedRightsType::Inflation => Once
             },
             owned_rights: type_map! {
-                OwnedRightsType::Inflation => NoneOrAny,
+                OwnedRightsType::Inflation => NoneOrMore,
                 OwnedRightsType::Epoch => NoneOrOnce,
-                OwnedRightsType::Assets => NoneOrAny
+                OwnedRightsType::Assets => NoneOrMore
             },
             public_rights: none!(),
             abi: bmap! {
@@ -68,10 +68,10 @@ Schema {
         TransitionType::Transfer => TransitionSchema {
             metadata: type_map! {},
             closes: type_map! {
-                OwnedRightsType::Assets => NoneOrAny
+                OwnedRightsType::Assets => NoneOrMore
             },
             owned_rights: type_map! {
-                OwnedRightsType::Assets => NoneOrAny
+                OwnedRightsType::Assets => NoneOrMore
             },
             public_rights: none!(),
             abi: none!()
@@ -97,7 +97,7 @@ Schema {
                 // multiple burned UTXOs as a part of a single operation
                 FieldType::BurnUtxo => OnceOrUpTo(None),
                 FieldType::HistoryProofFormat => Once,
-                FieldType::HistoryProof => NoneOrAny,
+                FieldType::HistoryProof => NoneOrMore,
             },
             closes: type_map! {
                 OwnedRightsType::BurnReplace => Once
@@ -119,7 +119,7 @@ Schema {
                 // multiple burned UTXOs as a part of a single operation
                 FieldType::BurnUtxo => OnceOrMore,
                 FieldType::HistoryProofFormat => Once,
-                FieldType::HistoryProof => NoneOrAny
+                FieldType::HistoryProof => NoneOrMore
             },
             closes: type_map! {
                 OwnedRightsType::BurnReplace => Once
@@ -156,15 +156,15 @@ Schema {
         TransitionType::RightsSplit => TransitionSchema {
             metadata: none!(),
             closes: type_map! {
-                OwnedRightsType::Inflation => NoneOrAny,
-                OwnedRightsType::Assets => NoneOrAny,
+                OwnedRightsType::Inflation => NoneOrMore,
+                OwnedRightsType::Assets => NoneOrMore,
                 OwnedRightsType::Epoch => NoneOrOnce,
                 OwnedRightsType::BurnReplace => NoneOrOnce,
                 OwnedRightsType::Renomination => NoneOrOnce
             },
             owned_rights: type_map! {
-                OwnedRightsType::Inflation => NoneOrAny,
-                OwnedRightsType::Assets => NoneOrAny,
+                OwnedRightsType::Inflation => NoneOrMore,
+                OwnedRightsType::Assets => NoneOrMore,
                 OwnedRightsType::Epoch => NoneOrOnce,
                 OwnedRightsType::BurnReplace => NoneOrOnce,
                 OwnedRightsType::Renomination => NoneOrOnce

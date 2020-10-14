@@ -24,8 +24,142 @@ License: CC0-1.0
 
 ```rust
 Schema {
-    rgb_features: features::FlagVec::new(),
-    root_id: Default::default(),
+    rgb_features: none!(),
+    root_id: none!(),
+    genesis: GenesisSchema {
+        metadata: type_map! {
+            FieldType::Name => Once,
+            FieldType::Description => NoneOrOnce,
+            FieldType::Data => NoneOrMore,
+            FieldType::DataFormat => NoneOrOnce,
+            // Proof of reserves UTXO
+            FieldType::LockUtxo => NoneOrMore,
+            // Proof of reserves scriptPubkey descriptor used for
+            // verification
+            FieldType::LockDescriptor => NoneOrUpTo(32),
+            FieldType::Timestamp => Once,
+            FieldType::NftSource => NoneOrMore,
+            FieldType::Salt => Once
+        },
+        owned_rights: type_map! {
+            OwnedRightsType::Inflation => NoneOrOnce,
+            OwnedRightsType::Renomination => NoneOrOnce,
+            OwnedRightsType::Ownership => OnceOrMore
+        },
+        public_rights: none!(),
+        abi: bmap! {
+            // Here we validate hash uniqueness of NftSource values and that
+            // there is always one ownership state per NftSource matching
+            // its hash
+            // and verification of proof of reserves
+            GenesisAction::Validate => Procedure::Embedded(StandardProcedure::NonfungibleInflation)
+        },
+    },
+    extensions: bmap! {},
+    transitions: type_map! {
+        TransitionType::Issue => TransitionSchema {
+            metadata: type_map! {
+                // Proof of reserves UTXO
+                FieldType::LockUtxo => NoneOrMore,
+                // Proof of reserves scriptPubkey descriptor used for
+                // verification
+                FieldType::LockDescriptor => NoneOrUpTo(32),
+                FieldType::NftSource => NoneOrMore,
+                FieldType::Salt => Once
+            },
+            closes: type_map! {
+                OwnedRightsType::Inflation => Once
+            },
+            owned_rights: type_map! {
+                OwnedRightsType::Inflation => NoneOrOnce,
+                OwnedRightsType::Ownership => OnceOrMore
+            },
+            public_rights: none!(),
+            abi: bmap! {
+                // Here we validate hash uniqueness of NftSource values and that
+                // there is always one ownership state per NftSource matching
+                // its hash, plus the fact that
+                // count(in(inflation)) >= count(out(inflation), out(nft_source))
+                // and verification of proof of reserves
+                TransitionAction::Validate => Procedure::Embedded(StandardProcedure::NonfungibleInflation)
+            }
+        },
+        TransitionType::Transfer => TransitionSchema {
+            metadata: type_map! {
+                // By default, use 0
+                FieldType::Salt => Once
+            },
+            closes: type_map! {
+                OwnedRightsType::Ownership => OnceOrMore
+            },
+            owned_rights: type_map! {
+                OwnedRightsType::Ownership => OnceOrMore
+            },
+            public_rights: none!(),
+            abi: none!()
+        },
+        // One engraving per set of tokens
+        TransitionType::Engraving => TransitionSchema {
+            metadata: type_map! {
+                FieldType::Data => NoneOrMore,
+                FieldType::DataFormat => NoneOrOnce,
+                // By default, use 0
+                FieldType::Salt => Once
+            },
+            closes: type_map! {
+                OwnedRightsType::Ownership => OnceOrMore
+            },
+            owned_rights: type_map! {
+                OwnedRightsType::Ownership => OnceOrMore
+            },
+            public_rights: none!(),
+            abi: none!()
+        },
+        TransitionType::Renomination => TransitionSchema {
+            metadata: type_map! {
+                FieldType::Name => NoneOrOnce,
+                FieldType::Description => NoneOrOnce,
+                FieldType::Data => NoneOrMore,
+                FieldType::DataFormat => NoneOrOnce
+            },
+            closes: type_map! {
+                OwnedRightsType::Renomination => Once
+            },
+            owned_rights: type_map! {
+                OwnedRightsType::Renomination => NoneOrOnce
+            },
+            public_rights: none!(),
+            abi: none!()
+        },
+        // Allows split of rights if they were occasionally allocated to the
+        // same UTXO, for instance both assets and issuance right. Without
+        // this type of transition either assets or inflation rights will be
+        // lost.
+        TransitionType::RightsSplit => TransitionSchema {
+            metadata: type_map! {
+                FieldType::Salt => Once
+            },
+            closes: type_map! {
+                OwnedRightsType::Inflation => NoneOrMore,
+                OwnedRightsType::Ownership => NoneOrMore,
+                OwnedRightsType::Renomination => NoneOrOnce
+            },
+            owned_rights: type_map! {
+                OwnedRightsType::Inflation => NoneOrMore,
+                OwnedRightsType::Ownership => NoneOrMore,
+                OwnedRightsType::Renomination => NoneOrOnce
+            },
+            public_rights: none!(),
+            abi: bmap! {
+                // We must allocate exactly one or none rights per each
+                // right used as input (i.e. closed seal); plus we need to
+                // control that sum of inputs is equal to the sum of outputs
+                // for each of state types having assigned confidential
+                // amounts
+                TransitionAction::Validate => Procedure::Embedded(StandardProcedure::RightsSplit)
+            }
+        }
+    },
     field_types: type_map! {
         FieldType::Name => DataFormat::String(256),
         FieldType::Description => DataFormat::String(core::u16::MAX),
@@ -53,7 +187,7 @@ Schema {
         OwnedRightsType::Inflation => StateSchema {
             // How much issuer can issue tokens on this path
             format: StateFormat::CustomData(DataFormat::Unsigned(Bits::Bit64, 0, core::u64::MAX as u128)),
-            abi: bmap! {}
+            abi: none!()
         },
         OwnedRightsType::Ownership => StateSchema {
             // This is unique token identifier, which is
@@ -72,143 +206,9 @@ Schema {
         },
         OwnedRightsType::Renomination => StateSchema {
             format: StateFormat::Declarative,
-            abi: bmap! {}
+            abi: none!()
         }
     },
-    public_right_types: bset! {},
-    genesis: GenesisSchema {
-        metadata: type_map! {
-            FieldType::Name => Once,
-            FieldType::Description => NoneOrOnce,
-            FieldType::Data => NoneOrUpTo(None),
-            FieldType::DataFormat => NoneOrOnce,
-            // Proof of reserves UTXO
-            FieldType::LockUtxo => NoneOrUpTo(None),
-            // Proof of reserves scriptPubkey descriptor used for
-            // verification
-            FieldType::LockDescriptor => NoneOrUpTo(Some(32)),
-            FieldType::Timestamp => Once,
-            FieldType::NftSource => NoneOrUpTo(None),
-            FieldType::Salt => Once
-        },
-        owned_rights: type_map! {
-            OwnedRightsType::Inflation => NoneOrOnce,
-            OwnedRightsType::Renomination => NoneOrOnce,
-            OwnedRightsType::Ownership => OnceOrUpTo(None)
-        },
-        public_rights: bset![],
-        abi: bmap! {
-            // Here we validate hash uniqueness of NftSource values and that
-            // there is always one ownership state per NftSource matching
-            // its hash
-            // and verification of proof of reserves
-            GenesisAction::Validate => Procedure::Embedded(StandardProcedure::NonfungibleInflation)
-        },
-    },
-    extensions: bmap! {},
-    transitions: type_map! {
-        TransitionType::Issue => TransitionSchema {
-            metadata: type_map! {
-                // Proof of reserves UTXO
-                FieldType::LockUtxo => NoneOrUpTo(None),
-                // Proof of reserves scriptPubkey descriptor used for
-                // verification
-                FieldType::LockDescriptor => NoneOrUpTo(Some(32)),
-                FieldType::NftSource => NoneOrUpTo(None),
-                FieldType::Salt => Once
-            },
-            closes: type_map! {
-                OwnedRightsType::Inflation => Once
-            },
-            owned_rights: type_map! {
-                OwnedRightsType::Inflation => NoneOrOnce,
-                OwnedRightsType::Ownership => OnceOrUpTo(None)
-            },
-            public_rights: bset! [],
-            abi: bmap! {
-                // Here we validate hash uniqueness of NftSource values and that
-                // there is always one ownership state per NftSource matching
-                // its hash, plus the fact that
-                // count(in(inflation)) >= count(out(inflation), out(nft_source))
-                // and verification of proof of reserves
-                TransitionAction::Validate => Procedure::Embedded(StandardProcedure::NonfungibleInflation)
-            }
-        },
-        TransitionType::Transfer => TransitionSchema {
-            metadata: type_map! {
-                // By default, use 0
-                FieldType::Salt => Once
-            },
-            closes: type_map! {
-                OwnedRightsType::Ownership => OnceOrUpTo(None)
-            },
-            owned_rights: type_map! {
-                OwnedRightsType::Ownership => OnceOrUpTo(None)
-            },
-            public_rights: bset! [],
-            abi: bmap! {}
-        },
-        // One engraving per set of tokens
-        TransitionType::Engraving => TransitionSchema {
-            metadata: type_map! {
-                FieldType::Data => NoneOrUpTo(None),
-                FieldType::DataFormat => NoneOrOnce,
-                // By default, use 0
-                FieldType::Salt => Once
-            },
-            closes: type_map! {
-                OwnedRightsType::Ownership => OnceOrUpTo(None)
-            },
-            owned_rights: type_map! {
-                OwnedRightsType::Ownership => OnceOrUpTo(None)
-            },
-            public_rights: bset! [],
-            abi: bmap! {}
-        },
-        TransitionType::Renomination => TransitionSchema {
-            metadata: type_map! {
-                FieldType::Name => NoneOrOnce,
-                FieldType::Description => NoneOrOnce,
-                FieldType::Data => NoneOrUpTo(None),
-                FieldType::DataFormat => NoneOrOnce
-            },
-            closes: type_map! {
-                OwnedRightsType::Renomination => Once
-            },
-            owned_rights: type_map! {
-                OwnedRightsType::Renomination => NoneOrOnce
-            },
-            public_rights: bset! [],
-            abi: bmap! {}
-        },
-        // Allows split of rights if they were occasionally allocated to the
-        // same UTXO, for instance both assets and issuance right. Without
-        // this type of transition either assets or inflation rights will be
-        // lost.
-        TransitionType::RightsSplit => TransitionSchema {
-            metadata: type_map! {
-                FieldType::Salt => Once
-            },
-            closes: type_map! {
-                OwnedRightsType::Inflation => NoneOrUpTo(None),
-                OwnedRightsType::Ownership => NoneOrUpTo(None),
-                OwnedRightsType::Renomination => NoneOrOnce
-            },
-            owned_rights: type_map! {
-                OwnedRightsType::Inflation => NoneOrUpTo(None),
-                OwnedRightsType::Ownership => NoneOrUpTo(None),
-                OwnedRightsType::Renomination => NoneOrOnce
-            },
-            public_rights: bset! [],
-            abi: bmap! {
-                // We must allocate exactly one or none rights per each
-                // right used as input (i.e. closed seal); plus we need to
-                // control that sum of inputs is equal to the sum of outputs
-                // for each of state types having assigned confidential
-                // amounts
-                TransitionAction::Validate => Procedure::Embedded(StandardProcedure::RightsSplit)
-            }
-        }
-    },
+    public_right_types: none!(),
 }
 ```
