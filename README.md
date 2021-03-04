@@ -57,6 +57,7 @@ No | Layer | Vertical | Title | Author(s) | Type | Status
 [36](https://github.com/LNP-BP/LNPBPs/issues/21) | OSI Presentation (i6) | API | Recommendations for API design | Maxim Orlovsky | Informational | Draft
 [37](https://github.com/LNP-BP/LNPBPs/pull/23/files) | Application (5) | Smart contracts | Invoicing formats for RGB-20 fungible assets schema | Alekos Filini | Standard | Rejected
 [38](https://github.com/LNP-BP/FAQ/blob/master/Presentation%20slides/Universal%20LNP-BP%20invoices.pdf) | Application (5) | Smart contracts | Universal LNP/BP invoices supporting Bitcoin, LN & RGB | Maxim Orlovsky | Standard | Draft
+[40] | Application (5) | Smart contracts | RGB-wrapped native blockchain assets schema (RGB-40) | Maxim Orlovsky | Standard | Draft
 
 ### Invited or planned proposals to join LNP/BP standards family
 
