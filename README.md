@@ -76,7 +76,6 @@ No | Layer | Vertical | Title | Author(s) | Type | Status
 [61](https://github.com/pandoracore/ibiss-spec) | Client-validated data (3) | Game theory | Toth: incentive-based interactive settlement scheme for computation integrity arguments with reputation | Maxim Orlovsky, Sabina Sachtachtinskagia | Informational | Draft
 [62](https://github.com/pandoracore/prometheus-spec) | Transaction graph (2) | Smart contracts | Prometheus: trustless multiparty computing with escrow & arbitration using Ibiss protocol on bitcoin blockchain | Maxim Orlovsky | Standard | Draft
 63 | Application (5) | Smart contracts | Prometheus+: trustless multiparty computing with escrow & arbitration using Ibiss2 protocol over LN with tokenized RGB reputation | Maxim Orlovsky | Standard | Planned
-
 100 | Transaction graph (2) | Bitcoin protocol | Scalable & confidential single-use-seal commitment layer 1 | Standard | Brainstorming
 
 ### Invited or planned proposals to join LNP/BP standards family
