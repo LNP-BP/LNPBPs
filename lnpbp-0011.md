@@ -52,8 +52,8 @@ and others):
   off-chain **schema** and Turing-complete scripting system using *Simplicity
   language*
 
-More about these concepts can be read in
-[this presentation](https://github.com/LNP-BP/devcalls/blob/master/RGB%20%26%20Spectrum%20explanation%20for%20business.pdf).
+~~More about these concepts can be read in
+[this presentation](https://github.com/LNP-BP/devcalls/blob/master/RGB%20%26%20Spectrum%20explanatioㄌ20for%20business.pdf).~~
 
 Briefly, RGB smart contracts operate with **client-side validation** paradigm,
 meaning that all the data is kept outside of the bitcoin transactions, i.e.
