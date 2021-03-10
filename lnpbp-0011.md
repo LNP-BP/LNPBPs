@@ -53,7 +53,7 @@ and others):
   language*
 
 More about these concepts can be read in
-[this presentation](https://github.com/LNP-BP/devcalls/blob/master/RGB%20%26%20Spectrum%20explanation%20for%20business.pdf).
+[this presentation](https://github.com/LNP-BP/FAQ/blob/master/Presentation%20slides/RGB%20%26%20Spectrum%20explanation%20for%20business.pdf).
 
 Briefly, RGB smart contracts operate with **client-side validation** paradigm,
 meaning that all the data is kept outside of the bitcoin transactions, i.e.
