@@ -13,40 +13,60 @@ License: CC0-1.0
 
 ## Abstract
 
-The standard defines a way to commit to a multiple independent messages with a single digest such that the fact of
-each particular commitment and a protocol under which the commitment is made may be proven without exposing the
+The standard defines a way to commit to a multiple independent messages with a
+single digest such that the fact of each particular commitment and a protocol
+under which the commitment is made may be proven without exposing the
 information about the other messages and used protocols.
 
 
 ## Background and Motivation
 
-LNPBP-3 defines a standard for embedding cryptographic commitment into bitcoin transaction in a deterministic provable
-way [2]. The standard is based on LNPBP-1 public key tweaking procedure [1], which prevents multiple commitments inside
-a tweak. However it is possible that some protocol may require to commit to a number of messages within a single
-transaction and public key with the requirement that some dedicated information from this messages (like the message
-type) should be unique across the whole message set. For instance, this is required for state updates, where the updates
-are separated into different blocks (messages) and kept private, such that a single party will know information about a
-single update and should not be exposed any information about the rest. However, in such a case, there should be a proof
-that other state updates does not affect the state of the analyzed update, excluding state collisions. In such a setup,
-each state may be assigned a unique integer identifier (like cryptographic digest) and a special form of zero-knowledge
-proof should be utilized to proof the fact that all of the states are different without exposing the actual state ids.
-While this is impossible at the level of LNPBP-3 & LNPBP-1 standards, the current proposal defines a procedure for
-structuring multiple independent messages in a privacy-preserving (zero-knowledge) way, allowing that some properties of
-the committed messages may be proven in a zero-knowledge way, i.e. without revealing any information about the the
-source messages or the properties themselves.
+LNPBP-3 defines a standard for embedding cryptographic commitment into bitcoin
+transaction in a deterministic & provable way [2]. The standard is based on
+LNPBP-1 public key tweaking procedure [1], which prevents multiple commitments
+inside a tweak. However, this may result in two potential problems.
+
+First, there could be two different protocols willing to put different 
+commitments into a single transaction output; and only one of the protocols will
+succeed due to the LNPBP-2 & LNPBP-1 design.
+
+Second, it is possible that some protocol may require committing to a number of
+messages within a single transaction and public key with the requirement that
+some dedicated information from these messages (like the message type) should be
+unique across the whole message set. For instance, this is required for state
+updates, where such updates separated into different blocks (messages) and
+should be kept private, such that a single party will know information about a
+single update and should not be disclosed any information about the rest.
+However, in such case, there should be a proof that the other state updates do 
+not affect the state of the analyzed update, excluding state collisions. In such
+a setup, each state may be assigned a unique integer identifier (like
+cryptographic digest), and a special form of zero-knowledge proof should be
+utilized to proof the fact that all the states are different without exposing
+the actual state ids. 
+
+While both cases are impossible at the level of LNPBP-3 & LNPBP-1 standards, the
+current proposal defines a procedure for structuring multiple independent
+messages in a privacy-preserving (zero-knowledge) way, allowing that some
+properties of the committed messages may be proven in a zero-knowledge way, i.e.
+without revealing any information about the source messages or the properties 
+themselves.
 
 
 ## Design
 
-The protocol follows dea of Bloom filters [5], which are already used for keeping confidentiality of the information
-requested from Bitcoin Core by SPV clients [6].
+The protocol follows dea of Bloom filters [5], which are already used for
+keeping confidentiality of the information requested from Bitcoin Core by SPV
+clients [6].
 
-Multiple commitments under different protocols are identified with a unique per-protocol 32-byte identifiers (like tagged
-hashes of protocol name and/or characteristic parameters) and serialized into a 32-byte slots within `N * 32` byte buffer
-such as `N >> M`, where `M` is the number of the individual commitments. The rest of slots are filled with random data
-deterministically generated from a single entropy source. The position `n` for a commitment with the identifier `id`
-is computed as `n = id mod N`, guaranteeing that no two commitments under the same protocol with a given `id` may be
-simultaneously present.
+Multiple commitments under different protocols are identified with a unique
+per-protocol 32-byte identifiers (like tagged hashes of protocol name and/or
+characteristic parameters) and serialized into 32-byte slots within `N * 32`
+byte buffer such as `N >> M`, where `M` is the number of the individual
+commitments. The rest of the slots is filled with random data deterministically
+generated from a single entropy source. The position `n` for a commitment with
+the identifier `id` is computed as `n = id mod N`, guaranteeing that no two
+commitments under the same protocol with a given `id` may be simultaneously
+present.
 
 ```
       Protocol-1 -+                                 Protocol-2 -+
@@ -90,12 +110,12 @@ procedure runs as follows:
 
 A party needing to reveal the proofs for the commitment to the message `msgA` under this scheme and conceal the rest
 of the messages and protocols participating in the commitment has to publish the following data:
-1. A source of the message `msgA` and information about it's protocol with id `idA`.
+1. A source of the message `msgA` and information about its protocol with id `idA`.
 2. A full byte sequence of the buffer resulting from the step 5 of the [commitment procedure](#commitment).
 
 ### Reveal with full disclosure
 
-A party needing to reveal the proofs for all commitments to all of the messages and also prove that there were no
+A party needing to reveal the proofs for all commitments to all the messages and prove that there were no
 other commitments made must publish the following data:
 1. A source of the messages `msg1`..`msgM` and information about their protocols with id `id1`..`idM`.
 2. A full byte sequence of the buffer resulting from the step 5 of the [commitment procedure](#commitment).

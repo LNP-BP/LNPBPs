@@ -47,29 +47,32 @@ session state that is used to encrypt and authenticate all messages sent between
 nodes. The initialization of this cryptographic session state is completely
 distinct from any inner protocol message header or conventions.
 
-Before any actual data transfer, both nodes participate in an authenticated key agreement handshake, which is based on the Noise Protocol Framework [[2](#ref-2)].
+Before any actual data transfer, both nodes participate in an authenticated key 
+agreement handshake, which is based on the Noise Protocol Framework
+[[2](#ref-2)].
 
 ### Authenticated Key Agreement Handshake
 
 The handshake chosen for the authenticated key exchange is `Noise_XK`. As a
-pre-message, the initiator must know the identity public key of
-the responder. This provides a degree of identity hiding for the
-responder, as its static public key is _never_ transmitted during the handshake. Instead,
-authentication is achieved implicitly via a series of Elliptic-Curve
-Diffie-Hellman (ECDH) operations followed by a MAC check.
+pre-message, the initiator must know the identity public key of the responder.
+This provides a degree of identity hiding for the responder, as its static
+public key is _never_ transmitted during the handshake. Instead, authentication
+is achieved implicitly via a series of Elliptic-Curve Diffie-Hellman (ECDH)
+operations followed by a MAC check.
 
 The authenticated key agreement (`Noise_XK`) is performed in three distinct
-steps (acts). During each act of the handshake the following occurs: some (possibly encrypted) keying
-material is sent to the other party; an ECDH is performed, based on exactly
-which act is being executed, with the result mixed into the current set of
-encryption keys (`ck` the chaining key and `k` the encryption key); and
-an AEAD payload with a zero-length cipher text is sent. As this payload has no
-length, only a MAC is sent across. The mixing of ECDH outputs into
-a hash digest forms an incremental TripleDH handshake.
+steps (acts). During each act of the handshake the following occurs: some
+(possibly encrypted) keying material is sent to the other party; an ECDH is
+performed, based on exactly which act is being executed, with the result mixed
+into the current set of encryption keys (`ck` the chaining key and `k` the
+encryption key); and an AEAD payload with a zero-length cipher text is sent. As
+this payload has no length, only a MAC is sent across. The mixing of ECDH
+outputs into a hash digest forms an incremental TripleDH handshake.
 
 Using the language of the Noise Protocol, `e` and `s` (both public keys)
-indicate possibly encrypted keying material, and `es`, `ee`, and `se` each indicate an
-ECDH operation between two keys. The handshake is laid out as follows:
+indicate possibly encrypted keying material, and `es`, `ee`, and `se` each
+indicate an ECDH operation between two keys. The handshake is laid out as
+follows:
 ```
     Noise_XK(s, rs):
        <- s
@@ -78,13 +81,13 @@ ECDH operation between two keys. The handshake is laid out as follows:
        <- e, ee
        -> s, se
 ```
-All of the handshake data sent across the wire, including the keying material, is
-incrementally hashed into a session-wide "handshake digest", `h`. Note that the
-handshake state `h` is never transmitted during the handshake; instead, digest
-is used as the Associated Data within the zero-length AEAD messages.
+All of the handshake data sent across the wire, including the keying material,
+is incrementally hashed into a session-wide "handshake digest", `h`. Note that
+the handshake state `h` is never transmitted during the handshake; instead,
+digest is used as the Associated Data within the zero-length AEAD messages.
 
-Authenticating each message sent ensures that a man-in-the-middle (MITM) hasn't modified
-or replaced any of the data sent as part of a handshake, as the MAC
+Authenticating each message sent ensures that a man-in-the-middle (MITM) hasn't
+modified or replaced any of the data sent as part of a handshake, as the MAC
 check would fail on the other side if so.
 
 A successful check of the MAC by the receiver indicates implicitly that all
@@ -96,34 +99,34 @@ terminated.
 
 Each message sent during the initial handshake starts with a single leading
 byte, which indicates the version used for the current handshake. A version of 0
-indicates that no change is necessary, while a non-zero version indicate that the
-client has deviated from the protocol originally specified within this
+indicates that no change is necessary, while a non-zero version indicate that
+the client has deviated from the protocol originally specified within this
 document.
 
 Clients MUST reject handshake attempts initiated with an unknown version.
 
 ### Noise Protocol Instantiation
 
-Concrete instantiations of the Noise Protocol require the definition of
-three abstract cryptographic objects: the hash function, the elliptic curve,
-and the AEAD cipher scheme. For Lightning, `SHA-256` is
-chosen as the hash function, `secp256k1` as the elliptic curve, and
-`ChaChaPoly-1305` as the AEAD construction.
+Concrete instantiations of the Noise Protocol require the definition of three
+abstract cryptographic objects: the hash function, the elliptic curve, and the
+AEAD cipher scheme. For Lightning, `SHA-256` is chosen as the hash function,
+`secp256k1` as the elliptic curve, and `ChaChaPoly-1305` as the AEAD
+construction.
 
 The composition of `ChaCha20` and `Poly1305` that are used MUST conform to
 `RFC 7539`<sup>[1](#reference-1)</sup>.
 
 The official protocol name for the Lightning variant of Noise is
-`Noise_XK_secp256k1_ChaChaPoly_SHA256`. The ASCII string representation of
-this value is hashed into a digest used to initialize the starting handshake
-state. If the protocol names of two endpoints differ, then the handshake
-process fails immediately.
+`Noise_XK_secp256k1_ChaChaPoly_SHA256`. The ASCII string representation of this
+value is hashed into a digest used to initialize the starting handshake state.
+If the protocol names of two endpoints differ, then the handshake process fails
+immediately.
 
 ## Specification
 
 The handshake proceeds in three acts, taking 1.5 round trips. Each handshake is
-a _fixed_ sized payload without any header or additional meta-data attached.
-The exact size of each act is as follows:
+a _fixed_ sized payload without any header or additional meta-data attached. The
+exact size of each act is as follows:
 
    * **Act One**: 50 bytes
    * **Act Two**: 50 bytes
@@ -142,19 +145,19 @@ Throughout the handshake process, each side maintains these variables:
    process.
 
  * `temp_k1`, `temp_k2`, `temp_k3`: the **intermediate keys**. These are used to
-   encrypt and decrypt the zero-length AEAD payloads at the end of each handshake
-   message.
+   encrypt and decrypt the zero-length AEAD payloads at the end of each 
+   handshake message.
 
- * `e`: a party's **ephemeral keypair**. For each session, a node MUST generate a
-   new ephemeral key with strong cryptographic randomness.
+ * `e`: a party's **ephemeral keypair**. For each session, a node MUST generate 
+   a new ephemeral key with strong cryptographic randomness.
 
  * `s`: a party's **static keypair** (`ls` for local, `rs` for remote)
 
 The following functions will also be referenced:
 
   * `ECDH(k, rk)`: performs an Elliptic-Curve Diffie-Hellman operation using
-    `k`, which is a valid private key, and `rk`, which is a `secp256k1` public key
-    within the finite field, as defined by the curve parameters
+    `k`, which is a valid private key, and `rk`, which is a `secp256k1` public 
+    key within the finite field, as defined by the curve parameters
       * The returned value is the SHA256 of the DER-compressed format of the
 	    generated point.
 
@@ -187,8 +190,8 @@ The following functions will also be referenced:
 
 ### Handshake State Initialization
 
-Before the start of Act One, both sides initialize their per-sessions
-state as follows:
+Before the start of Act One, both sides initialize their per-sessions state as
+follows:
 
  1. `h = SHA-256(protocolName)`
     * where `protocolName = "Noise_XK_secp256k1_ChaChaPoly_SHA256"` encoded as
@@ -222,9 +225,9 @@ Act One is sent from initiator to responder. During Act One, the initiator
 attempts to satisfy an implicit challenge by the responder. To complete this
 challenge, the initiator must know the static public key of the responder.
 
-The handshake message is _exactly_ 50 bytes: 1 byte for the handshake
-version, 33 bytes for the compressed ephemeral public key of the initiator,
-and 16 bytes for the `poly1305` tag.
+The handshake message is _exactly_ 50 bytes: 1 byte for the handshake version,
+33 bytes for the compressed ephemeral public key of the initiator, and 16 bytes
+for the `poly1305` tag.
 
 **Sender Actions:**
 
@@ -243,7 +246,8 @@ and 16 bytes for the `poly1305` tag.
 6. `h = SHA-256(h || c)`
      * Finally, the generated ciphertext is accumulated into the authenticating
        handshake digest.
-7. Send `m = 0 || e.pub.serializeCompressed() || c` to the responder over the network buffer.
+7. Send `m = 0 || e.pub.serializeCompressed() || c` to the responder over the 
+   network buffer.
 
 **Receiver Actions:**
 
@@ -257,8 +261,8 @@ and 16 bytes for the `poly1305` tag.
 3. If `v` is an unrecognized handshake version, then the responder MUST
     abort the connection attempt.
 4. `h = SHA-256(h || re.serializeCompressed())`
-    * The responder accumulates the initiator's ephemeral key into the authenticating
-      handshake digest.
+    * The responder accumulates the initiator's ephemeral key into the 
+      authenticating handshake digest.
 5. `es = ECDH(s.priv, re)`
     * The responder performs an ECDH between its static private key and the
       initiator's ephemeral public key.
@@ -270,8 +274,8 @@ and 16 bytes for the `poly1305` tag.
       know the responder's static public key. If this is the case, then the
       responder MUST terminate the connection without any further messages.
 8. `h = SHA-256(h || c)`
-     * The received ciphertext is mixed into the handshake digest. This step serves
-       to ensure the payload wasn't modified by a MITM.
+     * The received ciphertext is mixed into the handshake digest. This step 
+       serves to ensure the payload wasn't modified by a MITM.
 
 #### Act Two
 
@@ -279,14 +283,14 @@ and 16 bytes for the `poly1305` tag.
    <- e, ee
 ```
 
-Act Two is sent from the responder to the initiator. Act Two will _only_
-take place if Act One was successful. Act One was successful if the
-responder was able to properly decrypt and check the MAC of the tag sent at
-the end of Act One.
+Act Two is sent from the responder to the initiator. Act Two will _only_ take
+place if Act One was successful. Act One was successful if the responder was
+able to properly decrypt and check the MAC of the tag sent at the end of Act
+One.
 
-The handshake is _exactly_ 50 bytes: 1 byte for the handshake version, 33
-bytes for the compressed ephemeral public key of the responder, and 16 bytes
-for the `poly1305` tag.
+The handshake is _exactly_ 50 bytes: 1 byte for the handshake version, 33 bytes
+for the compressed ephemeral public key of the responder, and 16 bytes for the
+`poly1305` tag.
 
 **Sender Actions:**
 
@@ -305,7 +309,8 @@ for the `poly1305` tag.
 6. `h = SHA-256(h || c)`
      * Finally, the generated ciphertext is accumulated into the authenticating
        handshake digest.
-7. Send `m = 0 || e.pub.serializeCompressed() || c` to the initiator over the network buffer.
+7. Send `m = 0 || e.pub.serializeCompressed() || c` to the initiator over the 
+   network buffer.
 
 **Receiver Actions:**
 
@@ -328,8 +333,8 @@ for the `poly1305` tag.
     * If the MAC check in this operation fails, then the initiator MUST
       terminate the connection without any further messages.
 8. `h = SHA-256(h || c)`
-     * The received ciphertext is mixed into the handshake digest. This step serves
-       to ensure the payload wasn't modified by a MITM.
+     * The received ciphertext is mixed into the handshake digest. This step 
+       serves to ensure the payload wasn't modified by a MITM.
 
 #### Act Three
 
@@ -344,10 +349,10 @@ During Act Three, the initiator transports its static public key to the
 responder encrypted with _strong_ forward secrecy, using the accumulated `HKDF`
 derived secret key at this point of the handshake.
 
-The handshake is _exactly_ 66 bytes: 1 byte for the handshake version, 33
-bytes for the static public key encrypted with the `ChaCha20` stream
-cipher, 16 bytes for the encrypted public key's tag generated via the AEAD
-construction, and 16 bytes for a final authenticating tag.
+The handshake is _exactly_ 66 bytes: 1 byte for the handshake version, 33 bytes
+for the static public key encrypted with the `ChaCha20` stream cipher, 16 bytes
+for the encrypted public key's tag generated via the AEAD construction, and 16
+bytes for a final authenticating tag.
 
 **Sender Actions:**
 
@@ -357,15 +362,16 @@ construction, and 16 bytes for a final authenticating tag.
 3. `se = ECDH(s.priv, re)`
     * where `re` is the ephemeral public key of the responder
 4. `ck, temp_k3 = HKDF(ck, se)`
-    * The final intermediate shared secret is mixed into the running chaining key.
+    * The final intermediate shared secret is mixed into the running chaining 
+      key.
 5. `t = encryptWithAD(temp_k3, 0, h, zero)`
      * where `zero` is a zero-length plaintext
 6. `sk, rk = HKDF(ck, zero)`
      * where `zero` is a zero-length plaintext,
        `sk` is the key to be used by the initiator to encrypt messages to the
        responder,
-       and `rk` is the key to be used by the initiator to decrypt messages sent by
-       the responder
+       and `rk` is the key to be used by the initiator to decrypt messages sent 
+       by the responder
      * The final encryption keys, to be used for sending and
        receiving messages for the duration of the session, are generated.
 7. `rn = 0, sn = 0`

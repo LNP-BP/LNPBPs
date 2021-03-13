@@ -122,7 +122,7 @@ Off-chain flag, set to 1                                                        
 |   48 |       1 | 2         | Flag indicating whether the next 15 bits represents transaction input (0) or output (1) index |
 |49-63 |      15 | 32'768    | Transaction input or output index (starting from 1) |
 
-* In "most significant bit goes first" order
+* Using big endian (network) byte order
 
 ### Distinguishing different types of identifier
 
