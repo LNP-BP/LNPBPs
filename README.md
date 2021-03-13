@@ -53,18 +53,18 @@ No | Layer | Vertical | Title | Author(s) | Type | Status
 [32](https://github.com/LNP-BP/descriptor-wallet/blob/master/src/bip32/pubkeychain.rs) | Application (5) | Bitcoin | BIP-32 derivation path extension for read-only wallets | Maxim Orlovsky | Standard | Draft
 [33](https://github.com/LNP-BP/LNPBPs/issues/24) | Client-validated data (3) | Lightning network protocol | Lightspeed: micropayments for Lightning Network | Maxim Orlovsky | Draft
 [34](https://github.com/storm-org/storm-spec) | Client-validated data (3) | Cryptographic primitives | Zero-knowledge arguments for data persistance using probabalistical checkable proofs | Maxim Orlovsky | Standard | Draft
-35 | OSI Application (i7) | Lightning network protocol | Bitforst: LN message extensions for RGB data propagation | Maxim Orlovsky | Standard | Planned
+[35](https://github.com/LNP-BP/LNPBPs/pull/97) | OSI Application (i7) | Lightning network protocol | Biffrost: LN message extensions for RGB data propagation | Maxim Orlovsky | Standard | Planned
 [36](https://github.com/LNP-BP/LNPBPs/issues/21) | OSI Presentation (i6) | API | Recommendations for API design | Maxim Orlovsky | Informational | Draft
 [37](https://github.com/LNP-BP/LNPBPs/pull/23/files) | Application (5) | Smart contracts | Invoicing formats for RGB-20 fungible assets schema | Alekos Filini | Standard | Rejected
 [38](https://github.com/LNP-BP/FAQ/blob/master/Presentation%20slides/Universal%20LNP-BP%20invoices.pdf) | Application (5) | Smart contracts | Universal LNP/BP invoices supporting Bitcoin, LN & RGB | Maxim Orlovsky | Standard | Draft
 [39](lnpbp-0010.md) | Transaction graph (2) | Bitcoin protocol | Bitcoin transaction output-based single-use-seals with sign-to-contract commitments | Maxim Orlovsky et al | Standard | Planned
 [40](https://github.com/storm-org/storm-spec) | Transaction graph (2) | State channels | Storm: trustless storage with escrow contracts | Maxim Orlovsky | Standard | Draft
-41 | OSI Application (i7) | Lightning network protoco | Lightning network message extensions for Storm | Maxim Orlovsky | Standard | Planned
+41 | OSI Application (i7) | Lightning network protocol | Lightning network message extensions for Storm | Maxim Orlovsky | Standard | Planned
 [42](https://github.com/internet2-org/rust-internet2/blob/master/addr/src/encoding.rs) | OSI Application (i7) | Internet2 | Uniform encoding for internet2 addresses | Maxim Orlovsky | Draft
 [43](https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-February/018381.html) | Application (5) | Smart contracts | RGB-enabled BIP43 purpose field & identity system | Maxim Orlovsky | Standard | Draft
 [44](https://github.com/LNP-BP/descriptor-wallet/blob/master/src/descriptor/script.rs) | Application (5) | Smart contracts | Script templating: BIP-32 & LNPBP-43 key derivations within for non-miniscript-compatible Bitcoin scripts | Maxim Orlovsky | Standard | Draft
 45 | OSI Application (i7) | Lightning network protocol | Lightning network message extensions for decentralized exchange functionality | Maxim Orlovsky | Standard | Planned
-46 | OSI Application (i7) | Lightning network protocol | Channel funding with RGB assets | Maxim Orlovsky | Standard | Draft
+[46](https://github.com/LNP-BP/LNPBPs/pull/98) | OSI Application (i7) | Lightning network protocol | Channel funding with RGB assets | Maxim Orlovsky | Standard | Draft
 47 | OSI Application (i7) | Lightning network protocol | Multipeer lightning channels | Maxim Orlovsky | Standard | Planned
 48 | OSI Application (i7) | Lightning network protocol | Bilateral channel funding | Maxim Orlovsky | Standard | Draft
 49 | OSI Application (i7) | Lightning network protocol | Synchronized multi-hop state updates via delegation in Lightning network | Maxim Orlovsky, Christian Decker | Standard | Planned
