@@ -45,9 +45,10 @@ No | Layer | Vertical | Title | Author(s) | Type | Status
 [18](lnpbp-0018.md) | OSI Transport (i4) | Internet2 | Native message framing protocol (BOLT-8 extract) | Multiple peers | Standard | Planned
 [19](https://github.com/internet2-org/rust-internet2/tree/master/microservices/src) | OSI Presentation (i6) | Internet2 | ZMQ-based RPC and ESB protocols for microservices | Multiple peers | Standard | Planned
 [20](lnpbp-0020.md) | Application (5) | Smart contracts | RGB fungible assets schema (RGB-20) | Multiple peers | Standard | Final
-[21](lnpbp-0021.md) | Application (5) | Smart contracts | RGB non-fungible tokes schema (RGB-21) | Multiple peers | Standard | Proposal
-[22](https://github.com/LNP-BP/LNPBPs/issues/29) | Application (5) | Smart contracts | RGB reputation and identity schema (RGB-22) | Multiple peers | Standard | Draft
-23 | Application (5) | Smart contracts | RGB verifiably-unique history log for audited data (RGB-23) | Multiple peers | Standard | Planned
+[21](lnpbp-0021.md) | Application (5) | Smart contracts | RGB non-fungible tokes schema (RGB-21) | Maxim Orlovsky | Standard | Proposal
+[22](https://github.com/LNP-BP/LNPBPs/issues/29) | Application (5) | Smart contracts | RGB reputation and identity schema (RGB-22) | Maxim Orlovsky, Sabina Sachtachtinskagia | Standard | Draft
+23 | Application (5) | Smart contracts | RGB verifiably-unique history log for audited data (RGB-23) | Maxim Orlovsky, Giacomo Zucco | Standard | Planned
+24 | Application (5) | Smart contracts | RGB-24 schema for decentralized global name system (DGNS) | Maxim Orlovsky | Standard | Draft
 30 | Application (5) | Smart contracts | RGB-wrapped native blockchain assets schema (RGB-30) | Maxim Orlovsky | Standard | Planned
 25-29, 31 | Reserved | | For the future use by RGB schemata
 [32](https://github.com/LNP-BP/descriptor-wallet/blob/master/src/bip32/pubkeychain.rs) | Application (5) | Bitcoin | BIP-32 derivation path extension for read-only wallets | Maxim Orlovsky | Standard | Draft
@@ -69,7 +70,8 @@ No | Layer | Vertical | Title | Author(s) | Type | Status
 48 | OSI Application (i7) | Lightning network protocol | Bilateral channel funding | Maxim Orlovsky | Standard | Draft
 49 | OSI Application (i7) | Lightning network protocol | Synchronized multi-hop state updates via delegation in Lightning network | Maxim Orlovsky, Christian Decker | Standard | Planned
 50 | OSI Application (i7) | Lightning network protocol | Channel transaction structure negotiation using PSBTs (generalized LN) | Maxim Orlovsky, Christian Decker | Standard | Planned
-51-57 | Reserved | | For the future use by lightning network protocol extensions
+51 | OSI Application (i7)| Lightning network protocol | Decentralized naming & name resolution system | Maxim Orlovsky | Standard | Planned
+52-57 | Reserved | | For the future use by lightning network protocol extensions
 [58](https://github.com/pandoracore/typhon-spec) | Client-validated data (3) | Cryptographic primitives | Apophis: distributed elliptic curve-based key creation with shared secrets | Maxim Orlovsky | Standard | Draft
 [59](https://github.com/pandoracore/typhon-spec) | Transaction graph (2) | Bitcoin protocol | Typhon: trustless Bitcoin sidechains | Maxim Orlovsky | Standard | Draft
 [60](https://github.com/pandoracore/ibiss-spec) | Client-validated data (3) | Game theory | Ibiss: incentive-based interactive anonymous settlement scheme for computation integrity arguments | Maxim Orlovsky, Sabina Sachtachtinskagia | Informational | Draft
