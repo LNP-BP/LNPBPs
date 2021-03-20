@@ -45,10 +45,10 @@ No | Layer | Vertical | Title | Author(s) | Type | Status
 [18](lnpbp-0018.md) | OSI Transport (i4) | Internet2 | Native message framing protocol (BOLT-8 extract) | Multiple peers | Standard | Planned
 [19](https://github.com/internet2-org/rust-internet2/tree/master/microservices/src) | OSI Presentation (i6) | Internet2 | ZMQ-based RPC and ESB protocols for microservices | Multiple peers | Standard | Planned
 [20](lnpbp-0020.md) | Application (5) | Smart contracts | RGB fungible assets schema (RGB-20) | Multiple peers | Standard | Final
-[21](lnpbp-0021.md) | Application (5) | Smart contracts | RGB non-fungible tokes schema (RGB-21) | Maxim Orlovsky | Standard | Proposal
+[21](lnpbp-0021.md) | Application (5) | Smart contracts | RGB schema for NFTs representing ownership rights (RGB-21) | Maxim Orlovsky | Standard | Proposal
 [22](https://github.com/LNP-BP/LNPBPs/issues/29) | Application (5) | Smart contracts | RGB reputation and identity schema (RGB-22) | Maxim Orlovsky, Sabina Sachtachtinskagia | Standard | Draft
-23 | Application (5) | Smart contracts | RGB verifiably-unique history log for audited data (RGB-23) | Maxim Orlovsky, Giacomo Zucco | Standard | Planned
-24 | Application (5) | Smart contracts | RGB-24 schema for decentralized global name system (DGNS) | Maxim Orlovsky | Standard | Draft
+23 | Application (5) | Smart contracts | RGB verifiably-unique history log for auditable data (RGB-23) | Maxim Orlovsky, Giacomo Zucco | Standard | Planned
+24 | Application (5) | Smart contracts | RGB-24 schema for decentralized global name system (DGNS) | Maxim Orlovsky | Standard | Planned
 30 | Application (5) | Smart contracts | RGB-wrapped native blockchain assets schema (RGB-30) | Maxim Orlovsky | Standard | Planned
 25-29, 31 | Reserved | | For the future use by RGB schemata
 [32](https://github.com/LNP-BP/descriptor-wallet/blob/master/src/bip32/pubkeychain.rs) | Application (5) | Bitcoin | BIP-32 derivation path extension for read-only wallets | Maxim Orlovsky | Standard | Draft
