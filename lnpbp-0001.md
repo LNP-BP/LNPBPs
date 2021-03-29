@@ -82,14 +82,14 @@ the original public key and the message itself.
 Main advantage of the public key tweak procedure is the fact that a tweaked key,
 or a corresponding signature, can't be distinguished from any other public keys
 or signatures; this property allows to hide the actual commitment in such a way
-that it can be only known to those parties which have knowledge of a secrets:
+that it can be only known to those parties which have knowledge of secrets:
 original public and/or key pair **and** a message.
 
 This type of commitment was originally proposed as a part of "pay to contract"
 concept by Ilja Gerhardt and Timo Hanke in [1] and later used by Eternity Wall
 [2] for the same purpose. However, these proposals were arguably vulnerable to
-length-extension attacks and, more importangly, was not applicable to scenatious
-when multiple public keys are uses (for instance, multi-signature bitcoin
+length-extension attacks and, more importangly, were not applicable to scenarious
+when multiple public keys are used (for instance, multi-signature bitcoin
 transaction outputs). These problems were fixed as a part of sidechain-design
 effort by Blockstream [3], which proposed to utilize HMAC function and
 introduced concept of nonce.
@@ -231,7 +231,7 @@ Reason: prevention of inter-protocol collision attacks
 
 The use of duplicated protocol-specific tag hash was originally proposed by 
 Peter Wuille in [4] and [5] in order to prevent potential reply-attacks for
-interpreting message under different protocols. The choice of duplicate single
+interpreting message under different protocols. The choice of duplicated single
 SHA256 hash is made due to the fact that according to Peter Wuille it is not yet
 used in any existing bitcoin protocol, which increases compatibility and reduces
 chances of collisions with existing protocols.
@@ -263,7 +263,7 @@ the protocol failure the user may change `P` value and re-run the protocol.
 Protocol falure during the verification procedure may happen only during its
 repetition of the original commitment. This will mean that the original 
 commitment is invalid, since it was not possible to create any commitment with
-the given original data. Thus, such failure will simpli indicate negative result
+the given original data. Thus, such failure will simply indicate negative result
 of the verification procedure.
 
 ### Choise of elliptic curve generator point order `n` over field order `p`
@@ -273,7 +273,7 @@ public key addition, since it does not provide a security risk for the
 commitment, it was chosen to stick to this scheme because of the following:
 * Current implementation of Secp256k1 library (libsecp256k1) fails on overflow
   during key tweaking procedure. Since this library is widely used in bitcoin
-  ecosystem (and Bitcoin Core) it is desirable to maintain LNPBP-1 compativle
+  ecosystem (and Bitcoin Core) it is desirable to maintain LNPBP-1 compatible
   with its functionality
 * Probability of the overflow is still infinissimal, being comparable to
   probability of `3.7*10^-66` for a tweaking factor not fitting into the
