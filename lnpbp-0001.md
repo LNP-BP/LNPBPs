@@ -51,10 +51,10 @@ commitment scheme used. They are also inapplicable to situations where multiple
 public keys are present in some output: how to deterministically detect which
 key is holding the commitment.
 
-This work proposes a standardization for cryptographic commitments that utilize
-elliptic curve (EC) homomorphic properties and allows to commit to arbitrary
-data using an EC public key or a set of EC public keys in a deterministic and safe
-way.
+This work proposes a standardization for cryptographic commitments that utilize 
+the homomorphic properties of the `Secp256k1` elliptic curve (EC) and allows to 
+commit to arbitrary data using an EC public key or a set of EC public keys 
+from the `Secp256k1` curve in a deterministic and safe way.
 
 
 ## Background
@@ -123,10 +123,10 @@ algorithm, that avoids all of those issues.
 
 ### Commitment procedure
 
-For a given message `msg`, a set of unique public keys `P := {P1, P2, ..., Pn}`,
-`n > 0`, with some selected original public key `Po` from this set (`Po ∈ S`),
-and a protocol-specific `tag` known to both parties, the **commit procedure** 
-runs as follows:
+For a given message `msg`, a set of unique public keys from the `Secp256k1` curve 
+`P := {P1, P2, ..., Pn}`, `n > 0`, with some selected original public key `Po` 
+from this set (`Po ∈ S`), and a protocol-specific `tag` known to both parties, 
+the **commit procedure** runs as follows:
 
 1. Reduce set `P` to `P*` by removing all duplicate public keys.
 2. Compute sum `S` of all unique public keys in set `P*`; fail the protocol if
