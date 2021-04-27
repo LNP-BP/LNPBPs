@@ -123,13 +123,14 @@ algorithm, that avoids all of those issues.
 
 ### Commitment procedure
 
-For a given message `msg`, a set of unique public keys from the `Secp256k1` curve 
-`P := {P1, P2, ..., Pn}`, `n > 0`, with some selected original public key `Po` 
-from this set (`Po ∈ S`), and a protocol-specific `tag` known to both parties, 
+For a given message `msg`, a list of public keys from the `Secp256k1` curve 
+`P* := {P1, P2, ..., Pn}`, `n > 0`, with some selected original public key `Po` 
+from this list (`Po ∈ S`), and a protocol-specific `tag` known to both parties, 
 the **commit procedure** runs as follows:
 
-1. Reduce set `P` to `P*` by removing all duplicate public keys.
-2. Compute sum `S` of all unique public keys in set `P*`; fail the protocol if
+1. Reduce list `P*` to a set of unique public keys `P`, by removing all duplicate 
+   public keys from the list.
+3. Compute sum `S` of all unique public keys in set `P`; fail the protocol if
    an overflow over elliptic curve generator point order happens during the 
    procedure.
 3. Construct a byte string `lnpbp1_msg`, composed of the original message
@@ -153,7 +154,7 @@ the **commit procedure** runs as follows:
    public key `T`: `T = Po + F`. Check that the result is not equal to the 
    point-at-infinity of the elliptic curve or fail the protocol otherwise, 
    indicating the reason of failure, such that the protocol may be run with 
-   another initial public key set `P'`.
+   another initial public key list `P*'`.
 
 The final formula for the commitment is:  
 `T = Po + G * HMAC-SHA256(SHA256("LNPBP1") || SHA256(tag) || msg, S)`
