@@ -221,10 +221,16 @@ key tweaking schemes are not usable within LN structure.
 
 ### Use of HMAC insead of simple hash
 
-Reasons: 
-- prevention of length extension attacks;
-- impossibility to forge a message and a public key equivalent by negation of
-  a tweaking factor multiplied to `G`, which will result in protocol failure.
+Reason: prevention of length-extension attacks
+
+As this protocol aims to be a generic scheme, the message `msg` can be of any length.
+If we would just use a simple hash (e.g. SHA256), users of `LNPBP-1` could **potentially** 
+be vulnerable to length-extension attacks, if they are not careful. To be on the safe side,
+we use HMAC-SHA256, which is resistant to length-extension attacks, but computationally
+more expensive. However, this protocol aims to be used in client-side validation applications 
+primarily and should therefore run many orders of magnitude less often then complete 
+validatation of all public blockchain data. The computational overhead of HMAC on a 
+client node is therefore considered negligible, for the targeted use cases.
 
 ### Use of protocol tags
 
