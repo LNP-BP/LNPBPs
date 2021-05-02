@@ -235,9 +235,9 @@ client node is therefore considered negligible, for the targeted use cases.
 Reason 2: prevention of vocabulary attacks
 
 In certain circumstances a simple hash based commitment might be vulnerable to brute force
-vocabulary attacks, if the syntax and semantics of the invoking protokol are known to the attacker. 
-This is usally countered with adding additional entropy to each hash. In our case the public key
-`S` already provides enought entropy, which - when added via HMAC-SHA256 to the whole `msg` -
+vocabulary attacks, if the syntax and semantics of the invoking protocol are known to the attacker. 
+This is usually countered with adding additional entropy to each hash. In our case the public key
+`S` already provides enough entropy, which - when added via HMAC-SHA256 to the whole `msg` -
 sufficiently counters such vocabulary attacks.
 
 ### Use of protocol tags
