@@ -221,7 +221,7 @@ key tweaking schemes are not usable within LN structure.
 
 ### Use of HMAC insead of simple hash
 
-Reason 1: prevention of length-extension attacks
+Reason: prevention of length-extension attacks
 
 As this protocol aims to be a generic scheme, the message `msg` can be of any length.
 If we would just use a simple hash (e.g. SHA256), users of `LNPBP-1` could **potentially** 
@@ -231,14 +231,6 @@ more expensive. However, this protocol aims to be used in client-side validation
 primarily and should therefore run many orders of magnitude less often then complete 
 validatation of all public blockchain data. The computational overhead of HMAC on a 
 client node is therefore considered negligible, for the targeted use cases.
-
-Reason 2: prevention of vocabulary attacks
-
-In certain circumstances a simple hash based commitment might be vulnerable to brute force
-vocabulary attacks, if the syntax and semantics of the invoking protocol are known to the attacker. 
-This is usually countered with adding additional entropy to each hash. In our case the public key
-`S` already provides enough entropy, which - when added via HMAC-SHA256 to the whole `msg` -
-sufficiently counters such vocabulary attacks.
 
 ### Use of protocol tags
 
@@ -296,9 +288,12 @@ commitment, it was chosen to stick to this scheme because of the following:
 
 ### No nonce
 
-A nonce is not required since the original public key, hidden in the resulting
-tweaked key, presents sufficient entropy against an attacker successfully guessing
-the original message, even for short and standard messages.
+In certain circumstances a simple hash based commitment might be vulnerable to brute force
+vocabulary attacks, if the syntax and semantics of the invoking protocol are known to the attacker. 
+This is usually countered with adding additional entropy (e.g. a nonce) to each hash. In our case 
+the public key `S` already provides enough entropy, which - when added via HMAC-SHA256 to 
+the whole `msg` - sufficiently counters such vocabulary attacks, preventing an attacker from 
+successfully guessing the original message, even for short and standard messages.
 
 
 ## Reference implementation
