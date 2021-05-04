@@ -374,7 +374,7 @@ pub fn commit(
         .map_err(|_| Error::SumInfiniteResult)?;
 
     let mut hmac_engine =
-        HmacEngine::<sha256::Hash>::new(&pubkey_sum.serialize());
+        HmacEngine::<sha256::Hash>::new(&pubkey_sum.serialize_uncompressed());
 
     hmac_engine.input(&LNPBP1_HASHED_TAG[..]);
     hmac_engine.input(&protocol_tag[..]);
