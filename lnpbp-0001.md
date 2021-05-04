@@ -137,10 +137,19 @@ the **commit procedure** runs as follows:
    prefixed with a single SHA256 hash of `LNPBP1` string and a single SHA256
    hash of the protocol-specific `tag`:  
    `lnpbp1_msg = SHA256("LNPBP1") || SHA256(tag) || msg`
-4. 
-5. Compute HMAC-SHA256 of `lnbp1_msg` using the sum of public keys `S`. The 
-   resulting value is named **tweaking factor** `f`:  
-   `f = HMAC-SHA256(lnpbp1_msg, S)`
+4. Convert (serialize) the aggregate public key `S` from step 2 into a 
+   byte-encoded pair of values in uncompressed form `S*`, according to the
+   defacto standard format for uncompressed public keys in Bitcoin,
+   which is followed by libraries like 
+   [rust-secp256k1](https://docs.rs/secp256k1/0.20.1/src/secp256k1/key.rs.html#290-306),
+   resulting in a 65 byte array with:
+    - the first byte having the fixed hex value `04` (0x04),
+    - followed by 32 bytes representing the x coordinate in big-endian order,
+    - followed by 32 bytes representing the y coordinate in big-endian order.
+5. Compute HMAC-SHA256 of `lnbp1_msg` using the sum of public keys in the 
+   serialized format `S*` from step 4. The resulting value is named 
+   the **tweaking factor** `f`:  
+   `f = HMAC-SHA256(lnpbp1_msg, S*)`
 6. Make sure that the tweaking factor is less than the order `n` of a generator 
    point of the used elliptic curve, such that no overflow can happen when it is 
    added to the original public key. If the order is exceeded, fail the protocol
@@ -158,19 +167,20 @@ the **commit procedure** runs as follows:
    another initial public key list `P*'`.
 
 The final formula for the commitment is:  
-`T = Po + G * HMAC-SHA256(SHA256("LNPBP1") || SHA256(tag) || msg, S)`
+`T = Po + G * HMAC-SHA256(SHA256("LNPBP1") || SHA256(tag) || msg, S*)`
 
 ### Verification procedure
 
 **Verification procedure** for the commitment (i.e. tweaked public key `T`) can 
-be performed with the provision of the original public key `Po` and message `msg` 
+be performed with the provision of the list of public keys `P*`, 
+the original public key `Po` and the message `msg` 
 (assuming that the verifying party is aware of the protocol-specific `tag`
 and `LNPBP1` tag) and runs as follows:
 
 1. Make sure that the provided tweaked public key `T` lies on the elliptic curve 
    and is not equal to the point at infinity.
 2. Compute 
-   `T' = Po + G * HMAC-SHA256(SHA256("LNPBP1") || SHA256(tag) || msg, S)` 
+   `T' = Po + G * HMAC-SHA256(SHA256("LNPBP1") || SHA256(tag) || msg, S*)` 
    repeating the *commitment procedure* according to the rules above.
 3. Make sure that `T' = T` and report verification success; otherwise report 
    verification failure.
