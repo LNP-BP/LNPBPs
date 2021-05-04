@@ -130,26 +130,27 @@ the **commit procedure** runs as follows:
 
 1. Reduce list `P*` to a set of unique public keys `P`, by removing all duplicate 
    public keys from the list.
-3. Compute sum `S` of all unique public keys in set `P`; fail the protocol if
+2. Compute sum `S` of all unique public keys in set `P`; fail the protocol if
    an overflow over elliptic curve generator point order happens during the 
    procedure.
 3. Construct a byte string `lnpbp1_msg`, composed of the original message
    prefixed with a single SHA256 hash of `LNPBP1` string and a single SHA256
    hash of the protocol-specific `tag`:  
    `lnpbp1_msg = SHA256("LNPBP1") || SHA256(tag) || msg`
-4. Compute HMAC-SHA256 of `lnbp1_msg` using the sum of public keys `S`. The 
+4. 
+5. Compute HMAC-SHA256 of `lnbp1_msg` using the sum of public keys `S`. The 
    resulting value is named **tweaking factor** `f`:  
    `f = HMAC-SHA256(lnpbp1_msg, S)`
-5. Make sure that the tweaking factor is less than the order `n` of a generator 
+6. Make sure that the tweaking factor is less than the order `n` of a generator 
    point of the used elliptic curve, such that no overflow can happen when it is 
    added to the original public key. If the order is exceeded, fail the protocol
    indicating the reason of failure.
-6. Multiply the tweaking factor `f` on the used elliptic curve generator point `G`:  
+7. Multiply the tweaking factor `f` on the used elliptic curve generator point `G`:  
    `F = G * f`
-7. Check that the result of 6 is not equal to the point-at-infinity; otherwise 
+8. Check that the result of 7 is not equal to the point-at-infinity; otherwise 
    fail the protocol, indicating the reason of failure, such that the protocol 
    may be run with another initial public key set `P'`.
-8. Add the two elliptic curve points: the original public key `Po` and the
+9. Add the two elliptic curve points: the original public key `Po` and the
    point `F`, derived from the tweaking-factor. This will result in a tweaked 
    public key `T`: `T = Po + F`. Check that the result is not equal to the 
    point-at-infinity of the elliptic curve or fail the protocol otherwise, 
