@@ -49,7 +49,7 @@ inside `scriptPubkey` script for existing types of Bitcoin transaction output.
 ## Background
 
 Cryptographic commitments embedded into bitcoin transactions is a widely-used
-practice. It's application include timestamping [1], single-use seals [2],
+practice. Its application include timestamping [1], single-use seals [2],
 pay-to-contract settlement schemes [3], sidechains [4], blockchain anchoring
 [5], Taproot, Graftroot proposals [6, 7, 8], Scriptless scripts [9] and many
 others.
@@ -133,18 +133,18 @@ The **committing party**, having a message `msg`, must:
    for the message `msg`, selected public key `Po`, public key set `P` and a
    protocol-specific `tag`, provided by the upstream protocol using this 
    standard.
-4. Construct necessary scripts and generates `scriptPubkey` of the required 
+4. Construct necessary scripts and generate `scriptPubkey` of the required 
    type. If OP_RETURN `scriptPubkey` is used, it MUST be serialized according to
    the following rules:
    - only a single `OP_RETURN` code MUST be present in the `scriptPubkey` and it
      MUST be the first byte of it;
    - it must be followed by 32-byte push of the public key value `P` from the 
-     step 2 of the algorithm, serialized according to from [15];
+     step 2 of the algorithm, serialized according to the rules from [15];
    - if the tweaked public key serialized with bitcoin consensus serialization
      rules does not start with 0x02 as it's first (least significant) byte, the
-     procedure must fail; or it may be repeated with a new public picked at
+     procedure must fail; or it may be repeated with a new public key picked at
      step 1.
-6. Constructs and stores an **extra-transaction proof** (ETP), which structure 
+6. Construct and store an **extra-transaction proof** (ETP), which structure 
    depends on the generated `scriptPubkey` type:
    a) value of `Po`, corresponding to:
       * the original intermediary public key for V1 witness Taproot output;
@@ -395,4 +395,3 @@ TBD
 ### 3. Edge cases: protocol failures
 
 TBD
-
