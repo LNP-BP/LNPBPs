@@ -10,11 +10,11 @@ Authors: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
          Giacomo Zucco,
          Max Hillebrand,
          Christophe Diederichs
-Comments-URI: https://github.com/LNP-BP/lnpbps/issues/3
-Status: Final
+Comments-URI: <https://github.com/LNP-BP/lnpbps/issues/3>
+Status: Proposal
 Type: Standards Track
 Created: 2019-09-23
-Finalized: 2020-10-08
+Finalized: not yet
 License: CC0-1.0
 ```
 

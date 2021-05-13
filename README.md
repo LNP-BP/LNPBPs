@@ -15,10 +15,9 @@ Criteria for a LNP/BP specification proposal:
 * Should not distort Bitcoin miner's economic incentives
 * Should not pollute Bitcoin blockchain with unnecessary non-transaction related data or have to maintain such pollution
   as low as possible
-* Should not be covered by existing or proposed BOLTs
 * Must not require a utility or security tokens to function (but may enable creation of digital assets or tokenized
 physical goods)
-* Must not depend on non-bitcoin blockchains (but may be applicable to bitcoin-compatible blockchains)
+* Must not depend on non-bitcoin blockchains (but may be applicable to other blockchains)
 
 
 ## List of current LNP/BP proposals
@@ -80,11 +79,12 @@ No | Layer | Vertical | Title | Author(s) | Type | Status
 63 | Application (5) | Smart contracts | Prometheus+: trustless multiparty computing with escrow & arbitration using Ibiss2 protocol over LN with tokenized RGB reputation | Maxim Orlovsky | Standard | Planned
 64-79 | Reserved | | For the future use by lightning network protocol extensions
 [80](https://github.com/opentimestamps/opentimestamps-server/blob/master/doc/merkle-mountain-range.md) | Client-validated data (3) | Cryptographic primitives | Merkle mountain ranges | Peter Todd | Standard | Final
-81 | Client-validated data (3) | Cryptographic primitives | Tagged merkle trees for client-side-validation | Maxim Orlovsky | Standard | Draft
+81 | Client-validated data (3) | Cryptographic primitives | Tagged merkle trees for client-side-validation | Maxim Orlovsky, Peter Todd | Standard | Draft
 82 | Transaction (1) | Bitcoin protocol | OpenTimestamps bitcoin transaction commitments | Peter Todd | Standard | Final
 83 | Client-validated graphs (4) | Smart contracts | OpenTimestamps proof construction & verification | Peter Todd | Standard | Final
 83 | Application (5) | Smart contracts | OpenTimestamps proof serialization | Peter Todd | Standard | Final
 84 | Application (5) | Smart contracts | OpenTimestamps calendar and attestation services | Peter Todd | Standard | Final
+[85](https://github.com/LNP-BP/client_side_validation/blob/master/strict_encoding/src/bitcoin.rs) | Client-validated data (3) | Consensus layer | Strict encoding of Bitcoin-related data types | Maxim Orlovsky | Standard | Planned
 100 | Transaction graph (2) | Bitcoin protocol | Scalable & confidential single-use-seal commitment layer 1 | Standard | Brainstorming
 
 ### Invited or planned proposals to join LNP/BP standards family
