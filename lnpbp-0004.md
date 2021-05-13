@@ -101,18 +101,20 @@ corresponding unique ids `id`..`idM` the commitment procedure runs as follows:
    - create a corresponding cryptographic commitment `cI` according to the 
      per-message protocol, 
    - compute it's BIP-340 tagged hash [4] using the value of the protocol id 
-     `idI` as the protocol-specific tag, 
-   - compute `n = idI mod N`,
+     `idI` as the protocol-specific tag (serialized as little-endian number), 
+   - compute `n = idI mod N` (if the protocol identifier is a hash, it should be
+     converted into unsigned integer of appropriate dimensionality using little-
+     endian notation),
    - if the slot `n` is not used, serialize a `cI` hash into it using 
      bitcoin-style hash serialization format; 
      otherwise go to step 3 and generate a new `N' >> N`.
 4. For each of the slots that remain empty (the slot number is represented 
    by `j`):
-   - compute SHA256-tagged hash of `seed_entropy || j`, where `j` is stored as
-     little-endian two byte representation, i.e. the total length of the 
-     hashed byte string should be 272 bits. The tagged hash procedure must run 
-     according to BIP-340 [4] using UTF-8 representation of  `LNPBP4:entropy` 
-     string as the tag.
+   - compute SHA256-tagged hash of `seed_entropy || j`, where both values are 
+     serialized as little-endian byte strings (the total length of resulting 
+     byte string for hashing should be 272 bits). The tagged hash procedure 
+     must run according to BIP-340 [4] using UTF-8 representation of 
+     `LNPBP4:entropy` string as the tag.
 5. Compute commitment to the resulting buffer with LNPBP-1 [1], LNPBP-2 [2] or 
    other protocol using `LNPBP4` as the protocol-specific tag.
 
