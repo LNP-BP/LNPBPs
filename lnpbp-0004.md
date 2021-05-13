@@ -88,22 +88,21 @@ present.
 
 For a given set of `M` messages `msg1`..`msgM` under protocols with corresponding unique ids `id`..`idM` the commitment
 procedure runs as follows:
-1. Pick a 32-bytes of entropy from uniform entropy source (like the same which is used for generating private keys)
-   and compute SHA256-tagged hash according to BIP-340 tagged hash procedure [4] with prefix `LNPBP4:random`.
-2. Generate a corresponding public key on Secp256k1 elliptic curve (`R`) and compute it's 256-bit bitcoin hash
-   (`HASH256(R)`).
-3. Pick a number `N >> M`, for instance `N = M * 2` and allocate `32 * N` byte buffer.
-4. For each of the messages:
+1. Pick a 64 bits of entropy from uniform entropy source (like the same which is used for generating private keys).
+   This entropy will be identified with `entropy_seed` hereand after.
+2. Pick a 16-bit number `N >> M`, for instance `N = M * 2` and allocate `32 * N` byte buffer (such that the maximum buffer 
+   length MUST not exceed 2^21, i.e 2 MB).
+3. For each of the messages:
    - create a corresponding cryptographic commitment `cI` according to the per-message protocol,
    - compute it's BIP-340 tagged hash [4] using the value of the protocol id `idI` as the protocol-specific tag,
    - compute `n = idI mod N`,
    - if the slot `n` is not used, serialize a `cI` hash into it using bitcoin-style hash serialization format;
      otherwise go to step 3 and generate a new `N' >> N`.
-5. For each of the slots that remain empty (the slot number is represented by `j`):
-   - tweak public key `R` with it's own hash `H(R)` `j` times: `Rj = R + J * H(R) * G)`
-   - compute a 256-bit bitcoin hash of `Rj` and serialize it into the slot `j` using bitcoin-style hash serialization
-     format.
-6. Compute commitment to the resulting buffer with LNPBP-1, LNPBP-2 or other protocol using `LNPBP4` as the
+4. For each of the slots that remain empty (the slot number is represented by `j`):
+   - compute SHA256-tagged hash of `seed_entropy || j`, where `j` is reprtesented as a a big-endian-serialized 16-bit 
+     number. The tagged hash procedure must runaccording to BIP-340 [4] using UTF-8 representation of the string 
+     `LNPBP4:entropy` as a tag
+5. Compute commitment to the resulting buffer with LNPBP-1, LNPBP-2 or other protocol using `LNPBP4` as the
    protocol-specific tag.
 
 ### Partial reveal
@@ -119,7 +118,7 @@ A party needing to reveal the proofs for all commitments to all the messages and
 other commitments made must publish the following data:
 1. A source of the messages `msg1`..`msgM` and information about their protocols with id `id1`..`idM`.
 2. A full byte sequence of the buffer resulting from the step 5 of the [commitment procedure](#commitment).
-3. An original public key `R` from the step 2 of the [commitment procedure](#commitment).
+3. An entropy value `entropy_seed` from the step 2 of the [commitment procedure](#commitment).
 
 ### Per-message verification
 
@@ -147,7 +146,17 @@ TBD
 
 ## Rationale
 
-TBD
+### Maximum buffer size restrictions
+
+The maximum buffer size defines the potential size of the data provided for client0--side validation,
+and may represent a form of DoS attack vector, when the party allocating/creating buffer defines a storage and 
+network data transfer requirements for all the future veryfing parties. From the other side, the maximum buffer
+size defines the upper bound for the maximum number of commitments that may be embedded within a single transaction
+output. We have selected a 16-bit limit for the number of slots, limiting the maximum buffer size to 2 MBs, 
+and maximum theoretical number of simultaneouns commitments under the same transaction output to 2^16. However,
+in practice, the latter limit will be never reached, because assuming the uniform distribution of protocol-specific 
+identifier hashes a committing party will be able to produce simultaneus commitment under `1^8` different protocols 
+in average.
 
 
 ## Reference implementation
