@@ -60,8 +60,8 @@ keeping confidentiality of the information requested from Bitcoin Core by SPV
 clients [6].
 
 Multiple commitments under different protocols are identified with a unique
-per-protocol 32-byte identifiers (like tagged hashes of protocol name and/or
-characteristic parameters) and serialized into 32-byte slots within `N * 32`
+per-protocol 256-bit identifiers (like tagged hashes of protocol name and/or
+characteristic parameters) and serialized into 256-bit slots within `N * 32`
 byte buffer such as `N >> M`, where `M` is the number of the individual
 commitments. The rest of the slots is filled with random data deterministically
 generated from a single entropy source. The position `n` for a commitment with
@@ -83,15 +83,17 @@ present.
 0 byte                  32 byte                64 byte
 ```
 
+![LNPBP4 visualisation](./assets/lnbp-0004.png)
+
 ## Specification
 
 ### Commitment
 
 For a given set of `M` messages `msg1`..`msgM` under protocols with 
 corresponding unique ids `id`..`idM` the commitment procedure runs as follows:
-1. Pick a 64 bits of entropy from uniform entropy source (like the same 
+1. Pick 64 bits of entropy from uniform entropy source (like the same 
    which is used for generating private keys). This entropy will be 
-   identified with `entropy_seed` hereand after.
+   identified with `entropy_seed` hereinafter.
 2. Pick a 16-bit number `N >> M`, for instance `N = M * 2` and allocate `32*N`
    byte buffer (such that the maximum buffer length MUST not exceed 2^21, i.
    e 2 MB).
@@ -106,10 +108,11 @@ corresponding unique ids `id`..`idM` the commitment procedure runs as follows:
      otherwise go to step 3 and generate a new `N' >> N`.
 4. For each of the slots that remain empty (the slot number is represented 
    by `j`):
-   - compute SHA256-tagged hash of `seed_entropy || j`, where `j` is 
-     little-endian two byte representation 16-bit
-     number. The tagged hash procedure must run according to BIP-340 [4] 
-     using UTF-8 representation of the string `LNPBP4:entropy` as a tag
+   - compute SHA256-tagged hash of `seed_entropy || j`, where `j` is stored as
+     little-endian two byte representation, i.e. the total length of the 
+     hashed byte string should be 272 bits. The tagged hash procedure must run 
+     according to BIP-340 [4] using UTF-8 representation of  `LNPBP4:entropy` 
+     string as the tag.
 5. Compute commitment to the resulting buffer with LNPBP-1 [1], LNPBP-2 [2] or 
    other protocol using `LNPBP4` as the protocol-specific tag.
 
