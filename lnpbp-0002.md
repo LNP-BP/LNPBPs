@@ -7,7 +7,8 @@ Authors: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
          Giacomo Zucco,
          Alekos Filini,
          Martino Salvetti,
-         Federico Tenga
+         Federico Tenga,
+         Sosthène
 Comments-URI: https://github.com/LNP-BP/lnpbps/issues/4
 Status: Proposal
 Type: Standards Track
