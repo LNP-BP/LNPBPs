@@ -34,8 +34,7 @@ A number of cryptographic commitment (CC) use cases require the commitment to be
 which may contain multiple public keys and need a clear definition of how the public key that contain the commitment
 can be found within the bitcoin script itself. For instance, embedding CC into Lightning Network (LN) payment channel 
 state updates in the current version requires the modification of an offered HTLC and received HTLC transaction outputs
-[10], and these transactions contain only a single P2WSH output. With the following updates [11] LN will likely change 
-a single P2WPKH (named `to_remote`) output within the commitment transaction, also leading to a requirement for a 
+[10], and these transactions contain only a single P2WSH output. With the use of `option_anchor_outputs` [11] all outputs in the LN commitment transaction becomes P2WSH outputs, also leading to a requirement for a 
 standard and secure way of making CC inside P2(W)SH outputs.
 
 At the same time, P2(W)SH and other non-standard outputs (like explicit P2S outputs, including OP_RETURN type) are not
@@ -73,12 +72,13 @@ Miniscript [16].
 The **committing party**, having a message `msg`:
 1. Collects all public keys instances (named **original public keys**) related to the given transaction output under this standard,
    namely:
-   - a single public key for P2PK, P2PKH, P2WPK, P2WPK-in-P2SH type of outputs, `redeemScripts` or custom non-P2(W)SH
+   - a single public key for P2PK, P2PKH, P2WPK, P2WPK/WSH-in-P2SH type of outputs
      `scriptPubkey` requiring a single signature;
    - an arbitrary public key (even with an unknown corresponding private key), if `OP_RETURN` `scriptPubkey` is used;
-   - an internal public key for a Taproot output;
-   - all signing public keys from a `redeemScript` or custom non-P2(W)SH `scriptPubkey`, defined according to the
-     [algorithm](#deterministic-public-key-extraction-from-bitcoin-script).
+   - an internal public key for a Taproot output (P2TR);
+   - all public keys from a `redeemScript` (for P2(W)SH and P2WSH-in-P2SH, which in case of SegWit is contained within `witnessScript`) or `scriptPubkey` (for custom bare script outputs), extracted according to the
+     [algorithm](#deterministic-public-key-extraction-from-bitcoin-script).  
+   - In case of witness version > 1 the procedure must fail.
    Let's call this set of _n_ keys `P`.
 2. Selects a single public key `Po` from the set of the original public keys, which will contain the commitment.
 3. Runs LNPBP-1 commitment protocol on message `msg`, the set of original public keys `P` and the selected public key
@@ -161,7 +161,7 @@ since it utilises plain value of the public key with the commitment for the OP_R
 The author is not aware of any P2(W)SH or non-OP_RETURN P2S cryptographic commitment schemes existing before this
 proposal, and if any exists, it is highly probable that the standard is not compatible with it.
 
-The proposed standard is compliant with current Taproot proposal [14], since it requires exposure of the complete
+The proposed standard is compliant with current Taproot proposal [14].
 script with all its branches, allowing verification that all public keys participating in the script were part of
 the commitment procedure.
 
