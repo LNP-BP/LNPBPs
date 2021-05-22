@@ -236,8 +236,7 @@ Authors would like to thank:
     <https://github.com/lightningnetwork/lightning-rfc/blob/v1.0/03-transactions.md#offered-htlc-outputs>
     and ["Received HTLC Outputs"]
     <https://github.com/lightningnetwork/lightning-rfc/blob/v1.0/03-transactions.md#received-htlc-outputs>.
-11. Rusty Russel. [Lightning-RFC (BOLTs) pull request #513]
-    <https://github.com/lightningnetwork/lightning-rfc/pull/513>
+11. [BOLT-3 Lightning network specification](https://github.com/lightningnetwork/lightning-rfc/blob/master/03-transactions.md#to_remote-output)
 12. Maxim Orlovsky, et al. Key tweaking: collision-resistant elliptic curve-based commitments (LNPBP-1 Standard).
     <https://github.com/LNP-BP/lnpbps/blob/master/lnpbp-0001.md>
 13. RGB Protocol Specification, version 0.4. "Commitment Scheme" section.
