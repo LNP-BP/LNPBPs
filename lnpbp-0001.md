@@ -10,11 +10,11 @@ Authors: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
          Giacomo Zucco,
          Max Hillebrand,
          Christophe Diederichs
-Comments-URI: https://github.com/LNP-BP/lnpbps/issues/3
-Status: Final
+Comments-URI: <https://github.com/LNP-BP/lnpbps/issues/3>
+Status: Proposal
 Type: Standards Track
 Created: 2019-09-23
-Finalized: 2020-10-08
+Finalized: not yet
 License: CC0-1.0
 ```
 
@@ -45,76 +45,76 @@ Cryptographic commitments embedded into bitcoin transactions is a widely-used
 practice. It's application include timestamping [1], single-use seals [2],
 pay-to-contract settlement schemes [3], sidechains [4], blockchain anchoring
 [5], Taproot, Graftroot proposals [6, 7, 8], Scriptless scripts [9] and many
-others. Nevertheless, existing ways of creating commitments are never being
-standartized with best practices and are not commit to the exact protocol or
+others. Nevertheless, existing ways of creating commitments have never been
+standardized with best practices and do not commit to the exact protocol or
 commitment scheme used. They are also inapplicable to situations where multiple
 public keys are present in some output: how to deterministically detect which
 key is holding the commitment.
 
-The work proposes a standartization for cryptographic commitments that utilize
-elleptic curve (EC) homomorphic properties and allow to commit to an arbitrary
-data using EC public keys or a set of EC public keys in a deterministic and safe
-way.
+This work proposes a standardization for cryptographic commitments that utilize 
+the homomorphic properties of the `Secp256k1` elliptic curve (EC) and allows to 
+commit to arbitrary data using an EC public key or a set of EC public keys 
+from the `Secp256k1` curve in a deterministic and safe way.
 
 
 ## Background
 
 Cryptographic commitments represent a way to commit to some message without
 revealing it. The procedure consists of two phases, **commit** and **reveal**.
-In the *commit* phase a party (**committer**) willing to prove its knowledge of
-some message computes a *cryptographic hash function* over that message,
+In the *commit* phase, a party (**committer**), willing to prove its knowledge of
+some message, computes a *cryptographic hash function* over that message
 producing a message **digest**, which can be provided to other party(ies). In
-the *reveal* phase *committer* reveals the actual message, and each party
-accessing it may check that it's hash is equal to the originally provided
+the *reveal* phase, the *committer* reveals the actual message and each party
+accessing it may check that its hash is equal to the originally provided
 *digest*.
 
-Key tweaking is a procedure for creation of cryptographic commitment to some 
-**message** using elliptic curve properties. The procedure uses descrete log
-problem (DLP) as a prove of existance & knowledge of certain information about
+Key tweaking is a procedure for creation of a cryptographic commitment to some 
+**message** using elliptic curve properties. The procedure uses the discrete log
+problem (DLP) as a proof of existence & knowledge of certain information about
 the message by some party (Alice) without exposing the original message. This is
-done by adding to a public key, for which Alice knows corresponding private key,
+done by adding to a public key, for which Alice knows the corresponding private key,
 a hash of the message multiplied on the generator point `G` of the elliptic
 curve. This produces a **tweaked** public key, containing the commitment. At a
 later time Alice may prove her past knowledge of the original message (at the
 time when the commitment was created) by providing a signature corresponding to
 the original public key and the message itself.
 
-Main advantage of the public key tweak procedure is the fact that a tweaked key,
+The main advantage of the public key tweak procedure is the fact that a tweaked key,
 or a corresponding signature, can't be distinguished from any other public keys
 or signatures; this property allows to hide the actual commitment in such a way
-that it can be only known to those parties which have knowledge of secrets:
-original public and/or key pair **and** a message.
+that it can only be known to those parties which have knowledge of the secrets:
+the original public and/or key pair **and** a message.
 
-This type of commitment was originally proposed as a part of "pay to contract"
+This type of commitment was originally proposed as a part of the "pay to contract"
 concept by Ilja Gerhardt and Timo Hanke in [1] and later used by Eternity Wall
 [2] for the same purpose. However, these proposals were arguably vulnerable to
-length-extension attacks and, more importangly, were not applicable to scenarious
+length-extension attacks and, more importantly, were not applicable to scenarios
 when multiple public keys are used (for instance, multi-signature bitcoin
-transaction outputs). These problems were fixed as a part of sidechain-design
-effort by Blockstream [3], which proposed to utilize HMAC function and
-introduced concept of nonce.
+transaction outputs). These problems were fixed as a part of the sidechain-design
+efforts by Blockstream [3], which proposed to utilize a HMAC function and also
+introduced a nonce in the concept.
 
-Here we propose a standartization of the algorithm based on the original
-Eternity Wall and Blockstream work, enhanced with Pieter Wuille Tagged Hashes
+Here we propose a standardization of the algorithm based on the original
+Eternity Wall and Blockstream work, enhanced with Pieter Wuille's Tagged Hashes
 procedure, coming from a specification on Schnorr signatures in Bitcoin [4],
-also used in Taproot proposal [5]. This procedure prevents cross-protocol
-collisions, such that original message byte sequence can't be reinterpreted
-under other protocol.
+also used in the Taproot proposal [5]. This procedure prevents cross-protocol
+collisions, such that the original message's byte sequence can't be reinterpreted
+under another protocol.
 
 
 ## Motivation
 
-Publication of cryptographic commitments to Bitcoin blockchain is a widely used
+Publication of cryptographic commitments to the Bitcoin blockchain is a widely used
 mechanism, allowing timestamping of the commitment: it can be used to prove the
-fact that some information was known before certain period in time without
+fact that some information was known before a certain period in time without
 revealing the actual information. Use of elliptic curve homomorphic properties
 allows to perform such commitments without increasing the size of the
 transaction, by leveraging existing transaction outputs and not polluting
-blockchain space with excessive OP_RETURN's. However, as of today, there is no
-single standard for such commitments, while different practices, used for the
-purpose (see [1, 2, 3]) contain multiple collision risks, such as possibility of
-the length-extension attacks, cross-protocol reply attacks or can't be applied
-in situations where multiple public keys are used (multisignature or custom
+blockchain space with excessive OP_RETURNs. However, as of today, there is no
+single standard for such commitments. While different practices for that purpose 
+exist (see [1, 2, 3]), they contain multiple collision risks, such as the possibility 
+of length-extension attacks and cross-protocol replay attacks. Or they can't be applied
+in situations where multiple public keys are used (multi-signature or custom
 bitcoin scripts). This standard combines existing best practices into a single
 algorithm, that avoids all of those issues.
 
@@ -123,37 +123,38 @@ algorithm, that avoids all of those issues.
 
 ### Commitment procedure
 
-For a given message `msg`, a set of unique public keys `P := {P1, P2, ..., Pn}`,
-`n > 0`, with some selected original public key `Po` from this set (`Po ∈ S`),
-and a protocol-specific `tag`, known to both parties, **commit procedure** runs
-as follows:
+For a given message `msg`, a list of public keys from the `Secp256k1` curve 
+`P* := {P1, P2, ..., Pn}`, `n > 0`, with some selected original public key `Po` 
+from this list (`Po ∈ S`), and a protocol-specific `tag` known to both parties, 
+the **commit procedure** runs as follows:
 
-1. Reduce set `P` to `P*` by removing all duplicated public keys.
-2. Compute a sum `S` of all unique public keys in set `P*`; fail the protocol if
+1. Reduce list `P*` to a set of unique public keys `P`, by removing all duplicate 
+   public keys from the list.
+3. Compute sum `S` of all unique public keys in set `P`; fail the protocol if
    an overflow over elliptic curve generator point order happens during the 
    procedure.
 3. Construct a byte string `lnpbp1_msg`, composed of the original message
    prefixed with a single SHA256 hash of `LNPBP1` string and a single SHA256
-   hash of protocol-specific tag:  
+   hash of the protocol-specific `tag`:  
    `lnpbp1_msg = SHA256("LNPBP1") || SHA256(tag) || msg`
-4. Compute HMAC-SHA256 of the `lnbp1_msg` using sum of public keys `S`. The 
+4. Compute HMAC-SHA256 of `lnbp1_msg` using the sum of public keys `S`. The 
    resulting value is named **tweaking factor** `f`:  
    `f = HMAC-SHA256(lnpbp1_msg, S)`
-5. Make sure that the tweaking factor is less than order `n` of a generator 
+5. Make sure that the tweaking factor is less than the order `n` of a generator 
    point of the used elliptic curve, such that no overflow can happen when it is 
    added to the original public key. If the order is exceeded, fail the protocol
    indicating the reason of failure.
-6. Multiply the tweaking factor on the used elliptic curve generator point `G`:  
+6. Multiply the tweaking factor `f` on the used elliptic curve generator point `G`:  
    `F = G * f`
-7. Check that the result of 5 is not equal to the point-at-infinity; otherwise 
+7. Check that the result of 6 is not equal to the point-at-infinity; otherwise 
    fail the protocol, indicating the reason of failure, such that the protocol 
-   may be run with another initial public key `P'` value.
-8. Add two elliptic curve points: the original public key `Po` and 
-   point `F`, derived from the tweaking-factor. This will give resulting tweaked 
+   may be run with another initial public key set `P'`.
+8. Add the two elliptic curve points: the original public key `Po` and the
+   point `F`, derived from the tweaking-factor. This will result in a tweaked 
    public key `T`: `T = Po + F`. Check that the result is not equal to the 
-   point-at-infinity of the elliptic curve and fail the protocol otherwise, 
+   point-at-infinity of the elliptic curve or fail the protocol otherwise, 
    indicating the reason of failure, such that the protocol may be run with 
-   another initial public key set.
+   another initial public key list `P*'`.
 
 The final formula for the commitment is:  
 `T = Po + G * HMAC-SHA256(SHA256("LNPBP1") || SHA256(tag) || msg, S)`
@@ -161,7 +162,7 @@ The final formula for the commitment is:
 ### Verification procedure
 
 **Verification procedure** for the commitment (i.e. tweaked public key `T`) can 
-be performed with the provision of the original public key `P` and message `msg` 
+be performed with the provision of the original public key `Po` and message `msg` 
 (assuming that the verifying party is aware of the protocol-specific `tag`
 and `LNPBP1` tag) and runs as follows:
 
@@ -175,7 +176,7 @@ and `LNPBP1` tag) and runs as follows:
 
 ### Reveal procedure
 
-Thus, **reveal data** required for the commitment verification constist of:
+Thus, **reveal data** required for the commitment verification constists of:
 
 1. Original message `msg`
 2. Tweaked public key value `T`
@@ -188,102 +189,111 @@ protocol.
 ## Compatibility
 
 The proposed procedure should be compatible with previously-created
-pay-to-contract-style commitments based on SHA256 hashes under an assumption of
-SHA256 collision resistance. Utilization of duplicated protocol tag hash prefix
+pay-to-contract-style commitments based on SHA256 hashes under the assumption of
+SHA256 collision resistance. Utilization of a double tagged hash protocol prefix
 guarantees randomness in the first 64 bytes of the resulting tweaking string
 `lnpbp1_msg`, reducing probability for these bytes to be interpreted as a
-correct message under one of the previous standards.
+correct message under any of the previous standards.
 
 The procedure is well compliant with Taproot SegWit v1, since it operates with
 a sum of the original public keys, and the Taproot intermediate key is a sum of
 all used public keys, so it can represent a correct input for the protocol.
 
-The tweaked procedure may result in public key that may, or may not have its *y*
+The tweaked procedure may result in a public key that may, or may not have its *y*
 coordinate being a quadratic residue (in terms of BIP-340 [4]). This may present
 a compatibility issue for using this scheme in Taproot/Schnorr-enabled outputs
 and protocols. Nevertheless, this issue may be mitigated by running the
-procedure  second time and replacing the original public key with its own
-negation if the resulted tweaked version  was not square.
+procedure a second time and replacing the original public key with its own
+negation, if the resulting tweaked version was not square.
 
-Proposal relies on a tagged hash prefix similar to the one used in BIP-340, [4],
+The proposal relies on a tagged hash prefix similar to the one used in BIP-340, [4],
 which helps to prevent protocol collisions.
 
 
 ## Rationale
 
-### Commitments with sets of public key, not a single key
+### Commitments with a set of public keys, not a single key
 
-The protocol was designed to support commitments to the multiple public key in
+The protocol was designed to support commitments to multiple public keys in
 order to be usable with non-P2(W)PK outputs. For instance, with Lightning 
 network all outputs in the commitment transaction are non-P2WPK, so all existing
 key tweaking schemes are not usable within LN structure.
 
 ### Use of HMAC insead of simple hash
 
-Reasons: 
-- prevention of length extension attacks;
-- makes impossible to forge a message and a public key equivalent to negation of
-  a tweaking factor multiplied to `G`, which will result in protocol failure.
+Reason: prevention of length-extension attacks
+
+As this protocol aims to be a generic scheme, the message `msg` can be of any length.
+If we would just use a simple hash (e.g. SHA256), users of `LNPBP-1` could **potentially** 
+be vulnerable to length-extension attacks, if they are not careful. To be on the safe side,
+we use HMAC-SHA256, which is resistant to length-extension attacks, but computationally
+more expensive. However, this protocol aims to be used in client-side validation applications 
+primarily and should therefore run many orders of magnitude less often then complete 
+validatation of all public blockchain data. The computational overhead of HMAC on a 
+client node is therefore considered negligible, for the targeted use cases.
 
 ### Use of protocol tags
 
-Reason: prevention of inter-protocol collision attacks
+Reason: prevention of cross-protocol collision attacks
 
-The use of duplicated protocol-specific tag hash was originally proposed by 
-Peter Wuille in [4] and [5] in order to prevent potential reply-attacks for
-interpreting message under different protocols. The choice of duplicated single
-SHA256 hash is made due to the fact that according to Peter Wuille it is not yet
+The use of protocol-specific, double tagged hashes was originally proposed by 
+Peter Wuille in [4] and [5] in order to prevent potential replay-attacks for
+interpreting messages under different protocols. The choice of a duplicate 
+SHA256 prefix hash was made according to Peter Wuille because it is not yet
 used in any existing bitcoin protocol, which increases compatibility and reduces
 chances of collisions with existing protocols.
 
 ### Protocol failures
 
-The protocol may fail during some of **commitment** procedure steps:
-* when the *tweaking factor* `f` exceeds order `n` of the generator point `G`
+The protocol may fail during some of the **commitment** procedure steps:
+* when the *tweaking factor* `f` exceeds the order `n` of the generator point `G`
   for the selected elliptic curve.
-* when the multiplication of Secp256k1 generator point `G` on the *tweaking 
-  factor* `f` results in `F` equal to the point at infinity
+* when the multiplication of the Secp256k1 generator point `G` on the *tweaking 
+  factor* `f` results in `F` being equal to the point at infinity.
 * when the summation of the members of public key set `P` at any stage, or the 
-  addition of the point `F` and the original public key `P` results in
+  addition of the point `F` with the original public key `Po`, results in
   the point at infinity.
 
 The probabilities of these failures are infinitesimal; for instance the
-probability of SHA256 hash value of a random message exceeding `G` order `n` is
-`(2^256 - n) / n`, which is many orders of magnitude is less than a probability
-of CPU failure. The probability of the second and third failure is even lower,
-since the point at infinity may be obtained only if `F` will be equal to `-G` or
+probability of the SHA256 hash value of a random message exceeding `G` order `n` is
+`(2^256 - n) / n`, which is many orders of magnitude less than the probability
+of a CPU failure. The probability of the second or third failure is even lower,
+since the point at infinity may be obtained only if `F` is equal to `-G` or
 `-P`, i.e. the probability of private key collision, equal to the inverse of
 Secp256k1 curve generator point order `n`. The only reason why this kind of 
 failure may happen is when the original public key set was forged in a way that
-some of its key are equivalent to the negation of other keys.
+some of its keys are equivalent to the negation of other keys.
 
 These cases may be ignored by a protocol user -- or, alternatively, in case of
-the protocol failure the user may change `P` value and re-run the protocol.
+the protocol failure the user may change `P`'s value(s) and re-run the protocol.
 
-Protocol falure during the verification procedure may happen only during its
-repetition of the original commitment. This will mean that the original 
-commitment is invalid, since it was not possible to create any commitment with
-the given original data. Thus, such failure will simply indicate negative result
+Protocol failures during the verification procedure may happen only during its
+repetition of the original commitment. This means that the original 
+commitment is invalid, since it was not possible to create a commitment with
+the given original data. Thus, such failure will simply indicate a negative result
 of the verification procedure.
 
-### Choise of elliptic curve generator point order `n` over field order `p`
+### Choice of elliptic curve generator point order `n` over field order `p`
 
 While it is possible to ignore elliptic curve overflow over its order `n` during
 public key addition, since it does not provide a security risk for the 
 commitment, it was chosen to stick to this scheme because of the following:
 * Current implementation of Secp256k1 library (libsecp256k1) fails on overflow
-  during key tweaking procedure. Since this library is widely used in bitcoin
-  ecosystem (and Bitcoin Core) it is desirable to maintain LNPBP-1 compatible
-  with its functionality
-* Probability of the overflow is still infinissimal, being comparable to
-  probability of `3.7*10^-66` for a tweaking factor not fitting into the
+  during key tweaking procedure. Since this library is widely used in the Bitcoin
+  ecosystem (and Bitcoin Core), it is desirable to maintain LNPBP-1 compatible
+  with this functionality.
+* Probability of an overflow is still infinissimal, being comparable to
+  probability of `3.7*10^-66`, for a tweaking factor not fitting into the
   elliptic curve field order `p`.
 
 ### No nonce
 
-Nonce is not required since the original public key, hidden in the resulting
-tweaked key, presents sufficient entropy for an attacker to be not able to guess
-the original message even for short and standard messages.
+In certain circumstances a simple hash based commitment might be vulnerable to brute force
+vocabulary attacks, if the syntax and semantics of the invoking protocol are known to the attacker. 
+This is usually countered with adding additional entropy (e.g. a nonce) to each hash. In our case 
+the public key `S` already provides enough entropy, which - when added via HMAC-SHA256 to 
+the whole `msg` - sufficiently counters such vocabulary attacks, preventing an attacker from 
+successfully guessing the original message, even for short and standard messages.
 
 
 ## Reference implementation

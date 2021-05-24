@@ -8,13 +8,14 @@ Comments-URI: https://github.com/LNP-BP/lnpbps/issues/8
 Status: Proposal
 Type: Standards Track
 Created: 2019-10-28
+Finalized: not yet
 License: CC0-1.0
 ```
 
 ## Abstract
 
 The standard defines a way to commit to a multiple independent messages with a
-single digest such that the fact of each particular commitment and a protocol
+single digest such that the fact of each particular commitment, and a protocol
 under which the commitment is made may be proven without exposing the
 information about the other messages and used protocols.
 
@@ -59,8 +60,8 @@ keeping confidentiality of the information requested from Bitcoin Core by SPV
 clients [6].
 
 Multiple commitments under different protocols are identified with a unique
-per-protocol 32-byte identifiers (like tagged hashes of protocol name and/or
-characteristic parameters) and serialized into 32-byte slots within `N * 32`
+per-protocol 256-bit identifiers (like tagged hashes of protocol name and/or
+characteristic parameters) and serialized into 256-bit slots within `N * 32`
 byte buffer such as `N >> M`, where `M` is the number of the individual
 commitments. The rest of the slots is filled with random data deterministically
 generated from a single entropy source. The position `n` for a commitment with
@@ -82,62 +83,86 @@ present.
 0 byte                  32 byte                64 byte
 ```
 
+![LNPBP4 visualisation](./assets/lnbp-0004.png)
+
 ## Specification
 
 ### Commitment
 
-For a given set of `M` messages `msg1`..`msgM` under protocols with corresponding unique ids `id`..`idM` the commitment
-procedure runs as follows:
-1. Pick a 32-bytes of entropy from uniform entropy source (like the same which is used for generating private keys)
-   and compute SHA256-tagged hash according to BIP-340 tagged hash procedure [4] with prefix `LNPBP4:random`.
-2. Generate a corresponding public key on Secp256k1 elliptic curve (`R`) and compute it's 256-bit bitcoin hash
-   (`HASH256(R)`).
-3. Pick a number `N >> M`, for instance `N = M * 2` and allocate `32 * N` byte buffer.
-4. For each of the messages:
-   - create a corresponding cryptographic commitment `cI` according to the per-message protocol,
-   - compute it's BIP-340 tagged hash [4] using the value of the protocol id `idI` as the protocol-specific tag,
-   - compute `n = idI mod N`,
-   - if the slot `n` is not used, serialize a `cI` hash into it using bitcoin-style hash serialization format;
+For a given set of `M` messages `msg1`..`msgM` under protocols with 
+corresponding unique ids `id`..`idM` the commitment procedure runs as follows:
+1. Pick 64 bits of entropy from uniform entropy source (like the same 
+   which is used for generating private keys). This entropy will be 
+   identified with `entropy_seed` hereinafter.
+2. Pick a 16-bit number `N >> M`, for instance `N = M * 2` and allocate `32*N`
+   byte buffer (such that the maximum buffer length MUST not exceed 2^21, i.
+   e 2 MB).
+3. For each of the messages:
+   - create a corresponding cryptographic commitment `cI` according to the 
+     per-message protocol, 
+   - compute it's BIP-340 tagged hash [4] using the value of the protocol id 
+     `idI` as the protocol-specific tag (serialized as little-endian number), 
+   - compute `n = idI mod N` (if the protocol identifier is a hash, it should be
+     converted into unsigned integer of appropriate dimensionality using little-
+     endian notation),
+   - if the slot `n` is not used, serialize a `cI` hash into it using 
+     bitcoin-style hash serialization format; 
      otherwise go to step 3 and generate a new `N' >> N`.
-5. For each of the slots that remain empty (the slot number is represented by `j`):
-   - tweak public key `R` with it's own hash `H(R)` `j` times: `Rj = R + J * H(R) * G)`
-   - compute a 256-bit bitcoin hash of `Rj` and serialize it into the slot `j` using bitcoin-style hash serialization
-     format.
-6. Compute commitment to the resulting buffer with LNPBP-1, LNPBP-2 or other protocol using `LNPBP4` as the
-   protocol-specific tag.
+4. For each of the slots that remain empty (the slot number is represented 
+   by `j`):
+   - compute SHA256-tagged hash of `seed_entropy || j`, where both values are 
+     serialized as little-endian byte strings (the total length of resulting 
+     byte string for hashing should be 272 bits). The tagged hash procedure 
+     must run according to BIP-340 [4] using UTF-8 representation of 
+     `LNPBP4:entropy` string as the tag.
+5. Compute commitment to the resulting buffer with LNPBP-1 [1], LNPBP-2 [2] or 
+   other protocol using `LNPBP4` as the protocol-specific tag.
 
 ### Partial reveal
 
-A party needing to reveal the proofs for the commitment to the message `msgA` under this scheme and conceal the rest
-of the messages and protocols participating in the commitment has to publish the following data:
-1. A source of the message `msgA` and information about its protocol with id `idA`.
-2. A full byte sequence of the buffer resulting from the step 5 of the [commitment procedure](#commitment).
+A party needing to reveal the proofs for the commitment to the message `msgA` 
+under this scheme and conceal the rest of the messages and protocols 
+participating in the commitment has to publish the following data:
+1. A source of the message `msgA` and information about its protocol with id 
+   `idA`.
+2. A full byte sequence of the buffer resulting from the step 5 of the 
+   [commitment procedure](#commitment).
 
 ### Reveal with full disclosure
 
-A party needing to reveal the proofs for all commitments to all the messages and prove that there were no
-other commitments made must publish the following data:
-1. A source of the messages `msg1`..`msgM` and information about their protocols with id `id1`..`idM`.
-2. A full byte sequence of the buffer resulting from the step 5 of the [commitment procedure](#commitment).
-3. An original public key `R` from the step 2 of the [commitment procedure](#commitment).
+A party needing to reveal the proofs for all commitments to all the messages 
+and prove that there were no other commitments made must publish the 
+following data:
+1. A source of the messages `msg1`..`msgM` and information about their 
+   protocols with id `id1`..`idM`.
+2. A full byte sequence of the buffer resulting from the step 5 of the 
+   [commitment procedure](#commitment).
+3. An entropy value `entropy_seed` from the step 2 of the 
+   [commitment procedure](#commitment).
 
 ### Per-message verification
 
-A party provided with the data from the [partial reveal procedure](#partial-reveal) and wishing to verify the commitment
+A party provided with the data from the 
+[partial reveal procedure](#partial-reveal) and wishing to verify the commitment
 to the message MUST use the following procedure:
-1. Compute `n = idA mod N`, where `idA` is the message-specific protocol id and `N` is the length of the commitment
-   buffer in bytes divided on 32.
-2. Compute commitment to the message by following the procedure from the step 3 of the [commitment scheme](#commitment)
-3. Verify that the resulting 32-bit commitment is equal to the commitment stored in `n`'s 32-byte slot of the commitment
-   buffer; fail verification otherwise.
+1. Compute `n = idA mod N`, where `idA` is the message-specific protocol id 
+   and `N` is the length of the commitment buffer in bytes divided on 32.
+2. Compute commitment to the message by following the procedure from the 
+   step 3 of the [commitment scheme](#commitment)
+3. Verify that the resulting 32-bit commitment is equal to the commitment 
+   stored in `n`'s 32-byte slot of the commitment buffer; fail verification 
+   otherwise.
 
 ### Verification of the full disclosure
 
-A party provided with the data from the [reveal with full disclosure procedure](#reveal-with-full-disclosure) may verify
-that the provided commitment buffer contains only commitment to the provided messages (and no other commitments) by
-allocating a new empty (all bytes set to `0x00`) commitment buffer of the same length as the revealed commitment buffer,
-and re-running steps 4-6 from the [commitment procedure](#commitment). If the new buffer match per-byte the revealed
-commitment buffer, then the verification succeeded; otherwise it has failed.
+A party provided with the data from the 
+[reveal with full disclosure procedure](#reveal-with-full-disclosure) may verify
+that the provided commitment buffer contains only commitment to the provided 
+messages (and no other commitments) by allocating a new empty (all bytes set 
+to `0x00`) commitment buffer of the same length as the revealed commitment 
+buffer, and re-running steps 4-6 from the [commitment procedure](#commitment)
+. If the new buffer match per-byte the revealed commitment buffer, then the 
+verification succeeded; otherwise it has failed.
 
 
 ## Compatibility
@@ -147,28 +172,49 @@ TBD
 
 ## Rationale
 
-TBD
+### Maximum buffer size restrictions
+
+The maximum buffer size defines the potential size of the data provided for 
+client-side-validation, and may represent a form of DoS attack vector, when 
+the party allocating/creating buffer defines a storage and network data 
+transfer requirements for all the future verifying parties. From the other 
+side, the maximum buffer size defines the upper bound for the maximum number 
+of commitments that may be embedded within a single transaction  output. We 
+have selected a 16-bit limit for the number of slots, limiting the maximum 
+buffer size to 2 MBs, and maximum theoretical number of simultaneous 
+commitments under the same transaction output to 2^16. However, in practice, 
+the latter limit will never be reached, because assuming the uniform 
+distribution of protocol-specific identifier hashes a committing party will 
+be able to produce simultaneous commitment under `1^8` different protocols 
+in average.
 
 
 ## Reference implementation
 
-TBD
+Reference implementation can be found inside client-side-validation foundation
+rust library <https://github.com/LNP-BP/client_side_validation/blob/master
+/commit_verify/src/multi_commit.rs> and represents integral part of this 
+standard.
 
 
 ## Acknowledgements
 
 ## References
 
-1. Maxim Orlovsky, et al. Key tweaking: collision-resistant elliptic curve-based commitments (LNPBP-1 Standard).
+1. Maxim Orlovsky, et al. Key tweaking: collision-resistant elliptic 
+   curve-based commitments (LNPBP-1 Standard).
    <https://github.com/LNP-BP/lnpbps/blob/master/lnpbp-0001.md>
-2. Maxim Orlovsky, et al. Deterministic embedding of LNPBP1-type commitments into `scriptPubkey` of a transaction output
-   (LNPBP-2 Standard). <https://github.com/LNP-BP/lnpbps/blob/master/lnpbp-0002.md>
-3. Giacomo Zucco, et al. Deterministic definition of transaction output containing cryptographic commitment
-   (LNPBP-3 Standard). <https://github.com/LNP-BP/lnpbps/blob/master/lnpbp-0003.md>
+2. Maxim Orlovsky, et al. Deterministic embedding of LNPBP1-type commitments 
+   into `scriptPubkey` of a transaction output (LNPBP-2 Standard). 
+   <https://github.com/LNP-BP/lnpbps/blob/master/lnpbp-0002.md>
+3. Giacomo Zucco, et al. Deterministic definition of transaction output 
+   containing cryptographic commitment (LNPBP-3 Standard).
+   <https://github.com/LNP-BP/lnpbps/blob/master/lnpbp-0003.md>
 4. Pieter Wuille, et al. BIP-340: Schnorr Signatures for secp256k1.
    <https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki>
-5. Bloom, Burton H. (1970), "Space/Time Trade-offs in Hash Coding with Allowable Errors",
-   Communications of the ACM, 13 (7): 422–426, doi:10.1145/362686.362692.
+5. Bloom, Burton H. (1970), "Space/Time Trade-offs in Hash Coding with 
+   Allowable Errors", Communications of the ACM, 13 (7): 422–426, doi:10.
+   1145/362686.362692.
    <https://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.641.9096>
 6. Mike Hearn, Matt Corallo. BIP-37: Connection Bloom filtering.
    <https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki>
