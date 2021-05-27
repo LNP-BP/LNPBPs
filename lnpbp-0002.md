@@ -115,8 +115,7 @@ The **committing party**, having a message `msg`, must:
 1. Collect all public keys instances (named **original public key set**) 
    related to the given transaction output, defined as:
    - a single public key for P2PK, P2PKH, P2WPK, P2WPK/WSH-in-P2SH type of outputs;
-   - an arbitrary public key (even with an unknown corresponding private key), 
-     if `OP_RETURN` `scriptPubkey` is used;
+   - If `OP_RETURN` `scriptPubkey` is used, it must contain a single public key serialized in BIP-340 xcoordonly form right after `OP_RETURN` opcode; for all other forms of `OP_RETURN` data algorithm must fail;
    - an internal public key for a Taproot output (P2TR);
    - all public keys from a `redeemScript` (for P2(W)SH and P2WSH-in-P2SH, 
      which in case of SegWit is contained within `witnessScript`) or `scriptPubkey` 
