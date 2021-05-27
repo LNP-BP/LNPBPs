@@ -150,7 +150,7 @@ text.
 
 ## Reference implementation
 
-<https://github.com/LNP-BP/rust-lnpbp/blob/master/src/bp/dbc/tx.rs>
+<https://github.com/LNP-BP/rust-lnpbp/blob/master/src/dbc/tx.rs>
 
 
 ## Acknowledgements
