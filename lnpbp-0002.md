@@ -58,44 +58,43 @@ others.
 
 ## Motivation
 
-A number of cryptographic commitment (CC) use cases require the commitment to be 
-present within non-P2(W)PK(H) outputs,which may contain multiple public keys 
-and need a clear definition of how the public key that contain the commitment
-can be found within the bitcoin script itself. For instance, embedding CC into 
-Lightning Network (LN) payment channel state updates in the current version requires 
-the modification of an offered HTLC and received HTLC transaction outputs[10], 
-and these transactions contain only a single P2WSH output. With the use of 
-`option_anchor_outputs` [11] all outputs in the LN commitment transaction becomes 
-P2WSH outputs, also leading to a requirement for a standard and secure way of making 
-CC inside P2(W)SH outputs.
+A number of cryptographic commitment (CC) use cases require the commitment to be
+present within non-P2(W)PK(H) outputs,which may contain multiple public keys and
+need a clear definition of how the public key that contain the commitment can be
+found within the bitcoin script itself. For instance, embedding CC into
+Lightning Network (LN) payment channel state updates in the current version
+requires the modification of an offered HTLC and received HTLC transaction
+outputs[10], and these transactions contain only a single P2WSH output. With the
+use of `option_anchor_outputs` [11] all outputs in the LN commitment transaction
+becomes P2WSH outputs, also leading to a requirement for a standard and secure
+way of making CC inside P2(W)SH outputs.
 
-At the same time, P2(W)SH and other non-standard outputs (like explicit bare 
-script outputs, including OP_RETURN type) are not trivial to use for CC, 
-since CC requires deterministic definition of the actual commitment case. 
-Normally, one of the most secure and standard CC scheme uses homomorphic 
-properties of the public keys [12]; however multiple public keys may be used 
-within non-P2(W)PK(H) output. Generally, these outputs present a hash of the 
-actual script, hiding the used public keys or their hashes. Moreover, it raises 
-the question of how the public key within Bitcoin Script may be defined/detected, 
-since it is possible to represent the public key in a number of different ways 
-within bitcoin script itself (explicitly or by a hash, and it's not trivial to 
-understand where some hash stands for a public key or other type of preimage data). 
-All this raises a requirement to define a standard way and some best practices 
-for CC in non-P2(W)PK(H) outputs. This proposal tries to address the issue by 
-proposing a common standard on the use of public-key based CC [12] within 
-all possible transaction output types.
-
+At the same time, P2(W)SH and other non-standard outputs (like explicit bare
+script outputs, including OP_RETURN type) are not trivial to use for CC, since
+CC requires deterministic definition of the actual commitment case. Normally,
+one of the most secure and standard CC scheme uses homomorphic properties of the
+public keys [12]; however multiple public keys may be used within non-P2(W)PK(H)
+output. Generally, these outputs present a hash of the actual script, hiding the
+used public keys or their hashes. Moreover, it raises the question of how the
+public key within Bitcoin Script may be defined/detected, since it is possible
+to represent the public key in a number of different ways within bitcoin script
+itself (explicitly or by a hash, and it's not trivial to understand where some
+hash stands for a public key or other type of preimage data). All this raises a
+requirement to define a standard way and some best practices for CC in non-P2(W)
+PK(H) outputs. This proposal tries to address the issue by proposing a common
+standard on the use of public-key based CC [12] within all possible transaction
+output types.
 
 ## Design
 
-The protocol requires that exactly one public key of all keys present or 
-referenced in `scriptPubkey` and `redeemScript` must contain the commitment 
-(made with LNPBP-1 procedure) to a given message. This commitment is 
-deterministically singular, i.e. it can be proven that there is no other 
-alternative message that the given transaction output commits to under this 
-protocol. The singularity is achieved by committing to the sum of all original 
-(i.e. before the message commitment procedure) public keys controlling the 
-spending of a given transaction output. Thus, the given protocol covers all 
+The protocol requires that exactly one public key of all keys present or
+referenced in `scriptPubkey` and `redeemScript` must contain the commitment
+(made with LNPBP-1 procedure) to a given message. This commitment is
+deterministically singular, i.e. it can be proven that there is no other
+alternative message that the given transaction output commits to under this
+protocol. The singularity is achieved by committing to the sum of all original
+(i.e. before the message commitment procedure) public keys controlling the
+spending of a given transaction output. Thus, the given protocol covers all
 possible options for `scriptPubkey` transaction output types.
 
 The commitment consists of the updated `scriptPubkey` value, which may be embed 
@@ -114,12 +113,16 @@ from a given Bitcoin script, based on Miniscript [16].
 The **committing party**, having a message `msg`, must:
 1. Collect all public keys instances (named **original public key set**) 
    related to the given transaction output, defined as:
-   - a single public key for P2PK, P2PKH, P2WPK, P2WPK/WSH-in-P2SH type of outputs;
-   - If `OP_RETURN` `scriptPubkey` is used, it must contain a single public key serialized in BIP-340 xcoordonly form right after `OP_RETURN` opcode; for all other forms of `OP_RETURN` data algorithm must fail;
+   - a single public key for P2PK, P2PKH, P2WPK, P2WPK/WSH-in-P2SH type 
+     of outputs;
+   - If `OP_RETURN` `scriptPubkey` is used, it must contain a single public key 
+     serialized in BIP-340 xcoordonly form right after `OP_RETURN` opcode; for 
+     all other forms of `OP_RETURN` data algorithm must fail;
    - an internal public key for a Taproot output (P2TR);
    - all public keys from a `redeemScript` (for P2(W)SH and P2WSH-in-P2SH, 
-     which in case of SegWit is contained within `witnessScript`) or `scriptPubkey` 
-     (for custom bare script outputs), extracted according to the [algorithm](#deterministic-public-key-extraction-from-bitcoin-script).  
+     which in case of SegWit is contained within `witnessScript`) or 
+     `scriptPubkey` (for custom bare script outputs), extracted according to the 
+     [algorithm](#deterministic-public-key-extraction-from-bitcoin-script).  
    - In case of witness version > 1 the procedure must fail.
    Let's call this set of _n_ keys `P`.
 2. Select a single public key `Po` from the set of the original public keys, 
@@ -127,12 +130,12 @@ The **committing party**, having a message `msg`, must:
    private key being controlled by the committing party, which will simplify 
    future spending of the output.
 3. Run [LNPBP-1 commitment procedure](https://github.com/LNP-BP/LNPBPs/blob/master/lnpbp-0001.md#commitment-procedure) 
-   on message `msg`, the set of original public keys `P`, the selected public key
-   `Po` and a protocol-specific `tag`, provided by the upstream protocol using this 
-   standard. The procedure returns a tweaked public key `T`.
+   on message `msg`, the set of original public keys `P`, the selected public 
+   key `Po` and a protocol-specific `tag`, provided by the upstream protocol 
+   using this standard. The procedure returns a tweaked public key `T`.
 4. Construct necessary scripts and generate `scriptPubkey` of the required 
-   type. If OP_RETURN `scriptPubkey` format is used, it MUST be serialized according to 
-   the following rules:
+   type. If OP_RETURN `scriptPubkey` format is used, it MUST be serialized 
+   according to the following rules:
    - only a single `OP_RETURN` code MUST be present in the `scriptPubkey` and it
      MUST be the first byte of it;
    - it must be followed by 32-byte push of the public key value `P` from the 
