@@ -7,7 +7,8 @@ Title: Deterministic embedding of cryptographic commitments into transaction
 Authors: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
          Giacomo Zucco,
          Martino Salvetti,
-         Federico Tenga
+         Federico Tenga,
+         Sosthène
 Comments-URI: https://github.com/LNP-BP/lnpbps/issues/4
 Status: Proposal
 Type: Standards Track
@@ -57,51 +58,50 @@ others.
 
 ## Motivation
 
-A number of cryptographic commitment (CC) use cases require the commitment to be
-present within non-P2(W)PK(H) outputs, which may contain multiple public keys
-and need a more clear definition of how the public key can be found within the
-the bitcoin script itself. For instance, embedding CC into Lightning Network
-(LN) payment channel state updates in the current version require modification
-of an offered HTLC and received HTLC transaction outputs [10], and these
-transactions contain only a single P2WSH output. With the following updates [11]
-LN will likely change a single P2WPKH (named `to_remote`) output within the
-commitment transaction, also leading to a requirement for a standard and secure
-way of making CC inside P2(W)SH outputs.
+A number of cryptographic commitment (CC) use cases require the commitment to be 
+present within non-P2(W)PK(H) outputs,which may contain multiple public keys 
+and need a clear definition of how the public key that contain the commitment
+can be found within the bitcoin script itself. For instance, embedding CC into 
+Lightning Network (LN) payment channel state updates in the current version requires 
+the modification of an offered HTLC and received HTLC transaction outputs[10], 
+and these transactions contain only a single P2WSH output. With the use of 
+`option_anchor_outputs` [11] all outputs in the LN commitment transaction becomes 
+P2WSH outputs, also leading to a requirement for a standard and secure way of making 
+CC inside P2(W)SH outputs.
 
-At the same time, P2(W)SH and other non-standard outputs (like explicit bare
-script outputs, including OP_RETURN type) are not trivial to use in CC
-commitments, since CC requires deterministic definition of the actual commitment
-case. Normally, one of the most secure and standard CC scheme uses homomorphic
-properties of the public keys [12]; however multiple public keys may be used
-within non-P2(W)PK(H) output. Generally, these outputs present a hash of the
-actual script, hiding the information of the used public key or their hashes.
-Moreover, it raises the question of how the public key within Bitcoin Script may
-be defined/detected, since it is possible to represent the public key in a
-number of different ways within bitcoin script itself (explicitly or by a hash,
-and it's not trivial to understand where some hash stands for a public key or
-other type of preimage data). This all raises a requirement to define a standard
-way and some best practices for CC in non-P2(W)PK(H) outputs. This proposal
-tries to address the issue by proposing a common standard on the use of
-public-key based CC [12] withing all possible transaction output types.
+At the same time, P2(W)SH and other non-standard outputs (like explicit bare 
+script outputs, including OP_RETURN type) are not trivial to use for CC, 
+since CC requires deterministic definition of the actual commitment case. 
+Normally, one of the most secure and standard CC scheme uses homomorphic 
+properties of the public keys [12]; however multiple public keys may be used 
+within non-P2(W)PK(H) output. Generally, these outputs present a hash of the 
+actual script, hiding the used public keys or their hashes. Moreover, it raises 
+the question of how the public key within Bitcoin Script may be defined/detected, 
+since it is possible to represent the public key in a number of different ways 
+within bitcoin script itself (explicitly or by a hash, and it's not trivial to 
+understand where some hash stands for a public key or other type of preimage data). 
+All this raises a requirement to define a standard way and some best practices 
+for CC in non-P2(W)PK(H) outputs. This proposal tries to address the issue by 
+proposing a common standard on the use of public-key based CC [12] within 
+all possible transaction output types.
 
 
 ## Design
 
-The protocol requires that exactly one public key of all keys present or
-referenced in `scriptPubkey` and `redeemScript` must contain the commitment
-(made with LNPBP-1 procedure) to a given message. This commitment is
-deterministically singular, i.e. it can be proven that there is no other
-alternative message that the given transaction output commits to under this
-protocol. The singularity is achieved by committing to the sum of all original
-(i.e. before the message commitment procedure) public keys applies the spending
-of a given transaction output. Thus, the given protocol modifies LNPBP-1
-standard [12] for all possible options of `scriptPubkey` transaction output
-types.
+The protocol requires that exactly one public key of all keys present or 
+referenced in `scriptPubkey` and `redeemScript` must contain the commitment 
+(made with LNPBP-1 procedure) to a given message. This commitment is 
+deterministically singular, i.e. it can be proven that there is no other 
+alternative message that the given transaction output commits to under this 
+protocol. The singularity is achieved by committing to the sum of all original 
+(i.e. before the message commitment procedure) public keys controlling the 
+spending of a given transaction output. Thus, the given protocol covers all 
+possible options for `scriptPubkey` transaction output types.
 
-The commitment consists of the updated `scriptPubkey` value, which may be embed
-into the transaction output, and an **extra-transaction proof** (ETP), required
+The commitment consists of the updated `scriptPubkey` value, which may be embed 
+into the transaction output, and an **extra-transaction proof** (ETP), required 
 for the verification of the commitment. The structure and information in the
-proof depends on the used `scriptPubkey` type.
+proof depends on the actual `scriptPubkey` type.
 
 The protocol includes an algorithm for deterministic extraction of public keys
 from a given Bitcoin script, based on Miniscript [16].
@@ -112,29 +112,26 @@ from a given Bitcoin script, based on Miniscript [16].
 ### Commitment procedure
 
 The **committing party**, having a message `msg`, must:
-1. Collect all unique public key instances (named **original public key set** 
-   `P`) related to a given transaction output, defined as:
-   - a single public key for P2PK, P2PKH, P2WPK, P2WPK-in-P2SH type of outputs;
-   - an arbitrary public key (even with an unknown corresponding private key),
-     if `OP_RETURN` type of `scriptPubkey` is used;
-   - an intermediate public key for the Taproot-based (SegWit v1) output;
-   - all public keys extracted using 
-     [algorithm](#deterministic-public-key-extraction-from-bitcoin-script) from 
-     either:
-     * `witnessScript` contained in the `witness` stack for native v0 P2WSH
-       and legacy P2WSH-in-P2SH SegWit outputs;
-     * `redeemScript` contained in top  `scriptSig` for non-SegWit P2SH
-     * or bare (custom) script-based `scriptPubkey`
-2. Select a single public key `Po` from the set `P` of the original public keys 
-   for the tweaking procedure. It is advised that the corresponding private key
-   being controlled by the committing party, which will simplify future spending
-   of the output.
-3. Run [LNPBP-1 commitment procedure](https://github.com/LNP-BP/LNPBPs/blob/master/lnpbp-0001.md#commitment-procedure)
-   for the message `msg`, selected public key `Po`, public key set `P` and a
-   protocol-specific `tag`, provided by the upstream protocol using this 
-   standard.
+1. Collect all public keys instances (named **original public key set**) 
+   related to the given transaction output, defined as:
+   - a single public key for P2PK, P2PKH, P2WPK, P2WPK/WSH-in-P2SH type of outputs;
+   - If `OP_RETURN` `scriptPubkey` is used, it must contain a single public key serialized in BIP-340 xcoordonly form right after `OP_RETURN` opcode; for all other forms of `OP_RETURN` data algorithm must fail;
+   - an internal public key for a Taproot output (P2TR);
+   - all public keys from a `redeemScript` (for P2(W)SH and P2WSH-in-P2SH, 
+     which in case of SegWit is contained within `witnessScript`) or `scriptPubkey` 
+     (for custom bare script outputs), extracted according to the [algorithm](#deterministic-public-key-extraction-from-bitcoin-script).  
+   - In case of witness version > 1 the procedure must fail.
+   Let's call this set of _n_ keys `P`.
+2. Select a single public key `Po` from the set of the original public keys, 
+   which will contain the commitment. It is advised that the corresponding 
+   private key being controlled by the committing party, which will simplify 
+   future spending of the output.
+3. Run [LNPBP-1 commitment procedure](https://github.com/LNP-BP/LNPBPs/blob/master/lnpbp-0001.md#commitment-procedure) 
+   on message `msg`, the set of original public keys `P`, the selected public key
+   `Po` and a protocol-specific `tag`, provided by the upstream protocol using this 
+   standard. The procedure returns a tweaked public key `T`.
 4. Construct necessary scripts and generate `scriptPubkey` of the required 
-   type. If OP_RETURN `scriptPubkey` is used, it MUST be serialized according to
+   type. If OP_RETURN `scriptPubkey` format is used, it MUST be serialized according to 
    the following rules:
    - only a single `OP_RETURN` code MUST be present in the `scriptPubkey` and it
      MUST be the first byte of it;
@@ -144,7 +141,7 @@ The **committing party**, having a message `msg`, must:
      rules does not start with 0x02 as it's first (least significant) byte, the
      procedure must fail; or it may be repeated with a new public key picked at
      step 1.
-6. Construct and store an **extra-transaction proof** (ETP), which structure 
+5. Construct and store an **extra-transaction proof** (ETP), which structure 
    depends on the generated `scriptPubkey` type:
    a) value of `Po`, corresponding to:
       * the original intermediary public key for V1 witness Taproot output;
@@ -161,17 +158,17 @@ The **committing party**, having a message `msg`, must:
 
 ### Reveal procedure
 
-The **reveal protocol** is usually run between the committing and verifying
-parties; however it may be used by the committing party to publicly reveal the
-proofs of the commitment. These proofs include:
+The **reveal protocol** is usually run between the committing and verifying 
+parties; however it may be used by the committing party to make the proofs 
+of the commitment public. These proofs include:
 * `scriptPubkey` from the transaction output containing the commitment;
 * *original message* `msg` to which the *comitting party* has committed;
-* *extra-transaction proof* (ETP), constructed at the 6th step of the
+* *extra-transaction proof* (ETP), constructed at the 5th step of the 
   [commitment protocol](#commitment);
-* (optional) proofs that the `scriptPubkey` is a part of the transaction
-  included into the bitcoin chain containing the largest known amount of work at
+* (optional) proofs that the `scriptPubkey` is a part of a transaction 
+  included into the bitcoin chain containing the largest known amount of work at 
   depth satisfying a *verifying party* security policy (these proofs may be
-  reconstructed/verified by the verifying party itself using its trusted Bitcoin
+  reconstructed/verified by the verifying party itself using its trusted Bitcoin 
   Core server);
 
 
@@ -181,7 +178,7 @@ The verification process runs by repeating steps of the commitment protocol
 using the information provided during the *reveal phase* and verifying the
 results for their internal consistency; specifically:
 1. Original public key set reconstruction:
-   - if *extra-transaction proof* (ETP) provides script data (pt. 6.b from the
+   - if *extra-transaction proof* (ETP) provides script data (pt. 5.b from the
      commitment procedure) parse it according to deterministic key collection
      [algorithm](#deterministic-public-key-extraction-from-bitcoin-script)
      and collect all the original public keys from it; fail the verification
@@ -195,8 +192,8 @@ results for their internal consistency; specifically:
    version of the public key in the same way as was perfomed at step 4 of the
    commitment procedure. If there can be multiple matching `scriptPubkey` types
    for a given data, construct a variant for each of them.
-4. Make sure that one of the `scriptPubkey'` values generated at the  previous
-   step, byte by byte matches the `scriptPubkey` provided during the  *reveal
+4. Make sure that one of the `scriptPubkey'` values generated at the previous
+   step, matches byte by byte the `scriptPubkey` provided during the *reveal
    phase*; otherwise fail the verification.
 
 
@@ -289,7 +286,7 @@ These types of outputs are still widely used in the industry and it was decided
 to continue their support, which may be dropped in a higher-level requirements
 by protocols operating on top of LNPBP-2.
 
-### Committing to the sum all public keys present in the script
+### Committing to the sum of all public keys present in the script
 
 Having some of the public keys tweaked with the message digest, and some left
 intact will make it impossible to define a simple and deterministic commitment
@@ -363,8 +360,7 @@ Authors would like to thank:
     <https://github.com/lightningnetwork/lightning-rfc/blob/v1.0/03-transactions.md#offered-htlc-outputs>
     and ["Received HTLC Outputs"]
     <https://github.com/lightningnetwork/lightning-rfc/blob/v1.0/03-transactions.md#received-htlc-outputs>.
-11. Rusty Russel. [Lightning-RFC (BOLTs) pull request #513]
-    <https://github.com/lightningnetwork/lightning-rfc/pull/513>
+11. [BOLT-3 Lightning network specification](https://github.com/lightningnetwork/lightning-rfc/blob/master/03-transactions.md#to_remote-output)
 12. Maxim Orlovsky, et al. Key tweaking: collision-resistant elliptic 
     curve-based commitments (LNPBP-1 Standard).
     <https://github.com/LNP-BP/lnpbps/blob/master/lnpbp-0001.md>
