@@ -69,21 +69,7 @@ the identifier `id` is computed as `n = id mod N`, guaranteeing that no two
 commitments under the same protocol with a given `id` may be simultaneously
 present.
 
-```
-      Protocol-1 -+                                 Protocol-2 -+
-  MSG-1   |       V                             MSG-2   |       V
-    V     V     Id-1                              V     V     Id-2
-[Tagged SHA256]   V                           [Tagged SHA256]   V
-       |       [mod 3]                               |       [mod 3]
-       |          V                                  |          V
-       V          1                                  V          3
-+----------------------+----------------------+----------------------+
-| MSG-1 commitment     | Random hash          | MSG-2 commitment     |
-+----------------------+----------------------+----------------------+
-0 byte                  32 byte                64 byte
-```
-
-![LNPBP4 visualisation](./assets/lnbp-0004.png)
+![LNPBP4 visualisation](./assets/lnpbp-0004.png)
 
 ## Specification
 
@@ -100,8 +86,6 @@ corresponding unique ids `id`..`idM` the commitment procedure runs as follows:
 3. For each of the messages:
    - create a corresponding cryptographic commitment `cI` according to the 
      per-message protocol, 
-   - compute it's BIP-340 tagged hash [4] using the value of the protocol id 
-     `idI` as the protocol-specific tag (serialized as little-endian number), 
    - compute `n = idI mod N` (if the protocol identifier is a hash, it should be
      converted into unsigned integer of appropriate dimensionality using little-
      endian notation),
