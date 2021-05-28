@@ -9,7 +9,8 @@ Authors: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
          Martino Salvetti,
          Giacomo Zucco,
          Max Hillebrand,
-         Christophe Diederichs
+         Christophe Diederichs,
+         Yojoe <https://github.com/yojoe>
 Comments-URI: <https://github.com/LNP-BP/lnpbps/issues/3>
 Status: Proposal
 Type: Standards Track
