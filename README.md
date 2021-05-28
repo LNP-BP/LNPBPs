@@ -91,6 +91,8 @@ No  | Layer                       | Vertical                   | Title | Authors
  83 | Application (5)             | Smart contracts            | OpenTimestamps proof serialization | Peter Todd | Standard | Final
  84 | Application (5)             | Smart contracts            | OpenTimestamps calendar and attestation services | Peter Todd | Standard | Final
 [85]| Client-validated data (3)   | Consensus layer            | Strict encoding of Bitcoin-related data types | Maxim Orlovsky | Standard | Planned
+[86]| Client-validated data (3)   | Smart contracts            | AluVM: virtual machine for client-side-validation | Maxim Orlovsky | Standard | Draft
+ 87 | Client-validated data (3)   | Smart contracts            | AluVM extended instructions for handling RGB state validation | Maxim Orlovsky | Standard | Planned
 100 | Transaction graph (2)       | Bitcoin protocol           | Scalable & confidential single-use-seal commitment layer 1 | Standard | Brainstorming
 
 ### Invited or planned proposals to join LNP/BP standards family
@@ -177,3 +179,4 @@ Game theory                | Game-theoretical setups for trustless protocols    
 [80]: https://github.com/opentimestamps/opentimestamps-server/blob/master/doc/merkle-mountain-range.md
 [81]: lnpbp-0081.md
 [85]: https://github.com/LNP-BP/client_side_validation/blob/master/strict_encoding/src/bitcoin.rs
+[86]: https://github.com/internet2-org/aluvm-spec
