@@ -130,23 +130,25 @@ the **commit procedure** runs as follows:
 
 1. Reduce list `P*` to a set of unique public keys `P`, by removing all duplicate 
    public keys from the list.
-3. Compute sum `S` of all unique public keys in set `P`; fail the protocol if
+2. Compute sum `S` of all unique public keys in set `P`; fail the protocol if
    an overflow over elliptic curve generator point order happens during the 
    procedure.
 3. Construct a byte string `lnpbp1_msg`, composed of the original message
    prefixed with a single SHA256 hash of `LNPBP1` string and a single SHA256
    hash of the protocol-specific `tag`:  
    `lnpbp1_msg = SHA256("LNPBP1") || SHA256(tag) || msg`
-4. Compute HMAC-SHA256 of `lnbp1_msg` using the sum of public keys `S`. The 
-   resulting value is named **tweaking factor** `f`:  
-   `f = HMAC-SHA256(lnpbp1_msg, S)`
+4. Serialize the aggregated public key `S` into a 64 byte array `S*` of 
+   uncompressed coordinates x and y in big-endian order and use `S*` to
+   authenticate `lnbp1_msg` via HMAC-SHA256. The resulting value is named 
+   the **tweaking factor** `f`:  
+   `f = HMAC-SHA256(lnpbp1_msg, S*)`
 5. Make sure that the tweaking factor is less than the order `n` of a generator 
    point of the used elliptic curve, such that no overflow can happen when it is 
    added to the original public key. If the order is exceeded, fail the protocol
    indicating the reason of failure.
 6. Multiply the tweaking factor `f` on the used elliptic curve generator point `G`:  
    `F = G * f`
-7. Check that the result of 6 is not equal to the point-at-infinity; otherwise 
+7. Check that the result of step 6 is not equal to the point-at-infinity; otherwise 
    fail the protocol, indicating the reason of failure, such that the protocol 
    may be run with another initial public key set `P'`.
 8. Add the two elliptic curve points: the original public key `Po` and the
@@ -157,19 +159,20 @@ the **commit procedure** runs as follows:
    another initial public key list `P*'`.
 
 The final formula for the commitment is:  
-`T = Po + G * HMAC-SHA256(SHA256("LNPBP1") || SHA256(tag) || msg, S)`
+`T = Po + G * HMAC-SHA256(SHA256("LNPBP1") || SHA256(tag) || msg, S*)`
 
 ### Verification procedure
 
 **Verification procedure** for the commitment (i.e. tweaked public key `T`) can 
-be performed with the provision of the original public key `Po` and message `msg` 
+be performed with the provision of the list of public keys `P*`, 
+the original public key `Po` and the message `msg` 
 (assuming that the verifying party is aware of the protocol-specific `tag`
 and `LNPBP1` tag) and runs as follows:
 
 1. Make sure that the provided tweaked public key `T` lies on the elliptic curve 
    and is not equal to the point at infinity.
 2. Compute 
-   `T' = Po + G * HMAC-SHA256(SHA256("LNPBP1") || SHA256(tag) || msg, S)` 
+   `T' = Po + G * HMAC-SHA256(SHA256("LNPBP1") || SHA256(tag) || msg, S*)` 
    repeating the *commitment procedure* according to the rules above.
 3. Make sure that `T' = T` and report verification success; otherwise report 
    verification failure.
@@ -231,6 +234,29 @@ more expensive. However, this protocol aims to be used in client-side validation
 primarily and should therefore run many orders of magnitude less often then complete 
 validatation of all public blockchain data. The computational overhead of HMAC on a 
 client node is therefore considered negligible, for the targeted use cases.
+
+### Public key serialization to 64 byte uncompressed form
+
+Reason: HMAC needs a byte array as input
+
+HMAC requires a byte array as input for the `key` argument to authenticate a message. 
+This `key` is not intended to be an EC key, it can be anything. It's purpose is to add 
+entropy to the resulting hash value to counter length attacks on the underlying message.
+
+We use HMAC's `key` argument for two purposes:
+1. Commit the message `msg` to a specific public key `S`.
+2. As entropy for the security of HMAC-SHA256 against lenght extension attacks.
+
+For the serialization of the public key `S`, we rely on the defacto standard format for 
+uncompressed public keys in Bitcoin, which is followed by libraries like 
+[rust-secp256k1](https://docs.rs/secp256k1/0.20.1/src/secp256k1/key.rs.html#290-306).
+However, this results in a 65 byte array with the first byte being the prefix having the
+value `0x04`, denoting an uncompressed public key. However, the first byte doesn't add any
+entropy and a `key` larger than 64 byte causes HMAC-SH256 to do an additional round of hashing. 
+Therefore, we use `rust-secp256k1`'s `key.serialize_uncompressed()` function, but strip the 
+first byte from the resulting value, so we end up with a 64 byte array of:
+- 32 bytes representing the x coordinate in big-endian order,
+- followed by 32 bytes representing the y coordinate in big-endian order.
 
 ### Use of protocol tags
 
@@ -363,7 +389,7 @@ pub fn commit(
         .map_err(|_| Error::SumInfiniteResult)?;
 
     let mut hmac_engine =
-        HmacEngine::<sha256::Hash>::new(&pubkey_sum.serialize());
+        HmacEngine::<sha256::Hash>::new(&pubkey_sum.serialize_uncompressed());
 
     hmac_engine.input(&LNPBP1_HASHED_TAG[..]);
     hmac_engine.input(&protocol_tag[..]);
