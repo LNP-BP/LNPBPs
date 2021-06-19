@@ -163,7 +163,7 @@ Game theory                | Game-theoretical setups for trustless protocols    
 [34]: https://github.com/storm-org/storm-spec
 [35]: https://github.com/LNP-BP/LNPBPs/pull/97
 [36]: https://github.com/LNP-BP/LNPBPs/issues/21
-[37]: https://github.com/LNP-BP/LNPBPs/pull/23/files
+[37]: lnpbp-0037.md
 [38]: https://github.com/LNP-BP/FAQ/blob/master/Presentation%20slides/Universal%20LNP-BP%20invoices.pdf
 [39]: lnpbp-0039.md
 [40]: https://github.com/storm-org/storm-spec
