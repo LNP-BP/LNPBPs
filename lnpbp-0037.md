@@ -1,11 +1,11 @@
 ```
-LNPBP: XXXX
+LNPBP: 0037
 Layer: Application (5)
-Field: Invoicing
-Title: Assets-aware Bitcoin addresses and Lightning invoices
+Vertical: Smart contracts
+Title: Invoicing formats for RGB-20 fungible assets schema
 Authors: Alekos Filini <alekos.filini@gmail.com>
-Comments-URI: https://github.com/LNP-BP/lnpbps/issues/XXX
-Status: Draft
+Comments-URI: hhttps://github.com/LNP-BP/LNPBPs/pull/23
+Status: Rejected
 Type: Standards Track
 Created: 2020-04-02
 License: CC0-1.0
