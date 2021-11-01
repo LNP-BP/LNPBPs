@@ -8,6 +8,7 @@ Comments-URI: https://github.com/LNP-BP/lnpbps/issues/<____>
 Status: Draft
 Type: Standards Track
 Created: <____>
+Finalized: not yet
 License: CC0-1.0
 ```
 
@@ -16,6 +17,8 @@ License: CC0-1.0
 ## Background
 
 ## Motivation
+
+## Design
 
 ## Specification
 
