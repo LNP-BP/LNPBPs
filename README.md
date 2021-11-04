@@ -74,8 +74,8 @@ No  | Layer                       | Vertical                   | Title | Authors
  47 | OSI Application (i7)        | Lightning network protocol | Multipeer lightning channels | Maxim Orlovsky | Standard | Planned
  48 | OSI Application (i7)        | Lightning network protocol | Bilateral channel funding | Maxim Orlovsky | Standard | Draft
  49 | OSI Application (i7)        | Lightning network protocol | Synchronized multi-hop state updates via delegation in Lightning network | Maxim Orlovsky, Christian Decker | Standard | Planned
-[50]| OSI Application (i7)        | Lightning network protocol | Bifrost: generalized Lightning network protocol core | Maxim Orlovsky | Standard | Planned
- 51 | OSI Application (i7)        | Lightning network protocol | Channel transaction structure negotiation using PSBTs (generalized LN) | Maxim Orlovsky, Christian Decker | Standard | Planned
+[50]| OSI Application (i7)        | Lightning network protocol | Bifrost: generalized Lightning network protocol core | Maxim Orlovsky | Standard | Draft
+[51]| OSI Application (i7)        | Lightning network protocol | Bifrost: channel management protocol | Maxim Orlovsky | Standard | Draft
 52-56| Reserved                   | | For the future use by lightning network protocol extensions
  57 | OSI Application (i7)        | Lightning network protocol | Decentralized naming & name resolution system | Maxim Orlovsky | Standard | Planned
 [58]| Client-validated data (3)   | Cryptographic primitives   | Apophis: distributed elliptic curve-based key creation with shared secrets | Maxim Orlovsky | Standard | Draft
@@ -106,7 +106,7 @@ No  | Layer                       | Vertical                   | Title | Authors
 3. Generalized lightning network standartisation and related [eltoo] and [PTLC]
    proposals
 4. Micropayments:
-   - [LSAT Authentication and Payments for the Lightning-Native Web][LSAT] 
+   - [LSAT Authentication and Payments for the Lightning-Native Web][LSAT]
      by Olaoluwa Osuntokun
 
 
@@ -121,7 +121,7 @@ No | Title                   | Description                                      
 5  | Application             | Specific high-level applications build of underlying layers                              | Assets, audit, storage, computing, messaging, decentralized exchanges and marketplaces
 
 Additionally to these layers there is a set of network protocol layers organized
-according to [ISO OSI model][ISO-OSI], with numbers prefixed using `i` symbol 
+according to [ISO OSI model][ISO-OSI], with numbers prefixed using `i` symbol
 ("complex dimension").
 
 ## Verticals for LNP/BP proposals:
@@ -173,6 +173,7 @@ Game theory                | Game-theoretical setups for trustless protocols    
 [44]: https://github.com/LNP-BP/descriptor-wallet/blob/master/src/descriptor/script.rs
 [46]: https://github.com/LNP-BP/LNPBPs/pull/98
 [50]: https://github.com/LNP-BP/LNPBPs/pull/97
+[51]: https://github.com/LNP-BP/LNPBPs/pull/97
 [58]: https://github.com/pandoracore/typhon-spec
 [59]: https://github.com/pandoracore/typhon-spec
 [60]: https://github.com/pandoracore/ibiss-spec
