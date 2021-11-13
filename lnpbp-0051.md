@@ -24,15 +24,19 @@ License: CC0-1.0
 
 ### Bifrost transaction requirements
 
-Bifrost requires all off-chain transactions always have v2 and use v1 witness
-P2TR outputs (or later witness versions). Transaction inputs, aside from funding
-transaction, also must be v1 witness inputs spending P2TR outputs (or above).
+Bifrost requires all off-chain transactions always be of version 2. Transaction
+outputs which are internal to the channel (i.e. spend by other offchain
+transactions participating in channel) MUST use v1 witness P2TR outputs (or
+later witness versions). The scripts in taproot key path spends MUST be
+miniscript-compatible.
 
-For funding onchain transactions and funding outputs of channel level 1 this
+For on-chain funding transactions and funding outputs of channel level 1 this
 requirement is released to witness v0 or above. The reason for lower requirement
 is the interoperability with the legacy lightning network, allowing migration of
 existing channels opened in legacy network to Bifrost.
 
+There is no specific requirements for outputs which are not internal for the
+channel.
 
 ### Channel coordination
 
