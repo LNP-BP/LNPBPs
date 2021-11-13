@@ -39,7 +39,7 @@ No  | Layer                       | Vertical                   | Title | Authors
   7 | Client-validated data (3)   | Consensus layer            | Strict encoding | Peter Todd, Maxim Orlovsky | Standard | Planned
  [8]| Client-validated data (3)   | Cryptographic primitives   | Single-use-seals | Peter Todd, Maxim Orlovsky | Informational | Draft
  [9]| Client-validated data (3)   | Consensus layer            | Client-side validation | Peter Todd, Maxim Orlovsky | Informational | Draft
- 10 | Transaction graph (2)       | Bitcoin protocol           | Bitcoin transaction output-based single-use-seals with pay-to-contract commitments | Peter Todd et al | Standard | Proposal
+ 10 | Transaction graph (2)       | Bitcoin protocol           | Bitcoin transaction output-based single-use-seals | Peter Todd et al | Standard | Proposal
 [11]| Client-validated graphs (4) | Smart contracts            | RGB: Client-validated confidential smart contracts using bitcoin transaction graphs for Bitcoin and Lightning Network | Maxim Orlovsky et al | Informational | Proposal
  12 | Client-validated graphs (4) | Consensus layer            | RGB Schema: client-side validation rules for RGB smart contracts | Maxim Orlovsky | Standard | Planned
  13 | Client-validated graphs (4) | Consensus layer            | RGB client-side verification and data serialization | Maxim Orlovsky | Standard | Planned
@@ -94,6 +94,8 @@ No  | Layer                       | Vertical                   | Title | Authors
 [85]| Client-validated data (3)   | Consensus layer            | Strict encoding of Bitcoin-related data types | Maxim Orlovsky | Standard | Planned
 [86]| Client-validated data (3)   | Smart contracts            | AluVM: virtual machine for client-side-validation | Maxim Orlovsky | Standard | Draft
  87 | Client-validated data (3)   | Smart contracts            | AluVM extended instructions for handling RGB state validation | Maxim Orlovsky | Standard | Planned
+ 88-91 | Reserved                  | | For the future use by AluVM-specific standards
+[92]| Transaction (1)             | Bitcoin protocol           | Deterministic embedding of cryptographic commitments into transaction input | Maxim Orlovsky et al | Standard | Planned
 100 | Transaction graph (2)       | Bitcoin protocol           | Scalable & confidential single-use-seal commitment layer 1 | Standard | Brainstorming
 
 ### Invited or planned proposals to join LNP/BP standards family
@@ -106,7 +108,7 @@ No  | Layer                       | Vertical                   | Title | Authors
 3. Generalized lightning network standartisation and related [eltoo] and [PTLC]
    proposals
 4. Micropayments:
-   - [LSAT Authentication and Payments for the Lightning-Native Web][LSAT] 
+   - [LSAT Authentication and Payments for the Lightning-Native Web][LSAT]
      by Olaoluwa Osuntokun
 
 
@@ -121,7 +123,7 @@ No | Title                   | Description                                      
 5  | Application             | Specific high-level applications build of underlying layers                              | Assets, audit, storage, computing, messaging, decentralized exchanges and marketplaces
 
 Additionally to these layers there is a set of network protocol layers organized
-according to [ISO OSI model][ISO-OSI], with numbers prefixed using `i` symbol 
+according to [ISO OSI model][ISO-OSI], with numbers prefixed using `i` symbol
 ("complex dimension").
 
 ## Verticals for LNP/BP proposals:
