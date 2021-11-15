@@ -4,7 +4,7 @@ Layer: OSI Application (i7)
 Vertical: Lightning network protocol
 Title: Bifrost: generalized Lightning network protocol core
 Author: Dr Maxim Orlovsky <orlovsky@lnp-bp.org>
-Comments-URI: https://github.com/LNP-BP/lnpbps/pulls/<____>
+Comments-URI: https://github.com/LNP-BP/lnpbps/pulls/97
 Status: Draft
 Type: Standards Track
 Created: 2021-11-01

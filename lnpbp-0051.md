@@ -2,7 +2,7 @@
 LNPBP: 0051
 Layer: OSI Application (i7)
 Vertical: Lightning network protocol
-Title: CBifrost: channel management protocol
+Title: Bifrost: channel management protocol
 Author: Dr Maxim Orlovsky <orlovsky@lnp-bp.org>
 Comments-URI: https://github.com/LNP-BP/lnpbps/pulls/97
 Status: Draft

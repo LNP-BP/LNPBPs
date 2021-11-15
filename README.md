@@ -74,7 +74,11 @@ No  | Vertical                   | Title | Authors | Type | Status
  49 | Lightning network protocol | Synchronized multi-hop state updates via delegation in Lightning network | Maxim Orlovsky, Christian Decker | Standard | Planned
 [50]| Lightning network protocol | Bifrost: generalized Lightning network protocol core | Maxim Orlovsky | Standard | Planned
 [51]| Lightning network protocol | Bifrost: channel management protocol | Maxim Orlovsky | Standard | Draft
-52-56| Reserved                   | | For the future use by lightning network protocol extensions
+[52]| Lightning network protocol | Bifrost routed messaging system based on Sphix protocol | Maxim Orlovsky | Standard | Draft
+[53]| Lightning network protocol | Milti-peer payment channels for Bifrost | Maxim Orlovsky | Standard | Draft
+[54]| Lightning network protocol | Channel factories based on Bifrost protocol | Maxim Orlovsky | Standard | Draft
+[55]| Lightning network protocol | HTLC channel synchronization in Bifrost | Maxim Orlovsky | Standard | Draft
+[56]| Lightning network protocol | PTLC channel synchronization in Bifrost | Maxim Orlovsky | Standard | Draft
  57 | Lightning network protocol | Decentralized naming & name resolution system | Maxim Orlovsky | Standard | Planned
 [58]| Cryptographic primitives   | Apophis: distributed elliptic curve-based key creation with shared secrets | Maxim Orlovsky | Standard | Draft
 [59]| Bitcoin protocol           | Typhon: trustless Bitcoin sidechains | Maxim Orlovsky | Standard | Draft
@@ -155,8 +159,13 @@ Game theory                | Game-theoretical setups for trustless protocols    
 [43]: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-February/018381.html
 [44]: https://github.com/LNP-BP/descriptor-wallet/blob/master/src/descriptor/script.rs
 [46]: https://github.com/LNP-BP/LNPBPs/pull/98
-[50]: https://github.com/LNP-BP/LNPBPs/pull/97
-[51]: https://github.com/LNP-BP/LNPBPs/pull/97
+[50]: lnpbp-0050.md
+[51]: lnpbp-0051.md
+[52]: lnpbp-0052.md
+[53]: lnpbp-0053.md
+[54]: lnpbp-0054.md
+[55]: lnpbp-0055.md
+[56]: lnpbp-0056.md
 [58]: https://github.com/pandoracore/typhon-spec
 [59]: https://github.com/pandoracore/typhon-spec
 [60]: https://github.com/pandoracore/ibiss-spec
