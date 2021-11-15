@@ -121,7 +121,7 @@ The input of *HTLC spending transactions* spends *offered HTLC* (for *HTLC timeo
   - 0 for HTLC-success
   - `CLTV_EXPIRY` for HTLC-timeout
 - Input:
-  - nSeq: `SELF_DELAY` (must be odd to use P2C deterministic bitcoin commitments)
+  - nSeq: `SELF_DELAY` (must be even to use P2C deterministic bitcoin commitments)
   - control block: `0xC0/0xC1 <first branch tapleaf-hash>`
   - rest of witness stack for *HTLC-success*:
     - `KEY_HTLC_LOCAL`
