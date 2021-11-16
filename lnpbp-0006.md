@@ -9,7 +9,7 @@ Type: Standards Track
 Created: 2021-11-15
 Finalized: not yet
 License: CC0-1.0
-Related standards: LNPBP-1, 2, 4, 92
+Related standards: LNPBP-1, 2, 4, 7, 9, 92
 ```
 
 ## Abstract
@@ -60,7 +60,6 @@ using the information provided during the *reveal phase* and verifying the
 result is equal to the provided proofs. If the commitment procedure fails
 at any of the steps, the verification procedure MUST also fail.
 
-
 ### Anchor structure and serialization
 
 Ahcnor consists of the following fields, serialized according to the strict
@@ -106,8 +105,17 @@ being encoded as P2WSH-in-P2SH instead of P2WSH) the verifying party MUST
 fail verification even if other option is satisfied with other (non-specified)
 encoding.
 
-
 ### Concealment of the anchor data
+
+Anchor data contain extra information which is not required for the DBC 
+validation and represents additional proofs for non-DBC validation procedures.
+This information is contained in `commitment` field of the *anchor* data
+structure containing LNPBP-4 multi-message commitment entrypy value, used
+for proving the absense of some specific protocol within the commitment tree.
+This information MAY be discarded for privacy reasons when the *anchor* data
+are passed to a third-party with a special *conceal* procedure as described
+in LNPBP-4 and LNPBP-9 standards.
+
 
 ## Compatibility
 
