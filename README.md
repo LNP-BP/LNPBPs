@@ -166,3 +166,4 @@ Game theory                | Game-theoretical setups for trustless protocols    
 [81]: lnpbp-0081.md
 [85]: https://github.com/LNP-BP/client_side_validation/blob/master/strict_encoding/src/bitcoin.rs
 [86]: https://github.com/internet2-org/aluvm-spec
+[92]: lnpbp-0092.md
