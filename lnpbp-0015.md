@@ -1,6 +1,5 @@
 ```
 LNPBP: 0015
-Layer: OSI Session (i5)
 Vertical: Lightning network protocol
 Title: LNP handshake and encryption in network communications based on Noise_XK (BOLT-8 extract)
 Author: BOLT-8 and Noise_XK protocol authors
@@ -11,30 +10,30 @@ Created: 2020-12-05
 License: CC0-1.0
 ```
 
-# LNP handshake and encryption in network communications
+- [Abstract](#abstract)
+- [Background](#background)
+- [Motivation](#motivation)
+- [Design](#design)
+  - [Authenticated Key Agreement Handshake](#authenticated-key-agreement-handshake)
+  - [Handshake Versioning](#handshake-versioning)
+  - [Noise Protocol Instantiation](#noise-protocol-instantiation)
+- [Specification](#specification)
+  - [Handshake State](#handshake-state)
+  - [Handshake State Initialization](#handshake-state-initialization)
+  - [Handshake Exchange](#handshake-exchange)
+    - [Act One](#act-one)
+    - [Act Two](#act-two)
+    - [Act Three](#act-three)
+- [Compatibility](#compatibility)
+- [Rationale](#rationale)
+- [Reference implementation](#reference-implementation)
+- [Acknowledgements](#acknowledgements)
+- [References](#references)
+- [Copyright](#copyright)
+- [Test vectors](#test-vectors)
+
 
 ## Abstract
-
-## Table of Contents
-
-* [Abstract](#abstract)
-* [Background](#background)
-* [Motivation](#motivation)
-* [Design](#design)
-    * [Authenticated Key Agreement Handshake](#authenticated-key-agreement-handshake)
-    * [Handshake Versioning](#handshake-versioning)
-    * [Noise Protocol Instantiation](#noise-protocol-instantiation)
-* [Specification](#specification)
-    * [Handshake State](#handshake-state)
-    * [Handshake State Initialization](#handshake-state-initialization)
-    * [Handshake Exchange](#handshake-exchange)
-* [Compatibility](#compatibility)
-* [Rationale](#rationale)
-* [Reference implementation](#reference-implementation)
-* [Acknowledgements](#acknowledgements)
-* [References](#references)
-* [Copyright](#copyright)
-* [Test vectors](#test-vectors)
 
 ## Background
 

@@ -1,6 +1,5 @@
 ```
 LNPBP: 0020
-Layer: Application (5)
 Vertical: Smart contracts
 Title: RGB fungible assets schema (RGB-20)
 Authors: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,

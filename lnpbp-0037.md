@@ -1,6 +1,5 @@
 ```
 LNPBP: 0037
-Layer: Application (5)
 Vertical: Smart contracts
 Title: Invoicing formats for RGB-20 fungible assets schema
 Authors: Alekos Filini <alekos.filini@gmail.com>
@@ -10,6 +9,25 @@ Type: Standards Track
 Created: 2020-04-02
 License: CC0-1.0
 ```
+
+- [Abstract](#abstract)
+- [Background](#background)
+- [Motivation](#motivation)
+- [Specification](#specification)
+  - ["On-Chain" Addresses](#on-chain-addresses)
+    - [UTXO-based addresses](#utxo-based-addresses)
+      - [Extended Variant](#extended-variant)
+      - [Short Variant](#short-variant)
+  - [Lightning Invoices](#lightning-invoices)
+- [Compatibility](#compatibility)
+- [Rationale](#rationale)
+  - [UTXO-based addresses](#utxo-based-addresses-1)
+- [Reference implementation](#reference-implementation)
+- [Acknowledgements](#acknowledgements)
+- [References](#references)
+- [Copyright](#copyright)
+- [Test vectors](#test-vectors)
+
 
 ## Abstract
 

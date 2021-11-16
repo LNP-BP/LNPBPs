@@ -1,6 +1,5 @@
 ```
 LNPBP: 0004
-Layer: Transaction (1)
 Vertical: Client-validated data (3)
 Title: Multi-message commitment scheme with zero-knowledge provable unique properties
 Author: Dr Maxim Orlovsky <orlovsky@protonmail.ch>
@@ -11,6 +10,25 @@ Created: 2019-10-28
 Finalized: not yet
 License: CC0-1.0
 ```
+
+- [Abstract](#abstract)
+- [Background and Motivation](#background-and-motivation)
+- [Design](#design)
+- [Specification](#specification)
+  - [Commitment](#commitment)
+  - [Partial reveal](#partial-reveal)
+  - [Reveal with full disclosure](#reveal-with-full-disclosure)
+  - [Per-message verification](#per-message-verification)
+  - [Verification of the full disclosure](#verification-of-the-full-disclosure)
+- [Compatibility](#compatibility)
+- [Rationale](#rationale)
+  - [Maximum buffer size restrictions](#maximum-buffer-size-restrictions)
+- [Reference implementation](#reference-implementation)
+- [Acknowledgements](#acknowledgements)
+- [References](#references)
+- [Copyright](#copyright)
+- [Test vectors](#test-vectors)
+
 
 ## Abstract
 

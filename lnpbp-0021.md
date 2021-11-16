@@ -1,6 +1,5 @@
 ```
 LNPBP: 0021
-Layer: Application (5)
 Vertical: Smart contracts
 Title: RGB non-fungible assets schema for collectibles (RGB-21)
 Authors: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,

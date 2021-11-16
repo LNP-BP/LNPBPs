@@ -1,6 +1,5 @@
 ```
 LNPBP: 0081
-Layer: Client-validated data (3)
 Vertical: Cryptographic primitives
 Title: Tagged merkle trees for client-side-validation
 Author: Dr Maxim Orlovsky  <orlovsky@protonmail.ch>,
@@ -11,6 +10,20 @@ Type: Standards Track
 Created: 2021-05-11
 License: CC0-1.0
 ```
+
+- [Abstract](#abstract)
+- [Background](#background)
+- [Motivation](#motivation)
+- [Design](#design)
+- [Specification](#specification)
+- [Compatibility](#compatibility)
+- [Rationale](#rationale)
+- [Reference implementation](#reference-implementation)
+- [Acknowledgements](#acknowledgements)
+- [References](#references)
+- [Copyright](#copyright)
+- [Test vectors](#test-vectors)
+
 
 ## Abstract
 

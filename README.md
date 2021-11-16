@@ -31,7 +31,7 @@ Criteria for a LNP/BP specification proposal:
 No  | Vertical                   | Title | Authors | Type | Status
 ----:| -------------------------- | ----- | ------- | ---- | ------
  [1]| Bitcoin protocol           | Key tweaking: collision-resistant elliptic curve-based commitments | Maxim Orlovsky et al | Standard | Proposal
- [2]| Bitcoin protocol           | Deterministic embedding of cryptographic commitments into transaction output scriptPubkey | Maxim Orlovsky et al | Standard | Proposal
+ [2]| Bitcoin protocol           | Deterministic embedding of cryptographic commitments into bitcoin transaction output | Maxim Orlovsky et al | Standard | Proposal
  [3]| Bitcoin protocol           | Deterministic definition of transaction output containing cryptographic commitment | Giacomo Zucco et al | Standard | Proposal
  [4]| Cryptographic primitives   | Multi-message commitment scheme with zero-knowledge provable unique properties | Maxim Orlovsky | Standard | Proposal
  [5]| Bitcoin protocol           | Universal short Bitcoin identifiers for blocks, transactions and their inputs & outputs | Christian Decker, MAxim Orlovsky | Standard | Proposal
