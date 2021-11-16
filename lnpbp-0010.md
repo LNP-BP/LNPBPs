@@ -7,7 +7,7 @@ Author: Dr Maxim Orlovsky <orlovsky@lnp-bp.org>,
         Giacomo Zucco,
         Federico Tenga,
         Martino Salvetti
-Comments-URI: https://github.com/LNP-BP/lnpbps/pulls/<____>
+Comments-URI: https://github.com/LNP-BP/lnpbps/pulls/117
 Status: Draft
 Type: Standards Track
 Created: 2021-11-15
@@ -42,7 +42,7 @@ Related standards: LNPBP-1, 2, 3, 4, 7, 8, 9, 6, 92
   - [Bitcoin sidechains](#bitcoin-sidechains)
   - [Pay-to-address](#pay-to-address)
   - [Hardware wallets](#hardware-wallets-1)
-  - [](#)
+  - [Software wallets](#software-wallets)
 - [Rationale](#rationale)
   - [Why both S2C and P2C schemes are supported](#why-both-s2c-and-p2c-schemes-are-supported)
   - [Why multiple nSeq bits are used](#why-multiple-nseq-bits-are-used)
@@ -94,6 +94,9 @@ commitments under different protocols inside the same seal witness.
 
 ## Specification
 
+Single-use-seal related terms in this specifications are defined according to
+LNPBP-8 standard.
+
 ### Single-use-seal definition
 
 ### Single-use-seal concealment
@@ -139,7 +142,7 @@ commitments under different protocols inside the same seal witness.
 
 ### Hardware wallets
 
-### 
+### Software wallets
 
 
 ## Rationale
