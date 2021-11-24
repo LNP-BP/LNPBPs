@@ -145,7 +145,7 @@ TBD:
 * Confidential Assets
 * DLCs
 * Bitcoin-compatible blockchains
-* [ChainX]https://github.com/chainx-org/ChainX
+* [ChainX]（https://github.com/chainx-org/ChainX）
 * Atomic swaps
 
 ## Rationale
