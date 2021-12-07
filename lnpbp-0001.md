@@ -1,6 +1,6 @@
 ```
 LNPBP: 0001
-Vertical: Bitcoin protocol
+Vertical: Cryptographic primitives
 Title: Key tweaking: collision-resistant elliptic curve-based commitments
 Authors: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
          Dr Rene Pickhardt,
