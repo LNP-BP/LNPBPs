@@ -8,7 +8,7 @@ Status: Draft
 Type: Standards Track
 Created: 2021-12-07
 Finalized: not yet
-Based on: BIP-32, BOLT-3
+Based on: BIP-32, BIP-43, BOLT-3
 License: CC0-1.0
 ```
 
@@ -24,6 +24,9 @@ License: CC0-1.0
   - [LNP Node](#lnp-node)
   - [Electrum](#electrum)
 - [Rationale](#rationale)
+  - [Choice of `9735h` for BIP-43 purpose](#choice-of-9735h-for-bip-43-purpose)
+  - [Use of channel ids for channel basepoint derivation](#use-of-channel-ids-for-channel-basepoint-derivation)
+  - [Selection of bits for channel basepoint](#selection-of-bits-for-channel-basepoint)
 - [Reference implementation](#reference-implementation)
 - [Acknowledgements](#acknowledgements)
 - [References](#references)
@@ -135,6 +138,32 @@ LNP Node is fully compatible with the standard
 
 
 ## Rationale
+
+### Choice of `9735h` for BIP-43 purpose
+
+BIP-43 defines that new purposes must be created with new BIPs and their 
+hardened index representations must match that BIP number. Since we this
+standard is created before BIP proposal for a new purpose, we need to
+choose some large number which will not be used by BIPs in a foreseable
+future. `9735` is the unicode character value for lightning (☇) also used
+as a port number in lightning network.
+
+### Use of channel ids for channel basepoint derivation
+
+Channels may be created asynchronously and it is hard to get sequential
+numbering within the lightning node. Also, if the node data are lost, it will 
+be hard to guess which channel had which sequence index. Thus, the only way to
+get a channel-specific derivation index is to use some of channel id bits.
+
+We can't use channel funding transaction id since it will be known only upon
+key derivation.
+
+### Selection of bits for channel basepoint
+
+We can use only 31 bits, since the most significant bit of derivation index is
+occupied by hardering flag (see BIP-32). We start with the second most 
+significant channel bit to make it easy visually compare index with channel id
+without any bit shifts.
 
 
 ## Reference implementation
