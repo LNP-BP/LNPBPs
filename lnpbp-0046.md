@@ -94,6 +94,7 @@ Derivation paths for the base points are the following:
 
 Basepoint name | Derivation suffix | Full derivation path
 -------------- | -------------------------------------------
+Funding        | `/0`              | `m/9735'/chain'/1'/ln_ver'/channel'/0`
 Payment        | `/1`              | `m/9735'/chain'/1'/ln_ver'/channel'/1`
 Delayed        | `/2`              | `m/9735'/chain'/1'/ln_ver'/channel'/2`
 Revocation     | `/3`              | `m/9735'/chain'/1'/ln_ver'/channel'/3`
