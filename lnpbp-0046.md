@@ -27,6 +27,7 @@ License: CC0-1.0
   - [Choice of `9735h` for BIP-43 purpose](#choice-of-9735h-for-bip-43-purpose)
   - [Use of channel ids for channel basepoint derivation](#use-of-channel-ids-for-channel-basepoint-derivation)
   - [Selection of bits for channel basepoint](#selection-of-bits-for-channel-basepoint)
+  - [Use of unhardeded derivation between basepoints](#use-of-unhardeded-derivation-between-basepoints)
 - [Reference implementation](#reference-implementation)
 - [Acknowledgements](#acknowledgements)
 - [References](#references)
@@ -93,13 +94,13 @@ Derivation paths for the base points are the following:
 
 Basepoint name | Derivation suffix | Full derivation path
 -------------- | -------------------------------------------
-Payment        | `/1'`             | `m/9735'/chain'/1'/ln_ver'/channel'/1'`
-Delayed        | `/2'`             | `m/9735'/chain'/1'/ln_ver'/channel'/2'`
-Revocation     | `/3'`             | `m/9735'/chain'/1'/ln_ver'/channel'/3'`
-Per-commitment | `/4'`             | `m/9735'/chain'/1'/ln_ver'/channel'/4'`
-HTLC           | `/5'`             | `m/9735'/chain'/1'/ln_ver'/channel'/5'`
-PTLC           | `/6'`             | `m/9735'/chain'/1'/ln_ver'/channel'/6'`
-Shutdown       | `/7'`             | `m/9735'/chain'/1'/ln_ver'/channel'/7'`
+Payment        | `/1`              | `m/9735'/chain'/1'/ln_ver'/channel'/1`
+Delayed        | `/2`              | `m/9735'/chain'/1'/ln_ver'/channel'/2`
+Revocation     | `/3`              | `m/9735'/chain'/1'/ln_ver'/channel'/3`
+Per-commitment | `/4`              | `m/9735'/chain'/1'/ln_ver'/channel'/4`
+HTLC           | `/5`              | `m/9735'/chain'/1'/ln_ver'/channel'/5`
+PTLC           | `/6`              | `m/9735'/chain'/1'/ln_ver'/channel'/6`
+Shutdown       | `/7`              | `m/9735'/chain'/1'/ln_ver'/channel'/7`
 
 **Funding wallet** used for keeping funds by a lightning node for 
 constructing funding transactions is derived with 
@@ -164,6 +165,16 @@ We can use only 31 bits, since the most significant bit of derivation index is
 occupied by hardering flag (see BIP-32). We start with the second most 
 significant channel bit to make it easy visually compare index with channel id
 without any bit shifts.
+
+### Use of unhardeded derivation between basepoints
+
+Each channel is derived with hardened derivation, which allows to separate
+node from channels: if a node-level extended public – or even extended private
+key is leaked, it still be impossible to guess from the key information which 
+channels ere created or closed with that node. From the other hand, if one
+needs to disclose the full information about the channel transaction it will
+be sufficient to have a single extended public key for **channel basepoint**
+to derive all other public keys any channel transaction.
 
 
 ## Reference implementation
