@@ -28,6 +28,7 @@ License: CC0-1.0
   - [Use of channel ids for channel basepoint derivation](#use-of-channel-ids-for-channel-basepoint-derivation)
   - [Selection of bits for channel basepoint](#selection-of-bits-for-channel-basepoint)
   - [Use of unhardeded derivation between basepoints](#use-of-unhardeded-derivation-between-basepoints)
+  - [Shutdown key derived from funding wallet](#shutdown-key-derived-from-funding-wallet)
 - [Reference implementation](#reference-implementation)
 - [Acknowledgements](#acknowledgements)
 - [References](#references)
@@ -101,7 +102,6 @@ Revocation     | `/3`              | `m/9735'/chain'/1'/ln_ver'/channel'/3`
 Per-commitment | `/4`              | `m/9735'/chain'/1'/ln_ver'/channel'/4`
 HTLC           | `/5`              | `m/9735'/chain'/1'/ln_ver'/channel'/5`
 PTLC           | `/6`              | `m/9735'/chain'/1'/ln_ver'/channel'/6`
-Shutdown       | `/7`              | `m/9735'/chain'/1'/ln_ver'/channel'/7`
 
 **Funding wallet** used for keeping funds by a lightning node for 
 constructing funding transactions is derived with 
@@ -119,7 +119,13 @@ Node key                 | `m/9735'/0'/0'/0'`
 Channel basepoint        | `m/9735'/0'/1'/0'/691588700'` (index equals to `0x2938ce5c`)
 Funding wallet           | `m/9735'/0'/2'/0/*`
 Funding wallet change    | `m/9735'/0'/2'/1/*`
-Funding wallet RGB20     | `m/9735'/0'/2'/20/*`
+Shutdown                 | `m/9735'/0'/2'/2/*`
+Funding wallet RGB20     | `m/9735'/0'/2'/200/*`
+RGB20 change             | `m/9735'/0'/2'/201/*`
+Shutdown RGB20           | `m/9735'/0'/2'/202/*`
+
+Please note that the channel shutdown key is derived from a funding wallet -
+and not from a channel basepoint.
 
 
 ## Compatibility
@@ -176,6 +182,13 @@ channels ere created or closed with that node. From the other hand, if one
 needs to disclose the full information about the channel transaction it will
 be sufficient to have a single extended public key for **channel basepoint**
 to derive all other public keys any channel transaction.
+
+### Shutdown key derived from funding wallet
+
+Funding wallet may be a separate process - or separate cold wallet, isolated
+from the rest of the lightning node. Deriving shutdown key from funding wallet
+allows it to use funds from closed channels for funding new channels without
+the need for additional interactivity with the lightning node.
 
 
 ## Reference implementation
