@@ -29,6 +29,7 @@ License: CC0-1.0
   - [Selection of bits for channel basepoint](#selection-of-bits-for-channel-basepoint)
   - [Use of unhardeded derivation between basepoints](#use-of-unhardeded-derivation-between-basepoints)
   - [Shutdown key derived from funding wallet](#shutdown-key-derived-from-funding-wallet)
+  - [Using unhardened indexes for per-commitment points](#using-unhardened-indexes-for-per-commitment-points)
 - [Reference implementation](#reference-implementation)
 - [Acknowledgements](#acknowledgements)
 - [References](#references)
@@ -99,7 +100,7 @@ Funding        | `/0`              | `m/9735'/chain'/1'/ln_ver'/channel'/0`
 Payment        | `/1`              | `m/9735'/chain'/1'/ln_ver'/channel'/1`
 Delayed        | `/2`              | `m/9735'/chain'/1'/ln_ver'/channel'/2`
 Revocation     | `/3`              | `m/9735'/chain'/1'/ln_ver'/channel'/3`
-Per-commitment | `/4`              | `m/9735'/chain'/1'/ln_ver'/channel'/4`
+Per-commitment | `/4/*`            | `m/9735'/chain'/1'/ln_ver'/channel'/4/0`
 HTLC           | `/5`              | `m/9735'/chain'/1'/ln_ver'/channel'/5`
 PTLC           | `/6`              | `m/9735'/chain'/1'/ln_ver'/channel'/6`
 
@@ -117,6 +118,7 @@ Extended keys            | Derivation
 Lightning key            | `m/9735'/`
 Node key                 | `m/9735'/0'/0'/0'`
 Channel basepoint        | `m/9735'/0'/1'/0'/691588700'` (index equals to `0x2938ce5c`)
+Per-commitment points    | `m/9735'/0'/1'/0'/691588700'/4/<per_commitment_no>`
 Funding wallet           | `m/9735'/0'/2'/0/*`
 Funding wallet change    | `m/9735'/0'/2'/1/*`
 Shutdown                 | `m/9735'/0'/2'/2/*`
@@ -189,6 +191,11 @@ Funding wallet may be a separate process - or separate cold wallet, isolated
 from the rest of the lightning node. Deriving shutdown key from funding wallet
 allows it to use funds from closed channels for funding new channels without
 the need for additional interactivity with the lightning node.
+
+### Using unhardened indexes for per-commitment points
+
+This allows user to reconstruct channel history without the need to access channel
+extended private key.
 
 
 ## Reference implementation
