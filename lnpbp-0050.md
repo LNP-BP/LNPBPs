@@ -1,6 +1,5 @@
 ```
 LNPBP: 0050
-Layer: OSI Application (i7)
 Vertical: Lightning network protocol
 Title: Bifrost: generalized Lightning network protocol core
 Author: Dr Maxim Orlovsky <orlovsky@lnp-bp.org>
@@ -11,6 +10,29 @@ Created: 2021-11-01
 Finalized: not yet
 License: CC0-1.0
 ```
+
+- [Abstract](#abstract)
+- [Background](#background)
+- [Motivation](#motivation)
+- [Design](#design)
+- [Specification](#specification)
+  - [Announcing Bifrost connectivity](#announcing-bifrost-connectivity)
+  - [Bifrost URLs](#bifrost-urls)
+  - [Bifrost initiation from legacy Lightning messaging](#bifrost-initiation-from-legacy-lightning-messaging)
+  - [Establishing connection](#establishing-connection)
+- [Compatibility](#compatibility)
+  - [Channels](#channels)
+  - [Invoices](#invoices)
+- [Rationale](#rationale)
+  - [Use of dedicated port](#use-of-dedicated-port)
+  - [Why URL uses plus instead of at symbol](#why-url-uses-plus-instead-of-at-symbol)
+  - [Using local features](#using-local-features)
+  - [Feature bit selection](#feature-bit-selection)
+- [Reference implementation](#reference-implementation)
+- [Acknowledgements](#acknowledgements)
+- [References](#references)
+- [Copyright](#copyright)
+- [Test vectors](#test-vectors)
 
 ## Abstract
 

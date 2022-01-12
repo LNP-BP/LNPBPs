@@ -1,6 +1,5 @@
 ```
 LNPBP: 0018
-Layer: OSI Transport (i4)
 Vertical: Lightning network protocol
 Title: LNP native message framing protocol (BOLT-8 extract)
 Author: BOLT-8 protocol authors
@@ -11,24 +10,21 @@ Created: 2020-14-05
 License: CC0-1.0
 ```
 
-# LNP native message framing protocol
+- [Abstract](#abstract)
+- [Background](#background)
+- [Motivation](#motivation)
+- [Design](#design)
+  - [Encrypting and Sending Messages](#encrypting-and-sending-messages)
+  - [Receiving and Decrypting Messages](#receiving-and-decrypting-messages)
+- [Compatibility](#compatibility)
+- [Rationale](#rationale)
+- [Reference implementation](#reference-implementation)
+- [Acknowledgements](#acknowledgements)
+- [References](#references)
+- [Copyright](#copyright)
+- [Test vectors](#test-vectors)
 
 ## Abstract
-
-## Table of Contents
-
-* [Abstract](#abstract)
-* [Background](#background)
-* [Motivation](#motivation)
-* [Design](#design)
-* [Specification](#specification)
-* [Compatibility](#compatibility)
-* [Rationale](#rationale)
-* [Reference implementation](#reference-implementation)
-* [Acknowledgements](#acknowledgements)
-* [References](#references)
-* [Copyright](#copyright)
-* [Test vectors](#test-vectors)
 
 ## Background
 

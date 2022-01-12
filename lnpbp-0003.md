@@ -1,6 +1,5 @@
 ```
 LNPBP: 0003
-Layer: Transaction (1)
 Vertical: Bitcoin protocol
 Title: Deterministic definition of transaction output containing cryptographic commitment
 Authors: Giacomo Zucco,
@@ -14,8 +13,6 @@ Created: 2019-10-27
 License: CC0-1.0
 ```
 
-## TOC
-
 - [Abstract](#abstract)
 - [Background](#background)
 - [Motivation](#motivation)
@@ -26,7 +23,7 @@ License: CC0-1.0
 - [Acknowledgements](#acknowledgements)
 - [References](#references)
 - [License](#license)
-- [Appendix A. Test vectors](#test-vectors)
+- [Test vectors](#test-vectors)
 
 
 ## Abstract

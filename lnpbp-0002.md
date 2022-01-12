@@ -1,9 +1,8 @@
 ```
 LNPBP: 0002
-Layer: Transactions (1)
 Vertical: Bitcoin protocol
-Title: Deterministic embedding of cryptographic commitments into transaction 
-       output scriptPubkey
+Title: Deterministic embedding of cryptographic commitments into bitcoin 
+       transaction output
 Authors: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
          Giacomo Zucco,
          Martino Salvetti,
@@ -16,27 +15,33 @@ Created: 2019-10-27
 License: CC0-1.0
 ```
 
-## TOC
-
 - [Abstract](#abstract)
 - [Background](#background)
 - [Motivation](#motivation)
 - [Design](#design)
 - [Specification](#specification)
-  * [Commitment procedure](#commitment-procedure)
-  * [Reveal procedure](#reveal-procedure)
-  * [Verification procedure](#verification-procedure)
-  * [Deterministic public key extraction from Bitcoin script](#deterministic-public-key-extraction-from-Bitcoin-script)
+  - [Commitment procedure](#commitment-procedure)
+  - [Reveal procedure](#reveal-procedure)
+  - [Verification procedure](#verification-procedure)
+  - [Deterministic public key extraction from Bitcoin Script](#deterministic-public-key-extraction-from-bitcoin-script)
 - [Compatibility](#compatibility)
 - [Rationale](#rationale)
+  - [Continuing support for P2PK outputs](#continuing-support-for-p2pk-outputs)
+  - [Support OP_RETURN type of outputs](#support-op_return-type-of-outputs)
+  - [Unification with OP_RETURN-based commitments](#unification-with-op_return-based-commitments)
+  - [Custom serialization of public keys in OP_RETURN](#custom-serialization-of-public-keys-in-op_return)
+  - [Support for pre-SegWit outputs](#support-for-pre-segwit-outputs)
+  - [Committing to the sum of all public keys present in the script](#committing-to-the-sum-of-all-public-keys-present-in-the-script)
+  - [Deterministic public key extraction for a Bitcoin script](#deterministic-public-key-extraction-for-a-bitcoin-script)
+  - [Use of Taproot intermediate public key](#use-of-taproot-intermediate-public-key)
 - [Reference implementation](#reference-implementation)
 - [Acknowledgements](#acknowledgements)
 - [References](#references)
 - [License](#license)
-- [Appendix A. Test vectors](#test-vectors)
-  * [Correct test vectors](#correct-test-vectors)
-  * [Invalid test vectors](#invalid-test-vectors)
-  * [Protocol failures](#protocol-failures)
+- [Appendix A. Test vectors](#appendix-a-test-vectors)
+  - [1. Correct test vectors](#1-correct-test-vectors)
+  - [2. Invalid test vectors](#2-invalid-test-vectors)
+  - [3. Edge cases: protocol failures](#3-edge-cases-protocol-failures)
 
 
 ## Abstract

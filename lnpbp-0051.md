@@ -1,6 +1,5 @@
 ```
 LNPBP: 0051
-Layer: OSI Application (i7)
 Vertical: Lightning network protocol
 Title: Bifrost: channel management protocol
 Author: Dr Maxim Orlovsky <orlovsky@lnp-bp.org>
@@ -11,6 +10,24 @@ Created: 2021-11-01
 Finalized: not yet
 License: CC0-1.0
 ```
+
+- [Abstract](#abstract)
+- [Background](#background)
+- [Motivation](#motivation)
+- [Design](#design)
+- [Specification](#specification)
+  - [Bifrost transaction requirements](#bifrost-transaction-requirements)
+  - [Channel coordination](#channel-coordination)
+    - [Channel workflows](#channel-workflows)
+- [Channel creation workflow](#channel-creation-workflow)
+- [Compatibility](#compatibility)
+- [Rationale](#rationale)
+- [Reference implementation](#reference-implementation)
+- [Acknowledgements](#acknowledgements)
+- [References](#references)
+- [Copyright](#copyright)
+- [Test vectors](#test-vectors)
+
 
 ## Abstract
 

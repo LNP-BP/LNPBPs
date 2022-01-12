@@ -1,6 +1,5 @@
 ```
 LNPBP: 0011
-Layer: Client-validated graphs (4)
 Vertical: Smart contracts
 Title: RGB: Client-validated confidential smart contracts using bitcoin
        transaction graphs for Bitcoin and Lightning Network
@@ -19,6 +18,18 @@ Created: 2020-05-12
 License: CC0-1.0
 Related standards: LNPBP1-4, 6-10, 12-14, 20-29, 33-35, 37
 ```
+
+- [Abstract](#abstract)
+- [Background](#background)
+- [Motivation](#motivation)
+- [Design](#design)
+- [Specification](#specification)
+- [Compatibility](#compatibility)
+- [Rationale](#rationale)
+- [Reference implementation](#reference-implementation)
+- [Acknowledgements](#acknowledgements)
+- [References](#references)
+- [Copyright](#copyright)
 
 ## Abstract
 

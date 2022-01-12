@@ -1,7 +1,6 @@
 ```
 LNPBP: 0001
-Layer: Transactions (1)
-Vertical: Bitcoin protocol
+Vertical: Cryptographic primitives
 Title: Key tweaking: collision-resistant elliptic curve-based commitments
 Authors: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
          Dr Rene Pickhardt,
@@ -19,25 +18,35 @@ Finalized: not yet
 License: CC0-1.0
 ```
 
-## TOC
-
 - [Abstract](#abstract)
 - [Background](#background)
 - [Motivation](#motivation)
 - [Specification](#specification)
-  * [Commitment procedure](#commitment-procedure)
-  * [Verification procedure](#verification-procedure)
-  * [Reveal procedure](#reveal-procedure)
+  - [Commitment procedure](#commitment-procedure)
+  - [Verification procedure](#verification-procedure)
+  - [Reveal procedure](#reveal-procedure)
 - [Compatibility](#compatibility)
 - [Rationale](#rationale)
+  - [Commitments with a set of public keys, not a single key](#commitments-with-a-set-of-public-keys-not-a-single-key)
+  - [Use of HMAC insead of simple hash](#use-of-hmac-insead-of-simple-hash)
+  - [Public key serialization to 64 byte uncompressed form](#public-key-serialization-to-64-byte-uncompressed-form)
+  - [Use of protocol tags](#use-of-protocol-tags)
+  - [Protocol failures](#protocol-failures)
+  - [Choice of elliptic curve generator point order `n` over field order `p`](#choice-of-elliptic-curve-generator-point-order-n-over-field-order-p)
+  - [No nonce](#no-nonce)
 - [Reference implementation](#reference-implementation)
 - [Acknowledgements](#acknowledgements)
 - [References](#references)
 - [License](#license)
-- [Appendix A. Test vectors](#test-vectors)
-  * [Correct test vectors](#correct-test-vectors)
-  * [Invalid test vectors](#invalid-test-vectors)
-  * [Edge cases: protocol failures](#edge-cases-protocol-failures)
+- [Appendix A. Test vectors](#appendix-a-test-vectors)
+  - [1. Correct test vectors](#1-correct-test-vectors)
+    - [1.1. Zero-length message](#11-zero-length-message)
+    - [1.2. Message consisting of a single zero byte](#12-message-consisting-of-a-single-zero-byte)
+    - [1.3. Message of text string `test`](#13-message-of-text-string-test)
+    - [1.4. Binary messsage, hex encoding (little-endian byte order)](#14-binary-messsage-hex-encoding-little-endian-byte-order)
+    - [1.5. Keyset changes](#15-keyset-changes)
+  - [2. Invalid test vectors](#2-invalid-test-vectors)
+  - [3. Edge cases: protocol failures](#3-edge-cases-protocol-failures)
 
 
 ## Abstract

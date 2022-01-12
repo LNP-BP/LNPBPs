@@ -30,11 +30,11 @@ Criteria for a LNP/BP specification proposal:
 
 No  | Vertical                   | Title | Authors | Type | Status
 ----:| -------------------------- | ----- | ------- | ---- | ------
- [1]| Bitcoin protocol           | Key tweaking: collision-resistant elliptic curve-based commitments | Maxim Orlovsky et al | Standard | Proposal
- [2]| Bitcoin protocol           | Deterministic embedding of cryptographic commitments into transaction output scriptPubkey | Maxim Orlovsky et al | Standard | Proposal
+ [1]| Cryptographic primitives   | Key tweaking: collision-resistant elliptic curve-based commitments | Maxim Orlovsky et al | Standard | Proposal
+ [2]| Bitcoin protocol           | Deterministic embedding of cryptographic commitments into bitcoin transaction output | Maxim Orlovsky et al | Standard | Proposal
  [3]| Bitcoin protocol           | Deterministic definition of transaction output containing cryptographic commitment | Giacomo Zucco et al | Standard | Proposal
  [4]| Cryptographic primitives   | Multi-message commitment scheme with zero-knowledge provable unique properties | Maxim Orlovsky | Standard | Proposal
- [5]| Bitcoin protocol           | Universal short Bitcoin identifiers for blocks, transactions and their inputs & outputs | Christian Decker et al | Standard | Proposal
+ [5]| Bitcoin protocol           | Universal short Bitcoin identifiers for blocks, transactions and their inputs & outputs | Christian Decker, Maxim Orlovsky | Standard | Proposal
   6 | Bitcoin protocol           | Deterministic bitcoin commitments | Maxim Orlovsky | Standard | Draft
   7 | Consensus layer            | Strict encoding | Peter Todd, Maxim Orlovsky | Standard | Planned
  [8]| Cryptographic primitives   | Single-use-seals | Peter Todd, Maxim Orlovsky | Informational | Draft
@@ -70,7 +70,8 @@ No  | Vertical                   | Title | Authors | Type | Status
 [43]| Bitcoin protocol           | RGB-enabled BIP43 purpose field & identity system | Maxim Orlovsky | Standard | Draft
 [44]| Bitcoin protocol           | Script templating: BIP-32 & LNPBP-43 key derivations within for non-miniscript-compatible Bitcoin scripts | Maxim Orlovsky | Standard | Draft
  45 | Lightning network protocol | Lightning network message extensions for decentralized exchange functionality | Maxim Orlovsky | Standard | Planned
-46-48| Reserved                   | | For the future use by lightning network protocol extensions
+ 46 | Lightning network protocol | Deterministic derivation paths for LNP | Maxim Orlovsky | Draft
+47,48| Reserved                  | | For future use by lightning network protocol extensions
  49 | Lightning network protocol | Synchronized multi-hop state updates via delegation in Lightning network | Maxim Orlovsky, Christian Decker | Standard | Planned
 [50]| Lightning network protocol | Bifrost: generalized Lightning network protocol core | Maxim Orlovsky | Standard | Planned
 [51]| Lightning network protocol | Bifrost: channel management protocol | Maxim Orlovsky | Standard | Draft
@@ -96,8 +97,11 @@ No  | Vertical                   | Title | Authors | Type | Status
 [85]| Bitcoin protocol           | Strict encoding of Bitcoin-related data types | Maxim Orlovsky | Standard | Planned
 [86]| Smart contracts            | AluVM: virtual machine for client-side-validation | Maxim Orlovsky | Standard | Draft
  87 | Smart contracts            | AluVM extended instructions for handling RGB state validation | Maxim Orlovsky | Standard | Planned
- 88-91 | Reserved                | For the future use by AluVM-specific standards
-[92]| Bitcoin protocol           | Deterministic embedding of cryptographic commitments into transaction input | Maxim Orlovsky et al | Standard | Planned
+88-89| Reserved                  | For future use by AluVM-specific standards
+[90]| Cryptographic primitives   | Signature tweaking: collision-resistant BIP340-based commitments | Maxim Orlovsky et al | Standard | Draft
+[91]| Cryptographic primitives   | Signature tweaking: collision-resistant ECDSA-based commitments | Maxim Orlovsky et al | Standard | Draft
+[92]| Bitcoin protocol           | Deterministic embedding of cryptographic commitments into transaction input | Maxim Orlovsky et al | Standard | Draft
+ 93-99 | Reserved                | For future use
 100 | Bitcoin protocol           | Scalable & confidential single-use-seal commitment layer 1 | Standard | Brainstorming
 
 ### Invited or planned proposals to join LNP/BP standards family

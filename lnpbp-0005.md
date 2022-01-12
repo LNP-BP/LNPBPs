@@ -1,6 +1,5 @@
 ```
 LNPBP: 0005
-Layer: Transaction graph (2)
 Vertical: Bitcoin protocol
 Title: Universal short Bitcoin identifiers for blocks, transactions and
        transaction inputs & outputs
@@ -12,6 +11,22 @@ Type: Standards Track
 Created: 2020-02-17
 License: CC0-1.0
 ```
+
+- [Abstract](#abstract)
+- [Background](#background)
+- [Motivation](#motivation)
+- [Specification](#specification)
+  - [Bitwise structure of the identifier](#bitwise-structure-of-the-identifier)
+  - [Distinguishing different types of identifier](#distinguishing-different-types-of-identifier)
+- [Compatibility](#compatibility)
+- [Rationale](#rationale)
+  - [Estimating ranges for bit-based values](#estimating-ranges-for-bit-based-values)
+- [Reference implementation](#reference-implementation)
+- [Acknowledgements](#acknowledgements)
+- [References](#references)
+- [Copyright](#copyright)
+- [Test vectors](#test-vectors)
+
 
 ## Abstract
 

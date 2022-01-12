@@ -1,6 +1,5 @@
 ```
 LNPBP: 0010
-Layer: Transaction graph (2)
 Vertical: Bitcoin protocol
 Title: Bitcoin transaction output-based single-use-seals
 Authors: Peter Todd <pete@petertodd.org>,
@@ -13,6 +12,25 @@ Type: Standards Track
 Created: 2019-05-12
 License: CC0-1.0
 ```
+
+- [Abstract](#abstract)
+- [Background](#background)
+- [Motivation](#motivation)
+- [Design](#design)
+- [Specification](#specification)
+  - [Terms and definitions](#terms-and-definitions)
+  - [Seal definition](#seal-definition)
+  - [Closing seal over a message](#closing-seal-over-a-message)
+  - [Verification](#verification)
+  - [Strict encoding](#strict-encoding)
+- [Compatibility](#compatibility)
+- [Rationale](#rationale)
+  - [Representation of transaction output numbers](#representation-of-transaction-output-numbers)
+- [Reference implementation](#reference-implementation)
+- [Acknowledgements](#acknowledgements)
+- [References](#references)
+- [Copyright](#copyright)
+- [Test vectors](#test-vectors)
 
 ## Abstract
 
