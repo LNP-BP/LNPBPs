@@ -30,11 +30,11 @@ Criteria for a LNP/BP specification proposal:
 
 No  | Vertical                   | Title | Authors | Type | Status
 ----:| -------------------------- | ----- | ------- | ---- | ------
- [1]| Bitcoin protocol           | Key tweaking: collision-resistant elliptic curve-based commitments | Maxim Orlovsky et al | Standard | Proposal
+ [1]| Cryptographic primitives   | Key tweaking: collision-resistant elliptic curve-based commitments | Maxim Orlovsky et al | Standard | Proposal
  [2]| Bitcoin protocol           | Deterministic embedding of cryptographic commitments into bitcoin transaction output | Maxim Orlovsky et al | Standard | Proposal
  [3]| Bitcoin protocol           | Deterministic definition of transaction output containing cryptographic commitment | Giacomo Zucco et al | Standard | Proposal
  [4]| Cryptographic primitives   | Multi-message commitment scheme with zero-knowledge provable unique properties | Maxim Orlovsky | Standard | Proposal
- [5]| Bitcoin protocol           | Universal short Bitcoin identifiers for blocks, transactions and their inputs & outputs | Christian Decker, MAxim Orlovsky | Standard | Proposal
+ [5]| Bitcoin protocol           | Universal short Bitcoin identifiers for blocks, transactions and their inputs & outputs | Christian Decker, Maxim Orlovsky | Standard | Proposal
  [6]| Bitcoin protocol           | Deterministic bitcoin commitments | Maxim Orlovsky | Standard | Draft
   7 | Consensus layer            | Strict encoding | Peter Todd, Maxim Orlovsky | Standard | Planned
  [8]| Cryptographic primitives   | Single-use-seals | Peter Todd, Maxim Orlovsky | Informational | Draft
@@ -70,11 +70,16 @@ No  | Vertical                   | Title | Authors | Type | Status
 [43]| Bitcoin protocol           | RGB-enabled BIP43 purpose field & identity system | Maxim Orlovsky | Standard | Draft
 [44]| Bitcoin protocol           | Script templating: BIP-32 & LNPBP-43 key derivations within for non-miniscript-compatible Bitcoin scripts | Maxim Orlovsky | Standard | Draft
  45 | Lightning network protocol | Lightning network message extensions for decentralized exchange functionality | Maxim Orlovsky | Standard | Planned
-46-48| Reserved                   | | For the future use by lightning network protocol extensions
+ 46 | Lightning network protocol | Deterministic derivation paths for LNP | Maxim Orlovsky | Draft
+47,48| Reserved                  | | For future use by lightning network protocol extensions
  49 | Lightning network protocol | Synchronized multi-hop state updates via delegation in Lightning network | Maxim Orlovsky, Christian Decker | Standard | Planned
 [50]| Lightning network protocol | Bifrost: generalized Lightning network protocol core | Maxim Orlovsky | Standard | Planned
 [51]| Lightning network protocol | Bifrost: channel management protocol | Maxim Orlovsky | Standard | Draft
-52-56| Reserved                   | | For the future use by lightning network protocol extensions
+[52]| Lightning network protocol | Bifrost routed messaging system based on Sphix protocol | Maxim Orlovsky | Standard | Draft
+[53]| Lightning network protocol | Milti-peer payment channels for Bifrost | Maxim Orlovsky | Standard | Draft
+[54]| Lightning network protocol | Channel factories based on Bifrost protocol | Maxim Orlovsky | Standard | Draft
+[55]| Lightning network protocol | HTLC channel synchronization in Bifrost | Maxim Orlovsky | Standard | Draft
+[56]| Lightning network protocol | PTLC channel synchronization in Bifrost | Maxim Orlovsky | Standard | Draft
  57 | Lightning network protocol | Decentralized naming & name resolution system | Maxim Orlovsky | Standard | Planned
 [58]| Cryptographic primitives   | Apophis: distributed elliptic curve-based key creation with shared secrets | Maxim Orlovsky | Standard | Draft
 [59]| Bitcoin protocol           | Typhon: trustless Bitcoin sidechains | Maxim Orlovsky | Standard | Draft
@@ -92,8 +97,11 @@ No  | Vertical                   | Title | Authors | Type | Status
 [85]| Bitcoin protocol           | Strict encoding of Bitcoin-related data types | Maxim Orlovsky | Standard | Planned
 [86]| Smart contracts            | AluVM: virtual machine for client-side-validation | Maxim Orlovsky | Standard | Draft
  87 | Smart contracts            | AluVM extended instructions for handling RGB state validation | Maxim Orlovsky | Standard | Planned
- 88-91 | Reserved                | For the future use by AluVM-specific standards
-[92]| Bitcoin protocol           | Deterministic embedding of cryptographic commitments into bitcoin transaction input | Maxim Orlovsky | Standard | Planned
+88-89| Reserved                  | For future use by AluVM-specific standards
+[90]| Cryptographic primitives   | Signature tweaking: collision-resistant BIP340-based commitments | Maxim Orlovsky et al | Standard | Draft
+[91]| Cryptographic primitives   | Signature tweaking: collision-resistant ECDSA-based commitments | Maxim Orlovsky et al | Standard | Draft
+[92]| Bitcoin protocol           | Deterministic embedding of cryptographic commitments into transaction input | Maxim Orlovsky et al | Standard | Draft
+ 93-99 | Reserved                | For future use
 100 | Bitcoin protocol           | Scalable & confidential single-use-seal commitment layer 1 | Standard | Brainstorming
 
 ### Invited or planned proposals to join LNP/BP standards family
@@ -134,7 +142,7 @@ Game theory                | Game-theoretical setups for trustless protocols    
 [4]: lnpbp-0004.md
 [5]: lnpbp-0005.md
 [6]: lnpbp-0006.md
-[8]: https://petertodd.org/2016/commitments-and-single-use-seals
+[8]: lnpbp-0008.md
 [9]: https://diyhpl.us/wiki/transcripts/scalingbitcoin/milan/client-side-validation/
 [10]: lnpbp-0010.md
 [11]: lnpbp-0011.md
@@ -157,8 +165,13 @@ Game theory                | Game-theoretical setups for trustless protocols    
 [43]: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-February/018381.html
 [44]: https://github.com/LNP-BP/descriptor-wallet/blob/master/src/descriptor/script.rs
 [46]: https://github.com/LNP-BP/LNPBPs/pull/98
-[50]: https://github.com/LNP-BP/LNPBPs/pull/97
-[51]: https://github.com/LNP-BP/LNPBPs/pull/97
+[50]: lnpbp-0050.md
+[51]: lnpbp-0051.md
+[52]: lnpbp-0052.md
+[53]: lnpbp-0053.md
+[54]: lnpbp-0054.md
+[55]: lnpbp-0055.md
+[56]: lnpbp-0056.md
 [58]: https://github.com/pandoracore/typhon-spec
 [59]: https://github.com/pandoracore/typhon-spec
 [60]: https://github.com/pandoracore/ibiss-spec
