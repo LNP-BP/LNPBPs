@@ -34,12 +34,12 @@ No  | Vertical                   | Title | Authors | Type | Status
  [2]| Bitcoin protocol           | Deterministic embedding of cryptographic commitments into bitcoin transaction output | Maxim Orlovsky et al | Standard | Proposal
  [3]| Bitcoin protocol           | Deterministic definition of transaction output containing cryptographic commitment | Giacomo Zucco et al | Standard | Proposal
  [4]| Cryptographic primitives   | Multi-message commitment scheme with zero-knowledge provable unique properties | Maxim Orlovsky | Standard | Proposal
- [5]| Bitcoin protocol           | Universal short Bitcoin identifiers for blocks, transactions and their inputs & outputs | Christian Decker, MAxim Orlovsky | Standard | Proposal
+ [5]| Bitcoin protocol           | Universal short Bitcoin identifiers for blocks, transactions and their inputs & outputs | Christian Decker, Maxim Orlovsky | Standard | Proposal
   6 | Bitcoin protocol           | Deterministic bitcoin commitments | Maxim Orlovsky | Standard | Draft
   7 | Consensus layer            | Strict encoding | Peter Todd, Maxim Orlovsky | Standard | Planned
  [8]| Cryptographic primitives   | Single-use-seals | Peter Todd, Maxim Orlovsky | Informational | Draft
  [9]| Consensus layer            | Client-side validation | Peter Todd, Maxim Orlovsky | Informational | Draft
- 10 | Bitcoin protocol           | Bitcoin transaction output-based single-use-seals with client-side-validation | Maxim Orlovsky et al | Standard | Proposal
+ 10 | Bitcoin protocol           | Bitcoin transaction output-based single-use-seals | Peter Todd et al | Standard | Proposal
 [11]| Smart contracts            | RGB: Client-validated confidential smart contracts using bitcoin transaction graphs for Bitcoin and Lightning Network | Maxim Orlovsky et al | Informational | Proposal
  12 | Consensus layer            | RGB Schema: client-side validation rules for RGB smart contracts | Maxim Orlovsky | Standard | Planned
  13 | Consensus layer            | RGB client-side verification and data serialization | Maxim Orlovsky | Standard | Planned
@@ -63,7 +63,7 @@ No  | Vertical                   | Title | Authors | Type | Status
 [36]| Internet2                  | Recommendations for API design | Maxim Orlovsky | Informational | Draft
 [37]| Smart contracts            | Invoicing formats for RGB-20 fungible assets schema | Alekos Filini | Standard | Rejected
 [38]| Smart contracts            | Universal LNP/BP invoices supporting Bitcoin, LN & RGB | Maxim Orlovsky | Standard | Draft
-[39]| Bitcoin protocol           | Bitcoin transaction output-based public single-use-seals with sign-to-contract commitments | Maxim Orlovsky et al | Standard | Planned
+[39]| Bitcoin protocol           | Bitcoin transaction output-based single-use-seals with sign-to-contract commitments | Maxim Orlovsky et al | Standard | Planned
 [40]| Smart contracts            | Storm: trustless storage with escrow contracts | Maxim Orlovsky | Standard | Draft
  41 | Lightning network protocol | Lightning network message extensions for Storm | Maxim Orlovsky | Standard | Planned
 [42]| Internet2                  | Uniform encoding for internet2 addresses | Maxim Orlovsky | Draft
@@ -75,7 +75,11 @@ No  | Vertical                   | Title | Authors | Type | Status
  49 | Lightning network protocol | Synchronized multi-hop state updates via delegation in Lightning network | Maxim Orlovsky, Christian Decker | Standard | Planned
 [50]| Lightning network protocol | Bifrost: generalized Lightning network protocol core | Maxim Orlovsky | Standard | Planned
 [51]| Lightning network protocol | Bifrost: channel management protocol | Maxim Orlovsky | Standard | Draft
-52-56| Reserved                  | | For future use by lightning network protocol extensions
+[52]| Lightning network protocol | Bifrost routed messaging system based on Sphix protocol | Maxim Orlovsky | Standard | Draft
+[53]| Lightning network protocol | Milti-peer payment channels for Bifrost | Maxim Orlovsky | Standard | Draft
+[54]| Lightning network protocol | Channel factories based on Bifrost protocol | Maxim Orlovsky | Standard | Draft
+[55]| Lightning network protocol | HTLC channel synchronization in Bifrost | Maxim Orlovsky | Standard | Draft
+[56]| Lightning network protocol | PTLC channel synchronization in Bifrost | Maxim Orlovsky | Standard | Draft
  57 | Lightning network protocol | Decentralized naming & name resolution system | Maxim Orlovsky | Standard | Planned
 [58]| Cryptographic primitives   | Apophis: distributed elliptic curve-based key creation with shared secrets | Maxim Orlovsky | Standard | Draft
 [59]| Bitcoin protocol           | Typhon: trustless Bitcoin sidechains | Maxim Orlovsky | Standard | Draft
@@ -83,7 +87,7 @@ No  | Vertical                   | Title | Authors | Type | Status
 [61]| Game theory                | Toth: incentive-based interactive settlement scheme for computation integrity arguments with reputation | Maxim Orlovsky, Sabina Sachtachtinskagia | Informational | Draft
 [62]| Smart contracts            | Prometheus: trustless multiparty computing with escrow & arbitration using Ibiss protocol on bitcoin blockchain | Maxim Orlovsky | Standard | Draft
  63 | Smart contracts            | Prometheus+: trustless multiparty computing with escrow & arbitration using Ibiss2 protocol over LN with tokenized RGB reputation | Maxim Orlovsky | Standard | Planned
-64-79| Reserved                  | For the future use by lightning network protocol extensions
+64-79 | Reserved                 | For the future use by lightning network protocol extensions
 [80]| Cryptographic primitives   | Merkle mountain ranges | Peter Todd | Standard | Final
  81 | Cryptographic primitives   | Tagged merkle trees for client-side-validation | Maxim Orlovsky, Peter Todd | Standard | Draft
  82 | Bitcoin protocol           | OpenTimestamps bitcoin transaction commitments | Peter Todd | Standard | Final
@@ -159,8 +163,13 @@ Game theory                | Game-theoretical setups for trustless protocols    
 [43]: https://lists.linuxfoundation.org/pipermail/bitcoin-dev/2021-February/018381.html
 [44]: https://github.com/LNP-BP/descriptor-wallet/blob/master/src/descriptor/script.rs
 [46]: https://github.com/LNP-BP/LNPBPs/pull/98
-[50]: https://github.com/LNP-BP/LNPBPs/pull/97
-[51]: https://github.com/LNP-BP/LNPBPs/pull/97
+[50]: lnpbp-0050.md
+[51]: lnpbp-0051.md
+[52]: lnpbp-0052.md
+[53]: lnpbp-0053.md
+[54]: lnpbp-0054.md
+[55]: lnpbp-0055.md
+[56]: lnpbp-0056.md
 [58]: https://github.com/pandoracore/typhon-spec
 [59]: https://github.com/pandoracore/typhon-spec
 [60]: https://github.com/pandoracore/ibiss-spec
