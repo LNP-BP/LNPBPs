@@ -1,7 +1,8 @@
 ```
 LNPBP: 0003
 Vertical: Bitcoin protocol
-Title: Deterministic definition of transaction output containing cryptographic commitment
+Title: Deterministic definition of transaction output containing cryptographic
+       commitment
 Authors: Giacomo Zucco,
          Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
          Federico Tenga,

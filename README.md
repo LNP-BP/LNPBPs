@@ -35,11 +35,11 @@ No  | Vertical                   | Title | Authors | Type | Status
  [3]| Bitcoin protocol           | Deterministic definition of transaction output containing cryptographic commitment | Giacomo Zucco et al | Standard | Proposal
  [4]| Cryptographic primitives   | Multi-message commitment scheme with zero-knowledge provable unique properties | Maxim Orlovsky | Standard | Proposal
  [5]| Bitcoin protocol           | Universal short Bitcoin identifiers for blocks, transactions and their inputs & outputs | Christian Decker, Maxim Orlovsky | Standard | Proposal
-  6 | Bitcoin protocol           | Deterministic bitcoin commitments | Maxim Orlovsky | Standard | Draft
+ [6]| Bitcoin protocol           | Deterministic bitcoin commitments | Maxim Orlovsky | Standard | Draft
   7 | Consensus layer            | Strict encoding | Peter Todd, Maxim Orlovsky | Standard | Planned
- [8]| Cryptographic primitives   | Single-use-seals | Peter Todd | Informational | Proposal
- [9]| Consensus layer            | Client-side validation | Peter Todd, Maxim Orlovsky | Informational | Draft
- 10 | Bitcoin protocol           | Bitcoin transaction output-based single-use-seals | Peter Todd et al | Standard | Proposal
+ [8]| Cryptographic primitives   | Single-use-seals | Peter Todd, Maxim Orlovsky | Informational | Draft
+ [9]| Consensus layer            | Client-side-validation | Peter Todd, Maxim Orlovsky | Informational | Draft
+[10]| Bitcoin protocol           | Bitcoin transaction output-based single-use-seals | Maxim Orlovsky et al | Standard | Proposal
 [11]| Smart contracts            | RGB: Client-validated confidential smart contracts using bitcoin transaction graphs for Bitcoin and Lightning Network | Maxim Orlovsky et al | Informational | Proposal
  12 | Consensus layer            | RGB Schema: client-side validation rules for RGB smart contracts | Maxim Orlovsky | Standard | Planned
  13 | Consensus layer            | RGB client-side verification and data serialization | Maxim Orlovsky | Standard | Planned
@@ -141,8 +141,10 @@ Game theory                | Game-theoretical setups for trustless protocols    
 [3]: lnpbp-0003.md
 [4]: lnpbp-0004.md
 [5]: lnpbp-0005.md
+[6]: lnpbp-0006.md
 [8]: lnpbp-0008.md
 [9]: https://diyhpl.us/wiki/transcripts/scalingbitcoin/milan/client-side-validation/
+[10]: lnpbp-0010.md
 [11]: lnpbp-0011.md
 [15]: lnpbp-0015.md
 [18]: lnpbp-0018.md
@@ -179,3 +181,4 @@ Game theory                | Game-theoretical setups for trustless protocols    
 [81]: lnpbp-0081.md
 [85]: https://github.com/LNP-BP/client_side_validation/blob/master/strict_encoding/src/bitcoin.rs
 [86]: https://github.com/internet2-org/aluvm-spec
+[92]: lnpbp-0092.md
