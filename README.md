@@ -70,7 +70,8 @@ No  | Vertical                   | Title | Authors | Type | Status
 [43]| Bitcoin protocol           | RGB-enabled BIP43 purpose field & identity system | Maxim Orlovsky | Standard | Draft
 [44]| Bitcoin protocol           | Script templating: BIP-32 & LNPBP-43 key derivations within for non-miniscript-compatible Bitcoin scripts | Maxim Orlovsky | Standard | Draft
  45 | Lightning network protocol | Lightning network message extensions for decentralized exchange functionality | Maxim Orlovsky | Standard | Planned
-46-48| Reserved                  | | For future use by lightning network protocol extensions
+ 46 | Lightning network protocol | Deterministic derivation paths for LNP | Maxim Orlovsky | Draft
+47,48| Reserved                  | | For future use by lightning network protocol extensions
  49 | Lightning network protocol | Synchronized multi-hop state updates via delegation in Lightning network | Maxim Orlovsky, Christian Decker | Standard | Planned
 [50]| Lightning network protocol | Bifrost: generalized Lightning network protocol core | Maxim Orlovsky | Standard | Planned
 [51]| Lightning network protocol | Bifrost: channel management protocol | Maxim Orlovsky | Standard | Draft
