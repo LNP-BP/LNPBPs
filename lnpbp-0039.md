@@ -42,12 +42,12 @@ License: CC0-1.0
 
 ### Design
 
-Bitcoin transaction output-based single-use-seals (TxOSUS) is a particular application of [single-use-seals](../lnpbp-0006.md) to bitcoin transaction graph, either as a part of any bitcoin blockchain (longest PoW chain, federated sidechain etc) or state channel (Lightning network channel and other types of state channels), i.e. in terms of single-use-seals, seal medium is represented by a bitcoin transaction graph.
+Bitcoin transaction output-based single-use-seals (TxOSUS) is a particular application of [single-use-seals](lnpbp-0006.md) to bitcoin transaction graph, either as a part of any bitcoin blockchain (longest PoW chain, federated sidechain etc) or state channel (Lightning network channel and other types of state channels), i.e. in terms of single-use-seals, seal medium is represented by a bitcoin transaction graph.
 
-The parties running protocol agree on some transaction output in any given bitcoin transaction graph as a place with special meaning ("seal"), and require that a future transaction spending this output ("witness transaction") contained a [deterministic bitcoin commitment](../lnpbp-0008.md) to some a message. Any independent party having access to the transaction graph MUST:
+The parties running protocol agree on some transaction output in any given bitcoin transaction graph as a place with special meaning ("seal"), and require that a future transaction spending this output ("witness transaction") contained a [deterministic bitcoin commitment](lnpbp-0008.md) to some a message. Any independent party having access to the transaction graph MUST:
 
 1. not be able to detect the presence of the commitment in a given transaction graph (_hiding_ property of TxOSUS) even if the original message is known,
-2. being provided information about specific protocol used for message commitments and access to deterministic bitcoin proof data (see [LNPBP-8](../lnpbp-0008.md)) be able to verify the commitment such as it will be valid only and only for the message with which the original commitment was created (_verifiably_ property of TxOSUS).
+2. being provided information about specific protocol used for message commitments and access to deterministic bitcoin proof data (see [LNPBP-8](lnpbp-0008.md)) be able to verify the commitment such as it will be valid only and only for the message with which the original commitment was created (_verifiably_ property of TxOSUS).
 
 The defined procedure is not the only way in which bitcoin blockchain or transaction graph can be used as a seal medium for single-use seals (for instance, a seal may be defined as a first time some specific public key appears in the blockchain); however these options are not part of the current standard.
 
@@ -67,13 +67,13 @@ Defined seal consists of 256-bit consensus-defined double SHA-256 hash of a full
 
 Seal MUST be considered defined only and only all of transaction data are known, the transaction is fully signed and both transaction structure and signatures validated with bitcoin consensus rules using libbitcoinconsensus or Bitcoin Core.
 
-NP: Parties participating the protocol MUST agree on an implementatio-specific entropy used in deterministic bitcoin commiemtnes as required by [LNPBP-8](../lnpbp-0008.md) and [LNPBP-3](../lnpbp-0003.md) protocols.
+NP: Parties participating the protocol MUST agree on an implementatio-specific entropy used in deterministic bitcoin commiemtnes as required by [LNPBP-8](lnpbp-0008.md) and [LNPBP-3](lnpbp-0003.md) protocols.
 
 #### Closing seal over a message
 
 1. Fully sign the transaction containing output acting as a defined seal.
 2. Construct a transaction spending the transaction output defined by the seal. The transaction may have any number
-3. Create a commitment to the message and embed it into the unsigned witness transaction with the deterministic bitcoin commitment embed procedure as defined in [LNPBP-8](../lnpbp-0008.md), store the proof.
+3. Create a commitment to the message and embed it into the unsigned witness transaction with the deterministic bitcoin commitment embed procedure as defined in [LNPBP-8](lnpbp-0008.md), store the proof.
 4. Fully sign the witness transaction.
 
 NB: Transactions and proof MUST be persisted for further verification procedure.
@@ -98,7 +98,7 @@ A party verifying that the seal is indeed closed over a message MUST run the fol
    * transaction output number contained in the seal definition MUST be present in transaction (i.e. transaction MUST contain exactly that numbers or more of trsansaciton outputs);
    * the transaction MUST be fully-signed for all of its inputs;
    * the transaction MUST signatures pass validation with bitcoin consensus rules using libbitcoinconsensus or Bitcoin Core. If any of these conditions are not met, fail the verification.
-4. Verify the deterministic bitcoin commitment to the given message with the provided deterministic bitcoin commitment proof according to the [LNPBP-8](../lnpbp-0008.md) procedure; fail the verification if this procedure fails.
+4. Verify the deterministic bitcoin commitment to the given message with the provided deterministic bitcoin commitment proof according to the [LNPBP-8](lnpbp-0008.md) procedure; fail the verification if this procedure fails.
 
 #### Strict encoding
 
