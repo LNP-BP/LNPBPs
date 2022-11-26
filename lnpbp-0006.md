@@ -1,7 +1,7 @@
 ```
 LNPBP: 0006
 Vertical: Bitcoin protocol
-Title: Deterministic bitcoin commitments
+Title: PayTweak: Pay-to-contract deterministic bitcoin commitments
 Author: Dr Maxim Orlovsky <orlovsky@lnp-bp.org>
 Comments-URI: https://github.com/LNP-BP/lnpbps/pulls/116
 Status: Draft
