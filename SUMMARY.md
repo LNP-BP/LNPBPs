@@ -6,10 +6,8 @@
 
 * [LNPBP-1: Public keys](lnpbp-0001.md)
 * [LNPBP-2: Script](lnpbp-0002.md)
-* [LNPBP-3: Transaction](lnpbp-0003.md)
-* [LNPBP-4: Multi-commitments](lnpbp-0004.md)
-
-## RGB
+* [LNPBP-3: PayTweak](lnpbp-0003.md)
+* [LNPBP-4: Multi-protocol](lnpbp-0004.md)
 
 ## Unsorted
 
@@ -22,4 +20,3 @@
 * [lnpbp-0021](lnpbp-0021.md)
 * [lnpbp-0020](lnpbp-0020.md)
 * [lnpbp-0081](lnpbp-0081.md)
-
