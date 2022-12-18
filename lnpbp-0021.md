@@ -82,14 +82,18 @@ data Attachment ::
     type MimeType,
     uri: Uri
 
+data POR :: -- proof of reserves
+    reserves TxOut,
+    proof [Bytes] -- schema-specific proof 
+
 data Token ::
     id Id,
     name [Ascii ^ 1..40],
     details [Unicode ^ 40..256]?,
     media Media?,
     attachment Attachment?,
-    reserves: TxOut? -- output containing locked bitcoins; how reserves are
-                     -- proved is a matter of a specific schema implementation
+    reserves: POR? -- output containing locked bitcoins; how reserves are
+                   -- proved is a matter of a specific schema implementation
 
 data Nomination :: 
     ticker [Ascii ^ 1..8],
@@ -139,12 +143,13 @@ interface RGB21 :: CollectionInfo
     op? issue      :: usingRight TxOut, 
                    -> nextRight TxOut?, tokens [Token], beneficiaries [Allocation]
                    !! invalidRight
+                    | invalidReserves(POR)
 
     -- decentralized issue
     op? dcntrlIssue -> tokens [Token], 
                        beneficiaries [Allocation]
                     !! noReserves(TokenId)
-                     | invalidReserves(TxOut)
+                     | invalidReserves(POR)
 
     op? renominate :: usingRight TxOut 
                    -> nextRight TxOut?, newNomination AssetInfo
