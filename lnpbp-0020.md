@@ -56,6 +56,10 @@ data DecFractions :: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 |
 
 data TxOut :: txid [Byte ^ 32], vout U16
 
+data POR :: -- proof of reserves
+    utxo TxOut,
+    proof [Bytes] -- auxilary data which are schema-specific
+
 data Amount :: U64 -- asset amount
 
 -- allocation of assets to some transactou output
@@ -90,21 +94,38 @@ data RGB20Info ::
 interface RGB20 :: RGB20Info
     op transfer    :: inputs [TxOut ^ 1..] 
                    -> beneficiaries [Allocation]
+                   !! -- options for operation failure:
+                      outputSpent(TxOut)
+                    | noAssets(TxOut)
+                    | inequalAmounts
 
     -- question mark denotes optional operation, which may not be supported by 
     -- some of schemata implementing the intrface
     
     op? issue      :: usingRight TxOut, amount Amount 
                    -> nextRight TxOut?, beneficiaries [Allocation]
+                   !! invalidRight
+                    | invalidAmount
 
-    op? burn       :: usingRight TxOut, assets Allocation 
+    op? dcntrlIssue -> reserves POR, beneficiaries [Allocation]
+                   !! invalidReserves
+                    | insufficientReserves
+
+    op? burn       :: usingRight TxOut, proofs [POR], amount Amount
                    -> nextRight TxOut?
+                   !! invalidRight
+                    | invalidAmount
+                    | invalidProof(POR)
     
-    op? reissue    :: usingRight TxOut, assets Allocation 
+    op? reissue    :: usingRight TxOut, proofs [POR], amount Amount
                    -> nextRight TxOut?, beneficiaries [Allocation]
+                   !! invalidRight
+                    | invalidAmount
+                    | invalidProof(POR)
 
     op? renominate :: usingRight TxOut 
                    -> nextRight TxOut?, newNomination AssetInfo
+                   !! invalidRight
 ```
 
 ## Compatibility
