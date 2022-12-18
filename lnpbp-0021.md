@@ -69,10 +69,7 @@ data OwnedFraction :: U64
 data TxOut :: txid [Byte ^ 32], vout U16
 
 -- allocation of a single token or its fraction to some transaction output
-data Allocation :: TxOut, TokenId, OwnedFraction
-
--- right over certain amount of collectible items; right owner may be unknown
-data AssetControl :: TxOut?, ItemsCount
+data Allocation :: TokenId, OwnedFraction
 
 data Media ::
     type MimeType,
@@ -84,7 +81,7 @@ data Attachment ::
 
 data POR :: -- proof of reserves
     reserves TxOut,
-    proof [Bytes] -- schema-specific proof 
+    proof [Byte] -- schema-specific proof 
 
 data Token ::
     id Id,
@@ -92,68 +89,57 @@ data Token ::
     details [Unicode ^ 40..256]?,
     media Media?,
     attachment Attachment?,
-    reserves: POR? -- output containing locked bitcoins; how reserves are
-                   -- proved is a matter of a specific schema implementation
+    reserves POR? -- output containing locked bitcoins; how reserves are
+                  -- proved is a matter of a specific schema implementation
 
 data Nomination :: 
     ticker [Ascii ^ 1..8],
     name [Ascii ^ 1..40],
     details [Unicode ^ 40..256]?,
     contract [Unicode]??,
-    isFractional: Bool
 
-data CollectionInfo ::
-    knownInfo Nomination,
-    origInfo Nomination,
-    isFinalInfo Bool,
-    renominationRight TxOut?,
+interface RGB21
+    global Name :: Nomination
+    global Tokens :: [(Token, [Engraving])]
+    global isFractional :: Bool
 
-    isSupplyKnown Bool, -- indicates that all issues, burn and reissues are known
-    supplyKnown Amount, -- returns information about known cirtulating supply
-    supplyLimit Amount, -- maximum possible asset inflation
-    pastIssues [AssetControl], -- known past issue operations
-    futureIssues [AssetControl], -- known future issue operations
-    knownBurns [AssetControl], -- known past burn operations
-    knownReissues [AssetControl], -- known past reissue operations
+    owned Allocations+ :: Allocation
+    owned IssueRight* :: Amount
+    owned RenominationRight
 
-    tokens [(Token)]
-    -- known asset amounts allocated to known UTXOs
-    knownAllocations [(Allocation, [Engraving])]
+    -- returns information about known circulating supply
+    read supplyKnown :: Amount
+        count Self.state["Tokens"]
+        -- sum Self.ops["issue"]..closed["usingRight"].state ?? 0
 
-interface RGB21 :: CollectionInfo
-    op transfer    :: inputs [TxOut ^ 1..] 
-                   -> beneficiaries [Allocation]
+    -- maximum possible asset inflation
+    read supplyLimit :: Amount
+        sum Self.IssueRight..state ?? 0
+
+    read isCirculationKnown :: Bool
+        all Self.ops["issue"]..stateKnown
+
+    op transfer    :: inputs [Allocation+] -> beneficiaries [Allocation]
                    !! -- options for operation failure:
-                      outputSpent(TxOut)
-                    | noTokens(TxOut)
-                    | inequalFractions(TokenId)
+                      inequalFractions(TokenId)
                     | nonFractionalToken
 
     -- question mark denotes optional operation, which may not be supported by 
     -- some of schemata implementing the intrface
 
-    op? engrave    :: inputs [TxOut ^ 1..] 
-                   -> beneficiaries [(Allocation, Engraving?)]
-                   !! outputSpent(TxOut)
-                    | noTokens(TxOut)
-                    | inequalFractions(TokenId)
-                    | nonFractionalToken
-                    | noEngravings
+    op? engrave    :: Allocation -> Allocation
+                   <- Engraving
 
-    op? issue      :: usingRight TxOut, 
-                   -> nextRight TxOut?, tokens [Token], beneficiaries [Allocation]
-                   !! invalidRight
-                    | invalidReserves(POR)
+    op? issue      :: IssueRight -> IssueRight, beneficiaries {Allocation}
+                   <- tokens {Token}
+                   !! invalidReserves(POR)
 
     -- decentralized issue
-    op? dcntrlIssue -> tokens [Token], 
-                       beneficiaries [Allocation]
-                    !! noReserves(TokenId)
-                     | invalidReserves(POR)
+    op? dcntrlIssue -> tokens {Token}, beneficiaries {Allocation}
+                    !! invalidReserves(POR)
 
-    op? renominate :: usingRight TxOut 
-                   -> nextRight TxOut?, newNomination AssetInfo
-                   !! invalidRight
+    op? renominate :: RenominationRight -> RenominationRight
+                   <- Nomination
 ```
 
 ## Compatibility
