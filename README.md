@@ -36,13 +36,12 @@ Criteria for a LNP/BP specification proposal:
 |                  17 | Commitment schemes  | TapRet: Taproot script tree-based OP_RETURN deterministic bitcoin commitments                                         | Maxim Orlovsky et al                     | Standard      | Final    |
 | [18](lnpbp-0018.md) | Networking          | Native message framing protocol (BOLT-8 extract)                                                                      | Multiple peers                           | Standard      | Planned  |
 |                  19 | Commitment schemes  | *Reserved for sign-to-contract deterministic bitcoin commitments*                                                     |                                          |               |          |
-| [20](lnpbp-0020.md) | Wallet              | RGB fungible assets schema (RGB-20)                                                                                   | Multiple peers                           | Standard      | Final    |
-| [21](lnpbp-0021.md) | Wallet              | RGB schema for NFTs representing ownership rights (RGB-21)                                                            | Maxim Orlovsky                           | Standard      | Proposal |
-|                [22] | Wallet              | RGB reputation and identity schema (RGB-22)                                                                           | Maxim Orlovsky, Sabina Sachtachtinskagia | Standard      | Draft    |
-|                  23 | Wallet              | RGB verifiable-unique history log for auditable data (RGB-23)                                                         | Maxim Orlovsky, Giacomo Zucco            | Standard      | Planned  |
-|                  24 | Wallet              | RGB schema for decentralized global domain name system (RGB-24)                                                       | Maxim Orlovsky                           | Standard      | Planned  |
-|                  30 | Wallet              | RGB schema for bitcoin-backed fungible assets with decentralized issuance (RGB-30)                                    | Maxim Orlovsky                           | Standard      | Planned  |
-|           25-29, 31 | *Reserved*          | *For the future use by RGB schemata*                                                                                  |                                          |               |          |
+| [20](lnpbp-0020.md) | Wallet              | RGB fungible assets interface (RGB-20)                                                                                | Multiple peers                           | Standard      | Final    |
+| [21](lnpbp-0021.md) | Wallet              | RGB non-fungible collectibles interface (RGB-21)                                                                      | Maxim Orlovsky                           | Standard      | Proposal |
+| [22](lnpbp-0022.md) | Wallet              | RGB reputation and identity interface (RGB-22)                                                                        | Maxim Orlovsky, Sabina Sachtachtinskagia | Standard      | Draft    |
+| [23](lnpbp-0023.md) | Wallet              | RGB verifiable-unique history log for auditable data (RGB-23)                                                         | Maxim Orlovsky, Giacomo Zucco            | Standard      | Planned  |
+| [24](lnpbp-0024.md) | Wallet              | RGB schema for decentralized global domain name system (RGB-24)                                                       | Maxim Orlovsky                           | Standard      | Planned  |
+|               25-31 | *Reserved*          | *For the future use by RGB schemata*                                                                                  |                                          |               |          |
 |                  32 | Wallet              | BIP-32 derivation path extension for read-only wallets                                                                | Maxim Orlovsky                           | Standard      | Draft    |
 |                [33] | Smart contracts     | Lightspeed: micro-payments for Lightning Network                                                                      | Maxim Orlovsky                           | Draft         |          |
 |                [34] | Smart contracts     | Zero-knowledge arguments for data persistence using probabilistic checkable proofs                                    | Maxim Orlovsky                           | Standard      | Draft    |
@@ -105,7 +104,6 @@ Criteria for a LNP/BP specification proposal:
 | Smart contracts    | Distributed smart contract execution environment          | Scriptless scripts, RGB, lightning network applications, virtual machines etc |
 
 [9]: https://diyhpl.us/wiki/transcripts/scalingbitcoin/milan/client-side-validation/
-[22]: https://github.com/LNP-BP/LNPBPs/issues/29
 [33]: https://github.com/LNP-BP/LNPBPs/issues/24
 [34]: https://github.com/storm-org/storm-spec
 [35]: https://github.com/LNP-BP/LNPBPs/pull/97

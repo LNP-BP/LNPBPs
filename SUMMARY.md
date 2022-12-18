@@ -23,6 +23,9 @@
 * [LNPBP-37: Invoices (rejected)](lnpbp-0037.md)
 * [RGB-20: Fungible assets](lnpbp-0020.md)
 * [RGB-21: NFT collectibles](lnpbp-0021.md)
+* [RGB-22: Digital identity](lnpbp-0022.md)
+* [RGB-23: Audit logs](lnpbp-0023.md)
+* [RGB-24: Domain names](lnpbp-0024.md)
 
 ## Lightning network protocol
 
