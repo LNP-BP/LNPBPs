@@ -84,7 +84,7 @@ data POR :: -- proof of reserves
     proof [Byte] -- schema-specific proof 
 
 data Token ::
-    id Id,
+    id TokenId,
     name [Ascii ^ 1..40],
     details [Unicode ^ 40..256]?,
     media Media?,
