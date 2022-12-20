@@ -102,10 +102,12 @@ interface RGB21
     global Name :: Nomination
     global Tokens :: [(Token, [Engraving])]
     global isFractional :: Bool
+global Registry :: Auxiliary
 
     owned Allocations+ :: Allocation
     owned IssueRight* :: Amount
     owned RenominationRight
+owned ControlRight
 
     -- returns information about known circulating supply
     read supplyKnown :: Amount
@@ -125,7 +127,7 @@ interface RGB21
                     | nonFractionalToken
 
     -- question mark denotes optional operation, which may not be supported by 
-    -- some of schemata implementing the intrface
+    -- some of schemata implementing the interface
 
     op? engrave    :: Allocation -> Allocation
                    <- Engraving
@@ -135,8 +137,12 @@ interface RGB21
                    !! invalidReserves(POR)
 
     -- decentralized issue
-    op? dcntrlIssue -> tokens {Token}, beneficiaries {Allocation}
+    op? decentralizedIssue -> tokens {Token}, beneficiaries {Allocation}
                     !! invalidReserves(POR)
+
+-- updates registry of auxiliary data to a new version
+op? update :: controlRight -> controlRight
+           <- Registry
 
     op? renominate :: RenominationRight -> RenominationRight
                    <- Nomination
