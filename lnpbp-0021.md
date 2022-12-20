@@ -3,10 +3,10 @@ LNPBP: 0021
 Vertical: Smart contracts
 Title: RGB non-fungible assets interface for collectibles (RGB-21)
 Authors: Dr Maxim Orlovsky <orlovsky@lnp-bp.org>,
-         Hunter Trello,
+         Hunter Trujillo,
          Federico Tenga,
          Carlos Roldan,
-         Olgsa Ukolova,
+         Olga Ukolova,
          Giacomo Zucco,
 Comments-URI: <https://github.com/LNP-BP/LNPBPs/issues/70>
 Status: Proposal
