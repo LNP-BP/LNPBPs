@@ -99,6 +99,19 @@ data Nomination ::
     details [Unicode ^ 40..256]?,
     contract [Unicode]??,
 
+data Auxiliary ::
+    -- list of allowed sources
+    sources [Source]
+    
+     -- each attachment type is a mapping from attachment id 
+     -- (used as `Token.attachments` keys) to a short Ascii string
+     -- verbally explaining the type of the attachment for the UI
+     -- (like "sample" etc).
+    attachmentTypes { U8 ^ ..32 -> [Ascii ^ 1..20] }
+
+data Source :: url(Proto, Dns) | urn(UrnPrefix) | storm(NodeAddr)
+data Proto :: http | https | httpxk | ws | wss | wssxk
+
 interface RGB21
     global Name :: Nomination
     global Tokens :: [(Token, [Engraving])]
