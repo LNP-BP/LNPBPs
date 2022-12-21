@@ -87,8 +87,9 @@ data Token ::
     id TokenId,
     name [Ascii ^ 1..40],
     details [Unicode ^ 40..256]?,
-    media Media?,
-    attachment Attachment?,
+    preview Media?, -- always embedded preview media < 64kb
+    media Attachment?, -- external media which is the main media for the token
+    attachments { U8 ^ ..20 -> Attachment } -- auxillary attachments by type (up to 20 attachments)
     reserves POR? -- output containing locked bitcoins; how reserves are
                   -- proved is a matter of a specific schema implementation
 
