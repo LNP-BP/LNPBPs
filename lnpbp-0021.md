@@ -56,7 +56,7 @@ Interface specification is the following Contractum code:
 -- # Defining main data structures
 
 -- collectibles are usually scarse, so we limit their max number to 64k
-data ItemsCount :: U16
+data ItemsCount :: U32
 
 -- each collectible item is unique and must have an id
 data TokenId :: U16
@@ -93,7 +93,7 @@ data Token ::
     reserves POR? -- output containing locked bitcoins; how reserves are
                   -- proved is a matter of a specific schema implementation
 
-data Nomination :: 
+data Denomination :: 
     ticker [Ascii ^ 1..8],
     name [Ascii ^ 1..40],
     details [Unicode ^ 40..256]?,
@@ -113,14 +113,15 @@ data Source :: url(Proto, Dns) | urn(UrnPrefix) | storm(NodeAddr)
 data Proto :: http | https | httpxk | ws | wss | wssxk
 
 interface RGB21
-    global Name :: Nomination
+    global Name :: Denomination
     global Tokens :: [(Token, [Engraving])]
     global isFractional :: Bool
-global Registry :: Auxiliary
+    global Registry :: Auxiliary
 
     owned Allocations+ :: Allocation
     owned IssueRight* :: Amount
-    owned RenominationRight
+    owned DenominationRight?
+    
 owned ControlRight
 
     -- returns information about known circulating supply
@@ -158,7 +159,7 @@ owned ControlRight
 op? update :: controlRight -> controlRight
            <- Registry
 
-    op? renominate :: RenominationRight -> RenominationRight
+    op? rename :: DenominationRight -> DenominationRight? <- Denomination
                    <- Nomination
 ```
 
