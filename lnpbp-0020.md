@@ -86,7 +86,7 @@ interface RGB20 :: RGB20Info
     -- state which accumulates amounts burned and then replaced
     global Repalced* :: Amount
 
-    owned IssueRight+ :: Amount
+    owned IssueRight* :: Amount
     owned DenominationRight?
     owned BurnRight?
 
@@ -142,6 +142,63 @@ Include from
 - https://github.com/LNP-BP/LNPBPs/issues/50
 
 ## Reference implementation
+
+Simple asset issuance:
+
+```Haskell
+import RGB20
+
+schema SimpleAsset
+    global Denomination :: Denomination
+    global Contract :: [Unicode]
+
+    global Issued* :: Amount
+    owned Assets* :: Amount
+
+    genesis -> allocations [Assets]
+            <- totalAmount Issued, naming Denomination, contract Contract
+        sum allocations =? totalAmount !! nonEqualAmounts
+        
+    op transfer :: inputs [Assets] -> beneficiaries [Assets]
+        sum inputs =? sum beneficiaries !! nonEqualAmounts
+
+implement RGB20 for SimpleAsset
+
+let issuerOwned := Seal fac503c4641c3deda72a2d00bc9d6ff1094b15276c386efea403746a91436772, 1
+
+contract sampleAsset := SimpleAsset (
+    naming := Denomination(
+        ticker := "OTI",
+        name := "One time issued token",
+        details := "Absolutely useless",
+        precision := 8
+    ),
+    contract := """
+        THE ASSET TOKEN IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+        EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+        MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+        IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+        OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+        ARISING FROM, OUT OF OR IN CONNECTION WITH THE ASSET TOKEN OR THE USE
+        OR OTHER DEALINGS IN THE CONTRACT.
+        """,
+    allocations := [
+        (issuerOwned, 10_000_000__0000_0000)
+    ],
+    totalAmount := 10_000_000__0000_0000
+)
+
+let friendOwned := Seal ~, 0
+let issuerChange := Seal ~, 1
+
+transition sendToFriend := SimpleAsset.transfer (
+    inputs := [issuerOwned],
+    beneficiaries := [
+        (friendOwned, 1_000_000__0000_0000),
+        (issuerChange, 9_000_000__0000_0000)
+    ]
+)
+```
 
 
 ## Acknowledgements
