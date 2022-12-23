@@ -51,8 +51,6 @@ License: CC0-1.0
 Interface specification is the following Contractum code:
 
 ```haskell
--- # Defining main data structures
-
 -- number of decimal fractions (decimal numbers after floating point)
 data DecFractions :: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 |
                      14 | 15 | 16 | 17 | 18
@@ -71,7 +69,7 @@ data Denomination ::
     details [Unicode ^ 40..256]?,
     precision DecFractions
 
-interface RGB20 :: RGB20Info
+interface RGB20
     global Denomination :: Denomination
 
     -- Contract text is separated from the denomination since it must not be
@@ -161,11 +159,12 @@ schema SimpleAsset
     genesis -> allocations [Assets]
             <- totalAmount Issued, naming Denomination, contract Contract
         sum allocations =? totalAmount !! nonEqualAmounts
-        
+
     op transfer :: inputs [Assets] -> beneficiaries [Assets]
         sum inputs =? sum beneficiaries !! nonEqualAmounts
 
 implement RGB20 for SimpleAsset
+    -- all names match interface so no explicit declarations here are needed
 
 let issuerOwned := Seal fac503c4641c3deda72a2d00bc9d6ff1094b15276c386efea403746a91436772, 1
 
