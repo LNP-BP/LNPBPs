@@ -130,6 +130,10 @@ interface RGB20
 
     op? rename     :: using DenominationRight
                    -> next DenominationRight?, new Denomination
+
+    op? decentralizedIssue -> beneficiaries [Assets]
+                           <- proofs [POR]
+                           !! invalidProof(POR)
 ```
 
 ## Compatibility
