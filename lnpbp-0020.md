@@ -62,70 +62,62 @@ data POR :: -- proof of reserves
 
 data Amount :: U64 -- asset amount
 
--- allocation of assets to some transactou output
-data Allocation :: TxOut, Amount
-
--- right over certain amount of assets; right owner may be unknown
-data AssetControl :: TxOut?, Amount
-
-data Nomination :: 
+data Denomination :: 
     ticker [Ascii ^ 1..8],
     name [Ascii ^ 1..40],
     details [Unicode ^ 40..256]?,
-    contract [Unicode]??,
     precision DecFractions
 
-data RGB20Info ::
-    knownInfo Nomination,
-    origInfo Nomination,
-    isFinalInfo Bool,
-    renominationRight TxOut?,
-    
-    isSupplyKnown Bool, -- indicates that all issues, burn and reissues are known
-    supplyKnown Amount, -- returns information about known cirtulating supply
-    supplyLimit Amount, -- maximum possible asset inflation
-    pastIssues [AssetControl], -- known past issue operations
-    futureIssues [AssetControl], -- known future issue operations
-    knownBurns [AssetControl], -- known past burn operations
-    knownReissues [AssetControl], -- known future burn operations
-
-    knownAllocations [Allocation] -- known asset amounts allocated to known UTXOs
-
 interface RGB20 :: RGB20Info
-    op transfer    :: inputs [TxOut ^ 1..] 
-                   -> beneficiaries [Allocation]
-                   !! -- options for operation failure:
-                      outputSpent(TxOut)
-                    | noAssets(TxOut)
-                    | inequalAmounts
+    global Denomination :: Denomination
+
+    -- Contract text is separated from the denomination since it must not be
+    -- changeable by an issuer.
+    global Contract :: [Unicode]
+    -- The difference between `global _ :: [_]` and `global _? :: _` is that
+    -- the first indicates that the global state may not be present, while
+    -- the second requires the state must be present and have a form of array
+    -- of the elements.
+
+    owned IssueRight+ :: Amount
+    owned DenominationRight?
+    owned BurnRight?
+
+    owned Assets* :: Amount
+
+    -- operations are declared as
+    -- `op` NAME `::` CLOSED_SEALS,+ INPUT_METADATA,*
+    --           `->` DEFINED_SEALS,+
+    --           `<-` NEW_GLOBAL_STATE,*
+    --           `!!` ERRORS|*
+
+    op transfer    :: inputs [Assets] 
+                   -> beneficiaries [Assets]
+                   !! inequalAmounts
 
     -- question mark denotes optional operation, which may not be supported by 
     -- some of schemata implementing the intrface
     
-    op? issue      :: usingRight TxOut, amount Amount 
-                   -> nextRight TxOut?, beneficiaries [Allocation]
-                   !! invalidRight
-                    | invalidAmount
+    op? issue      :: using IssueRight
+                   -> next IssueRight?, beneficiaries [Assets]
+                   !! nonEqualAmounts
 
-    op? dcntrlIssue -> reserves POR, beneficiaries [Allocation]
+    op? dcntrlIssue -> reserves POR, beneficiaries [Assets]
                    !! invalidReserves
                     | insufficientReserves
 
-    op? burn       :: usingRight TxOut, proofs [POR], amount Amount
-                   -> nextRight TxOut?
-                   !! invalidRight
-                    | invalidAmount
+    op? burn       :: using BurnRight, proofs [POR], amount Amount
+                   -> next BurnRight?
+                   !! nonEqualAmounts
                     | invalidProof(POR)
     
-    op? reissue    :: usingRight TxOut, proofs [POR], amount Amount
-                   -> nextRight TxOut?, beneficiaries [Allocation]
-                   !! invalidRight
-                    | invalidAmount
+    op? reissue    :: using BurnRight, proofs [POR]
+                   -> next BurnRight?, beneficiaries [Assets]
+                   !! nonEqualAmounts
                     | invalidProof(POR)
 
-    op? renominate :: usingRight TxOut 
-                   -> nextRight TxOut?, newNomination AssetInfo
-                   !! invalidRight
+    op? rename     :: using DenominationRight
+                   -> next DenominationRight?, new Denomination
 ```
 
 ## Compatibility
