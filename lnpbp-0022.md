@@ -1,13 +1,17 @@
 ```
 LNPBP: 0022
+Aliases: RGB22
 Vertical: Smart contracts
 Title: RGB reputation and identity interface (RGB-22)
 Authors: Dr Maxim Orlovsky <orlovsky@lnp-bp.org>,
          Sabina Sachtachtinskagia
 Comments-URI: <https://github.com/LNP-BP/LNPBPs/discussions>
-Status: Proposal
+Status: Draft
 Type: Standards Track
 Created: 2020-09-10
+Updated: 2022-12-23
+Finalized: ~
+Copyright: (0) public domain
 License: CC0-1.0
 ```
 
@@ -61,23 +65,24 @@ data Sig ::
     ed25519(EdKey, EdSig)
 
 data Attestation ::
-    fact [Fact],
-    attestedBy ContractId,
+    facts [Fact+],
+    attestedBy RGB22.ContractId,
     signature Sig
 
-interface RGB22 :: Identity
-    global Name :: Unicode
-    global Emails :: {Email}
-    global Facts :: {Attestation}
-    global Photo :: (MimeType, [Byte+])?
+interface RGB22
+    global Name :: [Unicode+]
+
+    global Emails{+} :: Email
+    global Facts{*} :: Attestation
+    global Photo? :: (MimeType, [Byte])
 
     owned NameRight
     owned AttestRight
-    owned RevokableKey+ :: Pubkey
+    owned RevokableKey{+} :: Pubkey
 
-    op Revoke :: RevokableKey -> RevokableKey?
-    op Rename :: NameRight -> NameRight <- Name, Emails
-    op Attest :: AttestRight -> AttestRight, {RevokableKey} <- {Attestation}
+    op revoke :: RevokableKey -> RevokableKey?
+    op rename :: NameRight -> NameRight <- Name, Emails, Photo?
+    op attest :: AttestRight -> AttestRight, {RevokableKey} <- {Attestation}
 ```
 
 ## Compatibility
@@ -90,36 +95,41 @@ interface RGB22 :: Identity
 
 ```haskell
 use Secp256k1, Ed25519
-import RGB21
+import RGB22
 
-fn check_key :: key Pubkey -> res Bool
-    res = match key
-    | secp256k1(k) => Secp256k1.check_key k
-    | curve25519(k) => Ed25519.check_key k
+fn checkKey :: key Pubkey !! invalidKey
+    key:
+        Pubkey.secp256k1(k) -> Secp256k1.checkKey k !! invalidKey
+        Pubkey.curve25519(k) -> Ed25519.checkKey k  !! invalidKey
 
 schema BaseIdentity
-    global Name :: Unicode
-    global Emails :: {Email}
-    global Facts :: {Attestation}
-    global Photo :: (MimeType, [Byte+])?
+    global Name :: [Unicode+]
+    global Emails{+} :: Email
+    global Facts{*} :: Attestation
+    global Photo? :: (MimeType, [Byte])
 
     owned NameRight
     owned AttestRight
-    owned RevokableKey :: Pubkey
+    owned RevokableKey{+} :: Pubkey
 
-    genesis :: Name, Emails, keys {RevokableKey+}
-        keys => key -> assert! check_key key
+    genesis :: name Name, emails {Emails+}, keys {RevokableKey+} 
+            !! invalidKey
+        keys => key -> checkKey key
      
-    op Revoke :: old RevokableKey -> new RevokableKey?
-        assert! check_key new
-        assert! old != new
-        
-    op Rename :: NameRight -> NameRight <- Name, Emails
-    
-    op Attest :: AttestRight -> AttestRight, {RevokableKey} <- atts {Attestation}
-        atts => a -> match a.signature
-        | secp256k1(key, sig) => assert! Secp256k1.verify key, sig
-        | ed25519k1(key, sig) => assert! Ed25519.verify key, sig
+    op revoke :: old RevokableKey -> new RevokableKey?
+              !! invalidKey
+               | sameKey
+        checkKey new
+        !(old =? new) !! sameKey
+
+    op rename :: NameRight -> NameRight <- Name, {Emails+}
+
+    op attest :: AttestRight -> AttestRight, {RevokableKey} 
+              <- atts {Attestation}
+              !! invalidSig
+        atts => a -> a.signature:
+            Sig.secp256k1(key, sig) => Secp256k1.verify key, sig !! invalidSig
+            Sig.ed25519k1(key, sig) => Ed25519.verify key, sig !! invalidSig
 
 implement RGB21 for BaseIdentity
 ```
@@ -136,17 +146,19 @@ implement RGB21 for BaseIdentity
 ```haskell
 use BaseIdentity from identity.con
 
-contract meSatoshiNakamoto implements BaseIdentity
-    assign name Name := "Satoshi Nakamoto"
-    assign email Emails := {"satoshi@nakam.oto"}
-    assign keys Keys := [
-        (seal: fac503c4641c3deda72a2d00bc9d6ff1094b15276c386efea403746a91436772:1,
-         state: Pubkey.secp256k1(0x028730eeeec41802621d177507b086f390ae600ba3ca5e428b13913af4c2cd25b3))
-    ]
+let orig = Seal(fac503c4641c3deda72a2d00bc9d6ff1094b15276c386efea403746a91436772, 1)
 
-transition iLostMyKey executes Revoke
-    close meSatoshiNakamoto.keys[0].seal
-    assign RevocableKey := (seal: ~:1, state: Pubkey.curve25519(0x0219db0a4e0eb8cb833608c08d76b9b279ec44a851ab82cc6fd68a9b32624bfa8b));
+contract meSatoshiNakamoto := BaseIdentity (
+    name := "Satoshi Nakamoto"
+    emails := {"satoshi@nakam.oto"}
+    keys := [
+        (orig, Pubkey.secp256k1(0x028730eeeec41802621d177507b086f390ae600ba3ca5e428b13913af4c2cd25b3))
+    ]
+)
+transition iLostMyKey := BaseIdentity.revoke (
+    old := orig,
+    new := (Seal(~:1), Pubkey.curve25519(0x0219db0a4e0eb8cb833608c08d76b9b279ec44a851ab82cc6fd68a9b32624bfa8b))
+)
 ```
 
 ```console
@@ -157,20 +169,31 @@ Preparing transition iLostMyKey ... saved to `iLostMyKey.rgb` and `iLostMyKey.ps
 ```
 
 ```console
-$ rgb-cli read rgb21 ______
+$ rgb-cli state -i rgb22 rgb1______
 name: Satoshi Nakamoto
 emails:
-    - satoshi@nakam.oto
+  - satoshi@nakam.oto
 facts: []
 photo: ~
 revokableKey:
-    - seal: ___:1
-      state:
-        alt: curve25519
-        val: 0x0219db0a4e0eb8cb833608c08d76b9b279ec44a851ab82cc6fd68a9b32624bfa8b
+  - 4459eaee3f84a1cd7529534d99b553a633671582c42640438071930e741253cf:1: 
+    curve25519
+      0: 0219db0a4e0eb8cb833608c08d76b9b279ec44a851ab82cc6fd68a9b32624bfa8b
 ```
 
 
 ## Copyright
 
 This document is licensed under the Creative Commons CC0 1.0 Universal license.
+
+<p xmlns:dct="http://purl.org/dc/terms/">
+  <a rel="license"
+     href="http://creativecommons.org/publicdomain/zero/1.0/">
+    <img src="http://i.creativecommons.org/p/zero/1.0/88x31.png" style="border-style:none;" alt="CC0" />
+  </a>
+  <br />
+  To the extent possible under law,
+  <a rel="dct:publisher" href="https://lnp-bp.org">
+    <span property="dcl:title">LNP/BP Standards Association</span></a>
+  has waived all copyright and related or neighboring rights to this work.
+</p>
