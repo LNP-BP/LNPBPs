@@ -79,6 +79,13 @@ interface RGB20 :: RGB20Info
     -- the second requires the state must be present and have a form of array
     -- of the elements.
 
+    -- state which accumulates amounts issued
+    global Issued* :: Amount
+    -- state which accumulates amounts burned
+    global Burned* :: Amount
+    -- state which accumulates amounts burned and then replaced
+    global Repalced* :: Amount
+
     owned IssueRight+ :: Amount
     owned DenominationRight?
     owned BurnRight?
@@ -100,19 +107,23 @@ interface RGB20 :: RGB20Info
     
     op? issue      :: using IssueRight
                    -> next IssueRight?, beneficiaries [Assets]
+                   <- amount Issued
                    !! nonEqualAmounts
 
     op? dcntrlIssue -> reserves POR, beneficiaries [Assets]
+                   <- amount Issued
                    !! invalidReserves
                     | insufficientReserves
 
     op? burn       :: using BurnRight, proofs [POR], amount Amount
                    -> next BurnRight?
+                   <- amount Burned
                    !! nonEqualAmounts
                     | invalidProof(POR)
     
-    op? reissue    :: using BurnRight, proofs [POR]
+    op? replace    :: using BurnRight, proofs [POR]
                    -> next BurnRight?, beneficiaries [Assets]
+                   <- amount Replaced
                    !! nonEqualAmounts
                     | invalidProof(POR)
 
