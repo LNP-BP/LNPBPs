@@ -1,19 +1,22 @@
 ```
 LNPBP: 0020
+Aliases: RGB20
 Vertical: Smart contracts
 Title: RGB fungible assets interface (RGB-20)
-Authors: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
+Authors: Dr Maxim Orlovsky <orlovsky@lnp-bp.org>,
          Giacomo Zucco,
          Marco Amadori,
          Nicola Busanello,
          Federico Tenga,
          Sabina Sachtachtinskagia,
          Martino Salvetti
-Comments-URI: <https://github.com/LNP-BP/LNPBPs/issues/70>
+Comments-URI: <https://github.com/LNP-BP/LNPBPs/discussions/140>
 Status: Proposal
 Type: Standards Track
 Created: 2019-09-23
-Finalized: 2022-12-18
+Updated: 2022-12-23
+Finalized: ~
+Copyright: (0) public domain
 License: CC0-1.0
 ```
 
@@ -210,3 +213,15 @@ transition sendToFriend := SimpleAsset.transfer (
 ## Copyright
 
 This document is licensed under the Creative Commons CC0 1.0 Universal license.
+
+<p xmlns:dct="http://purl.org/dc/terms/">
+  <a rel="license"
+     href="http://creativecommons.org/publicdomain/zero/1.0/">
+    <img src="http://i.creativecommons.org/p/zero/1.0/88x31.png" style="border-style:none;" alt="CC0" />
+  </a>
+  <br />
+  To the extent possible under law,
+  <a rel="dct:publisher" href="https://lnp-bp.org">
+    <span property="dcl:title">LNP/BP Standards Association</span></a>
+  has waived all copyright and related or neighboring rights to this work.
+</p>
