@@ -2,7 +2,7 @@
 LNPBP: 0024
 Aliases: RGB24
 Vertical: Smart contracts
-Title: RGB interface for decentralized global name system (RGB-24)
+Title: RGB decentralized global name system (RGB-24)
 Authors: Dr Maxim Orlovsky <orlovsky@lnp-bp.org>
 Comments-URI: <https://github.com/LNP-BP/LNPBPs/discussions>
 Status: Draft
@@ -10,8 +10,7 @@ Type: Standards Track
 Created: 2020-09-10
 Updated: 2022-12-23
 Finalized: ~
-Copyright: (0) public domain
-License: CC0-1.0
+License: GPL-3.0
 ```
 
 - [Abstract](#abstract)
@@ -44,21 +43,23 @@ License: CC0-1.0
 Interface specification is the following Contractum code:
 
 ```haskell
-data Ident :: [Alphanumeric+]
-
-data Resolve :: [] -- TODO: Define data to which a name should resolve
-
 interface RGB24
-    global Root? :: RGB24.ContractId
+    global Root :: Self.ContractId?
     global Name :: Ident
-    global Registry{*} :: (Ident, Resolve)
+    global Registry :: {Ident -> Resolve}
 
     owned Registar
 
-    op register :: Registar -> Registar <- Registry+
+    op register :: Registar -> Registar <- {Registry+}
                 !! noRoot |
                    invalidRoot |
                    incompleteRegistry
+
+data Ident :: [Alphanumeric+]
+
+data Resolve :: record Record | subdomain Subdomain
+data Record :: a IPv4 | aaaa IPv6 | cname Ident -- ...
+data Subdomain :: RGB24.ContractId
 ```
 
 ## Compatibility
@@ -71,18 +72,26 @@ interface RGB24
 
 ```haskell
 schema BaseRegistry implements RGB24
-    op register :: Registar -> Registar <- entries Registry+
-                !! noRoot |
-                   unregisteredName |
-                   incompleteRoot |
-                   incompleteRegistry
+    op register :: Registar -> Registar <- entries {Registry+}
+                !! RegistrationError
         self.Root => root -> (
             let parent = (root.contract !! noRoot).Registry
             parent.isFullyKnown !! incompleteRoot
-            parent.Registry.has self.Name !! unregisteredName
+            let myself = parent.Registry.get self.Name !! unregisteredName
+            myself: Resolve.subdomain(contract) => 
+                contract =? self.ContractId !! selfNotRegistered
         )
         let registry := self.Registry.isFullyKnown !! incompleteRegistry
         entries =|> self.Registry.has !! repeatedEntry
+        -- the above is the same as
+        -- entries => entry -> self.registry.has entry !! repeatedEntry
+        
+data RegistrationError :: 
+    noRoot |
+    unregisteredName |
+    incompleteRoot |
+    incompleteRegistry |
+    selfNotRegistered
 ```
 
 
@@ -94,16 +103,4 @@ schema BaseRegistry implements RGB24
 
 ## Copyright
 
-This document is licensed under the Creative Commons CC0 1.0 Universal license.
-
-<p xmlns:dct="http://purl.org/dc/terms/">
-  <a rel="license"
-     href="http://creativecommons.org/publicdomain/zero/1.0/">
-    <img src="http://i.creativecommons.org/p/zero/1.0/88x31.png" style="border-style:none;" alt="CC0" />
-  </a>
-  <br />
-  To the extent possible under law,
-  <a rel="dct:publisher" href="https://lnp-bp.org">
-    <span property="dcl:title">LNP/BP Standards Association</span></a>
-  has waived all copyright and related or neighboring rights to this work.
-</p>
+This document is licensed under the GPL-3.0 license.
