@@ -46,7 +46,7 @@ Interface specification is the following Contractum code:
 ```haskell
 data Ident :: [Alphanumeric+]
 
-data Resolve :: ... -- TODO: Define data which is a name resolution
+data Resolve :: [] -- TODO: Define data to which a name should resolve
 
 interface RGB24
     global Root? :: RGB24.ContractId
@@ -76,10 +76,11 @@ schema BaseRegistry implements RGB24
                    unregisteredName |
                    incompleteRoot |
                    incompleteRegistry
-        let root := self.Root !! noRoot
-        let parent = root.Registry
-        parent.isFullyKnown !! incompleteRoot
-        parent.Registry.has self.Name !! unregisteredName
+        self.Root => root -> (
+            let parent = (root.contract !! noRoot).Registry
+            parent.isFullyKnown !! incompleteRoot
+            parent.Registry.has self.Name !! unregisteredName
+        )
         let registry := self.Registry.isFullyKnown !! incompleteRegistry
         entries =|> self.Registry.has !! repeatedEntry
 ```
