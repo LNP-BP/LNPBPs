@@ -46,7 +46,7 @@ Interface specification is the following Contractum code:
 interface RGB24
     global Root :: Self.ContractId?
     global Name :: Ident
-    global Registry :: {Ident -> Resolve}
+    global Registry { Ident } :: Resolve
 
     owned Registar
 
