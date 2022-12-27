@@ -10,6 +10,8 @@ Created: 2020-04-02
 License: CC0-1.0
 ```
 
+> Note: This standard has been superseded by [LNPBP-38 Universal LNP/BP invoices](https://github.com/LNP-BP/invoices) due to incompatibility with Lightning, Coinjoin, and consignment metadata.
+
 - [Abstract](#abstract)
 - [Background](#background)
 - [Motivation](#motivation)
