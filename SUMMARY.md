@@ -30,8 +30,6 @@
 
 ## Lightning network protocol
 
-* [LNPBP-15: Encryption](lnpbp-0015.md)
-* [LNPBP-18: Message framing](lnpbp-0018.md)
 * [LNPBP-46: LN derivations](lnpbp-0046.md)
 * [LNPBP-50: Bifrost P2P](lnpbp-0050.md)
 * [LNPBP-51: Bifrost channels](lnpbp-0051.md)
