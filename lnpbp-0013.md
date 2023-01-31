@@ -12,7 +12,7 @@ Authors: Dr Maxim Orlovsky <orlovsky@protonmail.ch>,
          Martino Salvetti,
          Nicola Busanello
 Comments-URI:
-Status: Proposal
+Status: Draft
 Type: Informational
 Created: 2020-05-12
 License: CC0-1.0

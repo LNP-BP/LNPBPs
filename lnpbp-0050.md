@@ -89,7 +89,7 @@ Design goals:
       (combining different types of channels)
     - support for custom / new route discovery mechanisms
 2. Maximal use of existing LNPBP standards, in particular
-    - LNPBP-7 strict encoding […]
+    - LNPBP-7 commitments for structural and hierarchical data […]
     - LNPBP-9 client-side-validation […]
     - LNPBP-15 Noise_XK handshake & network encryption (BOLT-8 extract) […]
     - LNPBP-18 Native message framing (BOLT-8 extract) […]
@@ -103,8 +103,8 @@ Bifrost operates using TCP connection, on top of LNPBP-15 (session & encryption
 layer) and LNPBP-18 (message framing layer) as application protocol. Default
 port for Bifrost connection is 9913 (see [rationale](#use-of-dedicated-port)).
 
-All message fields are encoded with LNPBP-7 strict encoding instead of other
-types of encoding used in BOLTs / legacy Lightning network.
+All message fields are encoded with strict encoding instead of other types of
+encoding used in BOLTs / legacy Lightning network.
 
 ### Announcing Bifrost connectivity
 

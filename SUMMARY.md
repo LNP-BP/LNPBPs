@@ -8,7 +8,7 @@
 * [LNPBP-2: Script](lnpbp-0002.md)
 * [LNPBP-3: PayTweak](lnpbp-0003.md)
 * [LNPBP-4: Multi-protocol](lnpbp-0004.md)
-* [LNPBP-6: Deterministic bitcoin commitments](lnpbp-0006.md)
+* [LNPBP-6: PayTweak](lnpbp-0006.md)
 * [LNPBP-8: Single-use-seals](lnpbp-0008.md)
 * [LNPBP-10: TxO seals](lnpbp-0010.md)
 * [LNPBP-81: Tagged Merkle trees](lnpbp-0081.md)
@@ -19,7 +19,7 @@
 
 ## RGB
 
-* [LNPBP-11: RGB consensus](lnpbp-0011.md)
+* [LNPBP-13: RGB consensus](lnpbp-0013.md)
 * [RGB-20: Fungible assets](lnpbp-0020.md)
 * [RGB-21: NFT collectibles](lnpbp-0021.md)
 * [RGB-22: Digital identity](lnpbp-0022.md)

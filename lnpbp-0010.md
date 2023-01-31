@@ -138,9 +138,9 @@ Defined seal MUST be serialized as fixed-length 36 byte-long structure:
 * 32 bytes of transaction identifier encoded according to bitcoin transaction identifier consensus serialization rules in little-endian format
 * 4 bytes of transaction output in little-endian format
 
-Deterministic bitcoin commitment proofs MUST be serialized using strict encoding rules defined in [LNPBP-7](../lnpbp-0007.md).
+Deterministic bitcoin commitment proofs MUST be serialized using strict encoding rules defined in [...].
 
-There are not specific requirements to the message encoding or content; they MAY be defined as a part of other protocols using the current standard.
+There are no specific requirements to the message encoding or content; they MAY be defined as a part of other protocols using the current standard.
 
 Bitcoin transactions and their parts, when needed, MUST be serialized according to bitcoin consensus serialization rules (which MAY differ from strict encoding requirements).
 
