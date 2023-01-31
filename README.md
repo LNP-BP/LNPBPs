@@ -46,7 +46,7 @@ Criteria for a LNP/BP specification proposal:
 |   [4] | Cryptography    | Multi-protocol commitment scheme with zero-knowledge provable uniqueness                  | Standard      | Proposal |
 |   [5] | Wallet          | Universal short Bitcoin identifiers for blocks, transactions and their inputs & outputs   | Standard      | Proposal |
 |   [6] | Cryptography    | PayTweak: pay-to-contract deterministic bitcoin commitments                               | Standard      | Draft    |
-|     7 | Cryptography    | Commitments for structural and hierarchical data                                          | Standard      | Proposal |
+|   [7] | Cryptography    | Commitments for structural and hierarchical data                                          | Standard      | Draft    |
 |   [8] | Cryptography    | Single-use-seals                                                                          | Informational | Draft    |
 |   [9] | Cryptography    | Client-side-validation                                                                    | Informational | Draft    |
 |  [10] | Cryptography    | Bitcoin transaction output-based single-use-seals                                         | Standard      | Proposal |
