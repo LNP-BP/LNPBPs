@@ -44,11 +44,11 @@ TBD
 
 Tapret commitment is structured as an `OP_RETURN`-based script, containing the
 commitment to the LNPBP-4 message, constructed under multiple protocols. The
-commitment script (**tapret leaf script**) always consists of 64 
-bytes[^why-64-bytes].
+commitment script (**tapret leaf script**) always consists of 
+[64 bytes][why-64-bytes].
 
 The leaf with the tapret leaf script is always put into the same depth of the
-taproot script tree, and this depth is 7[^why-depth-7] (in 0-based indexing of 
+taproot script tree, and this [depth is 1][why-depth-1] (in 0-based indexing of 
 depth levels, where depth 0 corresponds to the merkle tree root). The commitment
 is always put into the rightmost node of the tree by using consensus ordering
 of the nodes, as it is defined in BIP-341 merkle path construction 
@@ -190,14 +190,17 @@ should not exceed 290 bytes. Since the most of the taproot script trees will not
 have a depth more than 1 or 2, the actual size in these cases will be 66 or 98 
 bytes.
 
-### Rationale
+### Why 64 byte tapscript
 
-[^why-64-bytes]: This allows distinguishing of tapret leaf script from a data 
-used in production of taproot branch hash, such that the proof of the absence of
-an alternative tapret commitment can be validated by simple comparison of the 
-first of the child node hashes to the tapret leaf script prefix.
+This allows distinguishing of tapret leaf script from a data used in production
+of taproot branch hash, such that the proof of the absence of an alternative
+tapret commitment can be validated by simple comparison of the first of the
+child node hashes to the tapret leaf script prefix.
 
-[^why-depth-7]: 
+### Why script depth 1
+
+This helps to keep client-side-validated proof size smaller.
+
 
 ## Acknowledgements
 
@@ -214,3 +217,6 @@ This document is licensed under the Creative Commons CC0 1.0 Universal license.
 ## Test vectors
 
 TBD
+
+[why-64-bytes]: #why-64-byte-tapscript
+[why-depth-1]: #why-script-depth-1
