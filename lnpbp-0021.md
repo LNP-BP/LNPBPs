@@ -5,6 +5,7 @@ Title: RGB non-fungible assets interface for collectibles (RGB-21)
 Authors: Dr Maxim Orlovsky <orlovsky@lnp-bp.org>,
          Hunter Trujillo,
          Federico Tenga,
+         Zoe Faltibà,
          Carlos Roldan,
          Olga Ukolova,
          Giacomo Zucco,
@@ -71,13 +72,15 @@ data TxOut :: txid [Byte ^ 32], vout U16
 -- allocation of a single token or its fraction to some transaction output
 data Allocation :: TokenId, OwnedFraction
 
+data Engraving :: appliedTo TokenId, content Media
+
 data Media ::
     type MimeType,
     data [Byte]
 
 data Attachment ::
     type MimeType,
-    uri: Uri
+    digest: [U8 ^ 32] -- this can be any type of 32-byte hash, like SHA256(d), BLACKE3 etc
 
 data POR :: -- proof of reserves
     reserves TxOut,
@@ -89,7 +92,7 @@ data Token ::
     details [Unicode ^ 40..256]?,
     preview Media?, -- always embedded preview media < 64kb
     media Attachment?, -- external media which is the main media for the token
-    attachments { U8 ^ ..20 -> Attachment } -- auxillary attachments by type (up to 20 attachments)
+    attachments { U8 -> ^ ..20 Attachment } -- auxiliary attachments by type (up to 20 attachments)
     reserves POR? -- output containing locked bitcoins; how reserves are
                   -- proved is a matter of a specific schema implementation
 
@@ -99,31 +102,23 @@ data Denomination ::
     details [Unicode ^ 40..256]?,
     contract [Unicode]??,
 
-data Auxiliary ::
-    -- list of allowed sources
-    sources [Source]
-    
-     -- each attachment type is a mapping from attachment id 
-     -- (used as `Token.attachments` keys) to a short Ascii string
-     -- verbally explaining the type of the attachment for the UI
-     -- (like "sample" etc).
-    attachmentTypes { U8 ^ ..32 -> [Ascii ^ 1..20] }
+ -- each attachment type is a mapping from attachment id 
+ -- (used as `Token.attachments` keys) to a short Ascii string
+ -- verbally explaining the type of the attachment for the UI
+ -- (like "sample" etc).
+data AttachmentType :: id U8, description [Ascii ^ 1..20]
 
-data Source :: url(Proto, Dns) | urn(UrnPrefix) | storm(NodeAddr)
-data Proto :: http | https | httpxk | ws | wss | wssxk
 
 interface RGB21
     global Name :: Denomination
-    global Tokens :: [(Token, [Engraving])]
+    global Tokens :: Token+
+    global Engravings :: Engraving+
     global isFractional :: Bool
-    global Registry :: Auxiliary
+    global AttachmentTypes :: AttachmentType+
 
     owned Allocations+ :: Allocation
     owned IssueRight* :: Amount
     owned DenominationRight?
-    
-owned ControlRight
-
     -- returns information about known circulating supply
     read supplyKnown :: Amount
         count Self.state["Tokens"]
@@ -148,16 +143,12 @@ owned ControlRight
                    <- Engraving
 
     op? issue      :: IssueRight -> IssueRight, beneficiaries {Allocation}
-                   <- tokens {Token}
+                   <- tokens {Token}, newAttachmentTypes {attachmentType}*
                    !! invalidReserves(POR)
 
     -- decentralized issue
     op? decentralizedIssue -> tokens {Token}, beneficiaries {Allocation}
                     !! invalidReserves(POR)
-
--- updates registry of auxiliary data to a new version
-op? update :: controlRight -> controlRight
-           <- Registry
 
     op? rename :: DenominationRight -> DenominationRight? <- Denomination
                    <- Nomination
