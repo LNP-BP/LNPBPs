@@ -70,67 +70,67 @@ data Specification ::
     precision Precision
 
 interface RGB20
-    global Specification :: Specification
+    global spec :: Specification
 
     -- Contract text is separated from the nominal since it must not be
     -- changeable by the issuer.
-    global ContractText :: [Unicode]
+    global ricardianContract :: [Unicode]
     -- The difference between `global _ :: [_]` and `global _? :: _` is that
     -- the first indicates that the global state may not be present, while
     -- the second requires the state must be present and have a form of array
     -- of the elements.
 
     -- state which accumulates amounts issued
-    global IssuedSupply+ :: Amount
+    global issuedSupply+ :: Amount
     -- state which accumulates amounts burned
-    global BurnedSupply* :: Amount
+    global burnedSupply* :: Amount
     -- state which accumulates amounts burned and then replaced
-    global RepalcedSupply* :: Amount
+    global repalcedSupply* :: Amount
 
     -- Right to do a secondary (post-genesis) issue
-    owned IssueRight* :: Amount
+    owned inflationAllowance* :: Amount
     -- Right to update asset Specification
-    owned UpdateRight?
+    owned updateRight?
     -- Right to burn or replace existing assets
-    owned BurnRight?
+    owned burnRight?
 
     -- Ownership right over assets
-    owned Assets* :: Amount
+    owned assetOwners* :: Amount
 
     -- !! means errors which may be returned
-    genesis       -> Specification, ContractText, 
-                     IssuedSupply, beneficiariesOfPrimaryIssued Assets+,
-                     allowanceForSecondaryIssue IssueRight*, 
-                     UpdateRight?, BurnRight?
+    genesis       -> spec, ricardianContract, 
+                     issuedSupply, assetOwners+,
+                     inflationAllowance*, 
+                     updateRight?, burnRight?
                   !! supplyMismatch
 
-    op transfer    :: inputs Assets+ 
-                   -> beneficiaries Assets+
+    op transfer    :: previous assetOwners+, 
+                   -> beneficiary assetOwners+
                    !! nonEqualAmounts
 
     -- question mark after `op` means optional operation, which may not be  
     -- provided by some of schemata implementing the intrface
     
-    op? issue      :: using IssueRight+
-                   -> IssuedSupply, 
-                      next IssueRight?,
-                      beneficiariesOf Assets*
+    op? issue      :: used inflationAllowance+
+                   -> issuedSupply, 
+                      next inflationAllowance?,
+                      beneficiary assetOwners*
                    !! supplyMismatch | issueExceedsAllowance
 
     op? dcntrlIssue :: reserves PoR
-                   -> beneficiaries Assets+, IssuedSupply
+                   -> beneficiary assetOwners+, issuedSupply
                    !! supplyMismatch | insufficientReserves | invalidProof(PoR)
 
-    op? burn       :: using BurnRight, proofs PoR*, BurnedSupply
-                   -> next BurnRight?
+    op? burn       :: used burnRight, proofs PoR*, burnedSupply
+                   -> next burnRight?
                    !! supplyMismatch | invalidProof(PoR)
     
-    op? replace    :: using BurnRight, proofs POR*, ReplacedSupply
-                   -> next BurnRight?, beneficiaries [Assets]
-                   !! supplyMismatch | invalidProof(PoR)
+    op? replace    :: used burnRight, proofs POR*, replacedSupply
+                   -> next burnRight?, beneficiary assetOwners+
+                   !! nonEqualAmounts | supplyMismatch | invalidProof(PoR)
 
-    op? rename     :: using UpdateRight
-                   -> next UpdateRight?, new Specification
+    op? rename     :: used updateRight
+                   -> next UpdateRight?, new spec
 ```
 
 ## Compatibility
