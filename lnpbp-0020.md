@@ -52,84 +52,85 @@ Interface specification is the following Contractum code:
 
 ```haskell
 -- number of decimal fractions (decimal numbers after floating point)
-data DecFractions :: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 |
+data Precision :: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 |
                      14 | 15 | 16 | 17 | 18
 
-data TxOut :: txid [Byte ^ 32], vout U16
+data Outpoint :: txid [Byte ^ 32], vout U16
 
-data POR :: -- proof of reserves
-    utxo TxOut,
+data PoR :: -- proof of reserves
+    utxo Outpoint,
     proof [Bytes] -- auxilary data which are schema-specific
 
-data Amount :: U64 -- asset amount
+data Amount :: Zk64 -- asset amount
 
-data Denomination :: 
+data Specification :: 
     ticker [Ascii ^ 1..8],
     name [Ascii ^ 1..40],
     details [Unicode ^ 40..256]?,
-    precision DecFractions
+    precision Precision
 
 interface RGB20
-    global Denomination :: Denomination
+    global Specification :: Specification
 
-    -- Contract text is separated from the denomination since it must not be
-    -- changeable by an issuer.
-    global Contract :: [Unicode]
+    -- Contract text is separated from the nominal since it must not be
+    -- changeable by the issuer.
+    global ContractText :: [Unicode]
     -- The difference between `global _ :: [_]` and `global _? :: _` is that
     -- the first indicates that the global state may not be present, while
     -- the second requires the state must be present and have a form of array
     -- of the elements.
 
     -- state which accumulates amounts issued
-    global Issued* :: Amount
+    global IssuedSupply+ :: Amount
     -- state which accumulates amounts burned
-    global Burned* :: Amount
+    global BurnedSupply* :: Amount
     -- state which accumulates amounts burned and then replaced
-    global Repalced* :: Amount
+    global RepalcedSupply* :: Amount
 
+    -- Right to do a secondary (post-genesis) issue
     owned IssueRight* :: Amount
-    owned DenominationRight?
+    -- Right to update asset Specification
+    owned UpdateRight?
+    -- Right to burn or replace existing assets
     owned BurnRight?
 
+    -- Ownership right over assets
     owned Assets* :: Amount
 
-    -- operations are declared as
-    -- `op` NAME `::` CLOSED_SEALS,+ INPUT_METADATA,*
-    --           `->` DEFINED_SEALS,+
-    --           `<-` NEW_GLOBAL_STATE,*
-    --           `!!` ERRORS|*
+    -- !! means errors which may be returned
+    genesis       -> Specification, ContractText, 
+                     IssuedSupply, beneficiariesOfPrimaryIssued Assets+,
+                     allowanceForSecondaryIssue IssueRight*, 
+                     UpdateRight?, BurnRight?
+                  !! supplyMismatch
 
-    op transfer    :: inputs [Assets] 
-                   -> beneficiaries [Assets]
-                   !! inequalAmounts
-
-    -- question mark denotes optional operation, which may not be supported by 
-    -- some of schemata implementing the intrface
-    
-    op? issue      :: using IssueRight
-                   -> next IssueRight?, beneficiaries [Assets]
-                   <- amount Issued
+    op transfer    :: inputs Assets+ 
+                   -> beneficiaries Assets+
                    !! nonEqualAmounts
 
-    op? dcntrlIssue -> reserves POR, beneficiaries [Assets]
-                   <- amount Issued
-                   !! invalidReserves
-                    | insufficientReserves
+    -- question mark after `op` means optional operation, which may not be  
+    -- provided by some of schemata implementing the intrface
+    
+    op? issue      :: using IssueRight+
+                   -> IssuedSupply, 
+                      next IssueRight?,
+                      beneficiariesOf Assets*
+                   !! supplyMismatch | issueExceedsAllowance
 
-    op? burn       :: using BurnRight, proofs [POR], amount Amount
+    op? dcntrlIssue :: reserves PoR
+                   -> beneficiaries Assets+, IssuedSupply
+                   !! supplyMismatch | insufficientReserves | invalidProof(PoR)
+
+    op? burn       :: using BurnRight, proofs PoR*, BurnedSupply
                    -> next BurnRight?
-                   <- amount Burned
-                   !! nonEqualAmounts
-                    | invalidProof(POR)
+                   !! supplyMismatch | invalidProof(PoR)
     
-    op? replace    :: using BurnRight, proofs [POR]
+    op? replace    :: using BurnRight, proofs POR*, ReplacedSupply
                    -> next BurnRight?, beneficiaries [Assets]
-                   <- amount Replaced
-                   !! nonEqualAmounts
-                    | invalidProof(POR)
+                   !! supplyMismatch | invalidProof(PoR)
 
-    op? rename     :: using DenominationRight
-                   -> next DenominationRight?, new Denomination
+    op? rename     :: using UpdateRight
+                   -> next UpdateRight?, new Specification
 ```
 
 ## Compatibility
@@ -138,70 +139,13 @@ interface RGB20
 ## Rationale
 
 Include from
-- https://github.com/LNP-BP/LNPBPs/issues/27
-- https://github.com/LNP-BP/LNPBPs/issues/28
-- https://github.com/LNP-BP/LNPBPs/issues/50
+- <https://github.com/LNP-BP/LNPBPs/issues/27>
+- <https://github.com/LNP-BP/LNPBPs/issues/28>
+- <https://github.com/LNP-BP/LNPBPs/issues/50>
 
 ## Reference implementation
 
-Simple asset issuance:
-
-```Haskell
-import RGB20
-
-schema SimpleAsset
-    global Denomination :: Denomination
-    global Contract :: [Unicode]
-
-    global Issued* :: Amount
-    owned Assets* :: Amount
-
-    genesis -> allocations [Assets]
-            <- totalAmount Issued, naming Denomination, contract Contract
-        sum allocations =? totalAmount !! nonEqualAmounts
-
-    op transfer :: inputs [Assets] -> beneficiaries [Assets]
-        sum inputs =? sum beneficiaries !! nonEqualAmounts
-
-implement RGB20 for SimpleAsset
-    -- all names match interface so no explicit declarations here are needed
-
-let issuerOwned := Seal fac503c4641c3deda72a2d00bc9d6ff1094b15276c386efea403746a91436772, 1
-
-contract sampleAsset := SimpleAsset (
-    naming := Denomination(
-        ticker := "OTI",
-        name := "One time issued token",
-        details := "Absolutely useless",
-        precision := 8
-    ),
-    contract := """
-        THE ASSET TOKEN IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-        EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-        MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-        IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-        OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-        ARISING FROM, OUT OF OR IN CONNECTION WITH THE ASSET TOKEN OR THE USE
-        OR OTHER DEALINGS IN THE CONTRACT.
-        """,
-    allocations := [
-        (issuerOwned, 10_000_000__0000_0000)
-    ],
-    totalAmount := 10_000_000__0000_0000
-)
-
-let friendOwned := Seal ~, 0
-let issuerChange := Seal ~, 1
-
-transition sendToFriend := SimpleAsset.transfer (
-    inputs := [issuerOwned],
-    beneficiaries := [
-        (friendOwned, 1_000_000__0000_0000),
-        (issuerChange, 9_000_000__0000_0000)
-    ]
-)
-```
-
+<https://github.com/RGB-WG/rgb-wallet/blob/master/std/src/interface/rgb20.rs>
 
 ## Acknowledgements
 
