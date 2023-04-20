@@ -45,31 +45,34 @@ License: CC0-1.0
 Interface specification is the following Contractum code:
 
 ```haskell
-using StandardTypes -- see LNPBP-31 standard
+-- Defined by LNPBP-31 standard in `rgb.sty` file
+import moment_shirt_uranium_E2hfuv3Za3kVo7MSCvSxC6uhYJEvkmZJ1NPz4g4oZWNw as RGBTypes
 
 interface RGB30
     -- Asset specification containing ticker, name, precision etc.
-    global spec :: Specification
+    global spec :: RGBTypes.DivisibleAssetSpec
 
     -- Contract text is separated from the nominal since it must not be
     -- changeable by the issuer.
-    global ricardianContract :: [Unicode]
+    global terms :: RGBTypes.RicardianContract
 
     -- Ownership right over assets
-    owned assetOwners* :: Amount
+    owned assetOwners* :: RGBTypes.Amount
     
     -- Point for applying state extensions
     valency issueRight
 
-    genesis       -> spec, ricardianContract, issueRight
+    genesis       -> spec, terms, issueRight
 
     op transfer    :: previous assetOwners+, 
                    -> beneficiary assetOwners+
                    !! nonEqualAmounts
 
-    op pegIn       :: issueRight, reserves PoR
+    op pegIn       :: issueRight, reserves RGBTypes.PoR
                    -> beneficiary assetOwners+, issuedSupply
-                   !! supplyMismatch | insufficientReserves | invalidProof(PoR)
+                   !! supplyMismatch 
+                    | insufficientReserves 
+                    | invalidProof(RGBTypes.PoR)
 ```
 
 ## Compatibility

@@ -14,7 +14,7 @@ Comments-URI: <https://github.com/LNP-BP/LNPBPs/discussions/140>
 Status: Proposal
 Type: Standards Track
 Created: 2019-09-23
-Updated: 2022-12-23
+Updated: 2023-04-20
 Finalized: ~
 Copyright: (0) public domain
 License: CC0-1.0
@@ -51,71 +51,36 @@ License: CC0-1.0
 Interface specification is the following Contractum code:
 
 ```haskell
--- number of decimal fractions (decimal numbers after floating point)
-data Precision :: indivisible:0 
-                | deci:1 
-                | centi:2 
-                | milli:3
-                | deciMilli:4
-                | centiMilli:5 
-                | micro:6 
-                | deciMicro:7 
-                | centiMicro:8 
-                | nano:9 
-                | deciNano:10 
-                | centiNano:11 
-                | pico:12 
-                | deciPico:13 
-                | centiPico:14 
-                | femto:15 
-                | deciFemto:16 
-                | centiFemto:17 
-                | atto:18
-
-data Outpoint :: txid [Byte ^ 32], vout U16
-
-data PoR :: -- proof of reserves
-    utxo Outpoint,
-    proof [Bytes] -- auxilary data which are schema-specific
-
-data Amount :: Zk64 -- asset amount
-
-data Specification :: 
-    ticker [Ascii ^ 1..8],
-    name [Ascii ^ 1..40],
-    details [Unicode ^ 40..256]?,
-    precision Precision
+-- Defined by LNPBP-31 standard in `rgb.sty` file
+import moment_shirt_uranium_E2hfuv3Za3kVo7MSCvSxC6uhYJEvkmZJ1NPz4g4oZWNw as RGBTypes
 
 interface RGB20
     -- Asset specification containing ticker, name, precision etc.
-    global spec :: Specification
+    global spec :: RGBTypes.DivisibleAssetSpec
 
     -- Contract text is separated from the nominal since it must not be
     -- changeable by the issuer.
-    global ricardianContract :: [Unicode]
+    global terms :: RGBTypes.RicardianContract
 
     -- State which accumulates amounts issued
-    global issuedSupply+ :: Amount
+    global issuedSupply+ :: RGBTypes.Amount
     -- State which accumulates amounts burned
-    global burnedSupply* :: Amount
+    global burnedSupply* :: RGBTypes.Amount
     -- State which accumulates amounts burned and then replaced
-    global repalcedSupply* :: Amount
+    global repalcedSupply* :: RGBTypes.Amount
 
     -- Right to do a secondary (post-genesis) issue
-    owned inflationAllowance* :: Amount
+    owned inflationAllowance* :: RGBTypes.Amount
     -- Right to update asset Specification
     owned updateRight?
     -- Right to burn or replace existing assets
     owned burnRight?
 
     -- Ownership right over assets
-    owned assetOwners* :: Amount
-    
-    -- Point for applying state extensions
-    valency d10zedIssue
+    owned assetOwners* :: RGBTypes.Amount
 
     -- !! means errors which may be returned
-    genesis       -> spec, ricardianContract, 
+    genesis       -> spec, terms, 
                      issuedSupply, assetOwners+,
                      inflationAllowance*, 
                      updateRight?, burnRight?,
@@ -135,17 +100,15 @@ interface RGB20
                       beneficiary assetOwners*
                    !! supplyMismatch | issueExceedsAllowance
 
-    op? d10zedIssue :: d10zedIssue, reserves PoR
-                   -> beneficiary assetOwners+, issuedSupply
-                   !! supplyMismatch | insufficientReserves | invalidProof(PoR)
-
-    op? burn       :: used burnRight, proofs PoR*, burnedSupply
+    op? burn       :: used burnRight, proofs RGBTypes.PoR*, burnedSupply
                    -> next burnRight?
-                   !! supplyMismatch | invalidProof(PoR)
+                   !! supplyMismatch | invalidProof(RGBTypes.PoR)
     
-    op? replace    :: used burnRight, proofs POR*, replacedSupply
+    op? replace    :: used burnRight, proofs RGBTypes.PoR*, replacedSupply
                    -> next burnRight?, beneficiary assetOwners+
-                   !! nonEqualAmounts | supplyMismatch | invalidProof(PoR)
+                   !! nonEqualAmounts 
+                    | supplyMismatch 
+                    | invalidProof(RGBTypes.PoR)
 
     op? rename     :: used updateRight
                    -> next UpdateRight?, new spec

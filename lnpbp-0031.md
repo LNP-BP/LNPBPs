@@ -1,13 +1,13 @@
 ```
 LNPBP: 0031
 Vertical: Smart contracts
-Title: Standard Contractum Library (SCL)
+Title: Standard Contractum Libraries (SCL)
 Authors: Dr Maxim Orlovsky <orlovsky@lnp-bp.org>
 Comments-URI: <https://github.com/LNP-BP/LNPBPs/discussions/141>
 Status: Proposal
 Type: Standards Track
 Created: 2022-12-23
-Updated: 2022-12-23
+Updated: 2023-04-20
 Finalized: ~
 Copyright: (0) public domain
 License: CC0-1.0
@@ -42,6 +42,49 @@ License: CC0-1.0
 
 The specification is the actual Standard Contractum Library code:
 
+`rgb.sty`:
+```haskell
+-- number of decimal fractions (decimal numbers after floating point)
+data Precision :: indivisible:0 
+                | deci:1 
+                | centi:2 
+                | milli:3
+                | deciMilli:4
+                | centiMilli:5 
+                | micro:6 
+                | deciMicro:7 
+                | centiMicro:8 
+                | nano:9 
+                | deciNano:10 
+                | centiNano:11 
+                | pico:12 
+                | deciPico:13 
+                | centiPico:14 
+                | femto:15 
+                | deciFemto:16 
+                | centiFemto:17 
+                | atto:18
+
+data Outpoint :: txid [Byte ^ 32], vout U16
+
+data PoR :: -- proof of reserves
+    utxo Outpoint,
+    proof [Bytes] -- auxilary data which are schema-specific
+
+data Amount :: Zk64 -- asset amount
+
+data AssetNaming ::
+    ticker [Ascii ^ 1..8],
+    name [Ascii ^ 1..40],
+    details [Unicode ^ 40..256]?,
+
+data DivisibleAssetSpec ::
+    naming AssetNaming, 
+    precision Precision
+    
+data RicardianContract :: [Unicode]
+```
+
 `collections.con`:
 ```haskell
 mod Collections
@@ -72,7 +115,7 @@ data Timestamp :: I64
 data Difficulty: U32
 
 data Txid :: [Byte ^ 32]
-data TxOut :: txid Txid, vout U16
+data Outpoint :: txid Txid, vout U16
 data Seal :: txid Txid?, vout U16
 data Assignment t :: (Seal, t)
 
@@ -115,7 +158,7 @@ data ScriptPubkey ::
 
 --
 -- Queries about specific transaction
--- (signature Txid | TxOut -> _)
+-- (signature Txid | Outpoint -> _)
 --
 
 @internal
@@ -131,10 +174,10 @@ fn txLockTime :: Txid -> LockTime
 fn txFee :: Txid -> Sats
 
 @internal -- implementation provided by RGB core
-fn txScriptPubkey :: TxOut -> ScriptPubkey
+fn txScriptPubkey :: Outpoint -> ScriptPubkey
 
 @internal
-fn txotAmount :: TxOut -> Sats
+fn txotAmount :: Outpoint -> Sats
 
 --
 -- Queries about blockchain state
