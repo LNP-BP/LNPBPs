@@ -8,7 +8,7 @@ Authors: Dr Maxim Orlovsky <orlovsky@lnp-bp.org>,
          Zoe Faltibà,
          Carlos Roldan,
          Olga Ukolova,
-         Giacomo Zucco,
+         Giacomo Zucco
 Comments-URI: <https://github.com/LNP-BP/LNPBPs/issues/70>
 Status: Proposal
 Type: Standards Track
@@ -56,102 +56,111 @@ Interface specification is the following Contractum code:
 ```haskell
 -- # Defining main data structures
 
--- collectibles are usually scarse, so we limit their max number to 64k
 data ItemsCount :: U32
 
 -- each collectible item is unique and must have an id
-data TokenId :: U16
+data TokenId :: U32
 
 -- Collectibles are owned in fractions of a single item; here the owned
 -- fraction means `1/F`. Ownership of the full item is specified `F=1`;
 -- half of an item as `F=2` etc.
 data OwnedFraction :: U64
 
-data TxOut :: txid [Byte ^ 32], vout U16
-
 -- allocation of a single token or its fraction to some transaction output
 data Allocation :: TokenId, OwnedFraction
 
-data Engraving :: appliedTo TokenId, content Media
+data EngravingData :: 
+    appliedTo TokenId, 
+    content EmbeddedMedia
 
-data Media ::
-    type MimeType,
+data EmbeddedMedia ::
+    type RGBTypes.MediaType,
     data [Byte]
 
 data Attachment ::
-    type MimeType,
+    type RGBTypes.MediaType,
     digest: [U8 ^ 32] -- this can be any type of 32-byte hash, like SHA256(d), BLACKE3 etc
 
-data POR :: -- proof of reserves
-    reserves TxOut,
-    proof [Byte] -- schema-specific proof 
-
-data Token ::
+data TokenData ::
     id TokenId,
-    name [Ascii ^ 1..40],
-    details [Unicode ^ 40..256]?,
-    preview Media?, -- always embedded preview media < 64kb
-    media Attachment?, -- external media which is the main media for the token
+    ticker RGBTypes.Ticker?,
+    name RGBTypes.Name?,
+    details RGBTypes.Details?,
+    -- always-embedded preview media < 64kb
+    preview EmbeddedMedia?,
+    -- external media which is the main media for the token
+    media Attachment?,
     attachments { U8 -> ^ ..20 Attachment } -- auxiliary attachments by type (up to 20 attachments)
-    reserves POR? -- output containing locked bitcoins; how reserves are
-                  -- proved is a matter of a specific schema implementation
-
-data Denomination :: 
-    ticker [Ascii ^ 1..8],
-    name [Ascii ^ 1..40],
-    details [Unicode ^ 40..256]?,
-    contract [Unicode]??,
+    -- output containing locked bitcoins; how reserves are proved is a matter
+    -- of a specific schema implementation
+    reserves RGBTypes.PoR? 
 
  -- each attachment type is a mapping from attachment id 
  -- (used as `Token.attachments` keys) to a short Ascii string
  -- verbally explaining the type of the attachment for the UI
  -- (like "sample" etc).
-data AttachmentType :: id U8, description [Ascii ^ 1..20]
-
+data AttachmentType :: 
+    id U8, 
+    description [Ascii ^ 1..20]
 
 interface RGB21
-    global Name :: Denomination
-    global Tokens :: Token+
-    global Engravings :: Engraving+
+    global name :: RGBTypes.AssetNaming
+    
+    -- Contract text is separated from the name since it must not be
+    -- changeable by the issuer.
+    global terms :: RGBTypes.RicardianContract
+
+    -- Data for all issued tokens
+    global tokensData+ :: TokenData
+    global engravingData+ :: EngravingData
     global isFractional :: Bool
-    global AttachmentTypes :: AttachmentType+
+    global attachmentTypes+ :: AttachmentType
 
-    owned Allocations+ :: Allocation
-    owned IssueRight* :: Amount
-    owned DenominationRight?
-    -- returns information about known circulating supply
-    read supplyKnown :: Amount
-        count Self.state["Tokens"]
-        -- sum Self.ops["issue"]..closed["usingRight"].state ?? 0
+    -- Right to do a secondary (post-genesis) issue
+    owned inflationAllowance* :: RGBTypes.Amount
+    -- Right to update asset name
+    owned updateRight?
 
-    -- maximum possible asset inflation
-    read supplyLimit :: Amount
-        sum Self.IssueRight..state ?? 0
+    -- Ownership right over assets
+    owned assetOwner+ :: Allocation
 
-    read isCirculationKnown :: Bool
-        all Self.ops["issue"]..stateKnown
+    genesis       -> name
+                   , terms,
+                   , reserves PoR*
+                   , tokens tokenData+
+                   , assetOwner+
+                   , inflationAllowance*
+                   , updateRight?
+                  !! invalidProof(RGBTypes.PoR)
+                   | insufficientReserves
 
-    op transfer    :: inputs [Allocation+] -> beneficiaries [Allocation]
+    op Transfer    :: previous assetOwner+, 
+                   -> beneficiaries assetOwner+
                    !! -- options for operation failure:
                       inequalFractions(TokenId)
                     | nonFractionalToken
 
-    -- question mark denotes optional operation, which may not be supported by 
-    -- some of schemata implementing the interface
+    op? TransferEngrave :: previous assetOwner+ 
+                    , engravingData  
+                   -> beneficiaries assetOwner+
+                   !! -- options for operation failure:
+                      inequalFractions(TokenId)
+                    | nonFractionalToken
+                    | nonEngravableToken
 
-    op? engrave    :: Allocation -> Allocation
-                   <- Engraving
+    op? Issue      :: used inflationAllowance
+                    , newTokens tokenData+
+                    , reserves RGBTypes.PoR*
+                    , newAttachmentTypes attachmentType*
+                   -> future inflationAllowance
+                    , beneficiaries assetOwners+
+                   !! invalidReserves(RGBTypes.PoR)
+                    | insufficientAllowance
+                    | insufficientReserves
 
-    op? issue      :: IssueRight -> IssueRight, beneficiaries {Allocation}
-                   <- tokens {Token}, newAttachmentTypes {attachmentType}*
-                   !! invalidReserves(POR)
-
-    -- decentralized issue
-    op? decentralizedIssue -> tokens {Token}, beneficiaries {Allocation}
-                    !! invalidReserves(POR)
-
-    op? rename :: DenominationRight -> DenominationRight? <- Denomination
-                   <- Nomination
+    op? Rename     :: used updateRight
+                   -> future updateRight?
+                    , new name
 ```
 
 ## Compatibility
