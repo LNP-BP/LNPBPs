@@ -1,13 +1,16 @@
 ```
 LNPBP: 0024
+Aliases: RGB24
 Vertical: Smart contracts
-Title: RGB schema for decentralized global domain name system (RGB-24)
+Title: RGB decentralized global name system (RGB-24)
 Authors: Dr Maxim Orlovsky <orlovsky@lnp-bp.org>
 Comments-URI: <https://github.com/LNP-BP/LNPBPs/discussions>
-Status: Proposal
+Status: Draft
 Type: Standards Track
 Created: 2020-09-10
-License: CC0-1.0
+Updated: 2022-12-23
+Finalized: ~
+License: GPL-3.0
 ```
 
 - [Abstract](#abstract)
@@ -40,6 +43,23 @@ License: CC0-1.0
 Interface specification is the following Contractum code:
 
 ```haskell
+interface RGB24
+    global Root :: Self.ContractId?
+    global Name :: Ident
+    global Registry { Ident } :: Resolve
+
+    owned Registar
+
+    op register :: Registar -> Registar <- {Registry+}
+                !! noRoot |
+                   invalidRoot |
+                   incompleteRegistry
+
+data Ident :: [Alphanumeric+]
+
+data Resolve :: record Record | subdomain Subdomain
+data Record :: a IPv4 | aaaa IPv6 | cname Ident -- ...
+data Subdomain :: RGB24.ContractId
 ```
 
 ## Compatibility
@@ -50,6 +70,30 @@ Interface specification is the following Contractum code:
 
 ## Reference implementation
 
+```haskell
+schema BaseRegistry implements RGB24
+    op register :: Registar -> Registar <- entries {Registry+}
+                !! RegistrationError
+        self.Root => root -> (
+            let parent = (root.contract !! noRoot).Registry
+            parent.isFullyKnown !! incompleteRoot
+            let myself = parent.Registry.get self.Name !! unregisteredName
+            myself: Resolve.subdomain(contract) => 
+                contract =? self.ContractId !! selfNotRegistered
+        )
+        let registry := self.Registry.isFullyKnown !! incompleteRegistry
+        entries =|> self.Registry.has !! repeatedEntry
+        -- the above is the same as
+        -- entries => entry -> self.registry.has entry !! repeatedEntry
+        
+data RegistrationError :: 
+    noRoot |
+    unregisteredName |
+    incompleteRoot |
+    incompleteRegistry |
+    selfNotRegistered
+```
+
 
 ## Acknowledgements
 
@@ -59,4 +103,4 @@ Interface specification is the following Contractum code:
 
 ## Copyright
 
-This document is licensed under the Creative Commons CC0 1.0 Universal license.
+This document is licensed under the GPL-3.0 license.
