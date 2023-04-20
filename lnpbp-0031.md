@@ -42,8 +42,36 @@ License: CC0-1.0
 
 The specification is the actual Standard Contractum Library code:
 
+`Bitcoin.sty`:
+```haskell
+typelib Bitcoin
+
+data LockTime         :: U32
+data Outpoint         :: txid Txid, vout Vout
+data Sats             :: U64
+data ScriptBytes      :: [U8 ^ ..0xffffffffffffffff]
+data ScriptPubkey     :: ScriptBytes
+data SeqNo            :: U32
+data SigScript        :: ScriptBytes
+data Tx               :: version TxVer
+                       , inputs [TxIn ^ ..0xffffffffffffffff]
+                       , outputs [TxOut ^ ..0xffffffffffffffff]
+                       , lockTime LockTime
+data TxIn             :: prevOutput Outpoint
+                       , sigScript SigScript
+                       , sequence SeqNo
+data TxOut            :: value Sats, scriptPubkey ScriptPubkey
+data TxVer            :: v1:1 | v2:2
+data Txid             :: [U8 ^ 32]
+data Vout             :: U32
+```
+
 `rgb.sty`:
 ```haskell
+typelib RGBTypes
+
+import salsa_peace_patron_26G1K9hm6R2BkzGJwHjLC9cB1JFJiAPCDWrJAoRCrkCg as Bitcoin
+
 -- number of decimal fractions (decimal numbers after floating point)
 data Precision :: indivisible:0 
                 | deci:1 
@@ -65,13 +93,7 @@ data Precision :: indivisible:0
                 | centiFemto:17 
                 | atto:18
 
-data Outpoint :: txid [Byte ^ 32], vout U16
-
-data PoR :: -- proof of reserves
-    utxo Outpoint,
-    proof [Bytes] -- auxilary data which are schema-specific
-
-data Amount :: Zk64 -- asset amount
+data Amount :: Zk64 -- fungible asset amount
 
 data AssetNaming ::
     ticker [Ascii ^ 1..8],
@@ -83,6 +105,11 @@ data DivisibleAssetSpec ::
     precision Precision
     
 data RicardianContract :: [Unicode]
+
+-- proof of reserves
+data PoR ::
+    utxo Bitcoin.Outpoint,
+    proof [Bytes] -- auxilary data which are schema-specific
 ```
 
 `collections.con`:
@@ -109,13 +136,10 @@ fn count col, c :: col -> c
 ```haskell
 mod BP
 
-data Sats :: U64
 data Height :: U32
 data Timestamp :: I64
 data Difficulty: U32
 
-data Txid :: [Byte ^ 32]
-data Outpoint :: txid Txid, vout U16
 data Seal :: txid Txid?, vout U16
 data Assignment t :: (Seal, t)
 

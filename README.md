@@ -65,7 +65,7 @@ Criteria for a LNP/BP specification proposal:
 |  [24] | Wallet          | RGB schema for decentralized global domain name system (RGB-24)                           | Standard      | Planned  |
 | 25-29 | *Reserved*      | *For the future use by RGB schemata*                                                      |               |          |
 |  [30] | Wallet          | Interface for fungible RGB assets with decentralized issue (RGB-30)                       | Standard      | Final    |
-|  [31] | *Reserved*      | Standard Contractum Library (SCL)                                                         | Standard      | Draft    |
+|  [31] | *Reserved*      | Standard Contractum Libraries (SCL)                                                       | Standard      | Draft    |
 |    32 | Wallet          | BIP-32 derivation path extension for read-only wallets                                    | Standard      | Draft    |
 |  [33] | Smart contracts | Lightspeed: micro-payments for Lightning Network                                          | Draft         |          |
 |  [34] | Smart contracts | Zero-knowledge arguments for data persistence using probabilistic checkable proofs        | Standard      | Draft    |
