@@ -52,8 +52,25 @@ Interface specification is the following Contractum code:
 
 ```haskell
 -- number of decimal fractions (decimal numbers after floating point)
-data Precision :: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 |
-                     14 | 15 | 16 | 17 | 18
+data Precision :: indivisible:0 
+                | deci:1 
+                | centi:2 
+                | milli:3
+                | deciMilli:4
+                | centiMilli:5 
+                | micro:6 
+                | deciMicro:7 
+                | centiMicro:8 
+                | nano:9 
+                | deciNano:10 
+                | centiNano:11 
+                | pico:12 
+                | deciPico:13 
+                | centiPico:14 
+                | femto:15 
+                | deciFemto:16 
+                | centiFemto:17 
+                | atto:18
 
 data Outpoint :: txid [Byte ^ 32], vout U16
 
