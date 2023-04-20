@@ -70,21 +70,18 @@ data Specification ::
     precision Precision
 
 interface RGB20
+    -- Asset specification containing ticker, name, precision etc.
     global spec :: Specification
 
     -- Contract text is separated from the nominal since it must not be
     -- changeable by the issuer.
     global ricardianContract :: [Unicode]
-    -- The difference between `global _ :: [_]` and `global _? :: _` is that
-    -- the first indicates that the global state may not be present, while
-    -- the second requires the state must be present and have a form of array
-    -- of the elements.
 
-    -- state which accumulates amounts issued
+    -- State which accumulates amounts issued
     global issuedSupply+ :: Amount
-    -- state which accumulates amounts burned
+    -- State which accumulates amounts burned
     global burnedSupply* :: Amount
-    -- state which accumulates amounts burned and then replaced
+    -- State which accumulates amounts burned and then replaced
     global repalcedSupply* :: Amount
 
     -- Right to do a secondary (post-genesis) issue
@@ -96,12 +93,16 @@ interface RGB20
 
     -- Ownership right over assets
     owned assetOwners* :: Amount
+    
+    -- Point for applying state extensions
+    valency d10zedIssue
 
     -- !! means errors which may be returned
     genesis       -> spec, ricardianContract, 
                      issuedSupply, assetOwners+,
                      inflationAllowance*, 
-                     updateRight?, burnRight?
+                     updateRight?, burnRight?,
+                     d10zedIssue?
                   !! supplyMismatch
 
     op transfer    :: previous assetOwners+, 
@@ -117,7 +118,7 @@ interface RGB20
                       beneficiary assetOwners*
                    !! supplyMismatch | issueExceedsAllowance
 
-    op? dcntrlIssue :: reserves PoR
+    op? d10zedIssue :: d10zedIssue, reserves PoR
                    -> beneficiary assetOwners+, issuedSupply
                    !! supplyMismatch | insufficientReserves | invalidProof(PoR)
 
