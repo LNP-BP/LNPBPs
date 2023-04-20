@@ -58,7 +58,7 @@ interface RGB20
     -- Asset specification containing ticker, name, precision etc.
     global spec :: RGBTypes.DivisibleAssetSpec
 
-    -- Contract text is separated from the nominal since it must not be
+    -- Contract text is separated from the spec since it must not be
     -- changeable by the issuer.
     global terms :: RGBTypes.RicardianContract
 
@@ -77,41 +77,58 @@ interface RGB20
     owned burnRight?
 
     -- Ownership right over assets
-    owned assetOwners* :: RGBTypes.Amount
+    owned assetOwner+ :: RGBTypes.Amount
 
-    -- !! means errors which may be returned
-    genesis       -> spec, terms, 
-                     issuedSupply, assetOwners+,
-                     inflationAllowance*, 
-                     updateRight?, burnRight?,
-                     d10zedIssue?
+    -- !! means error symbols which may be returned
+    genesis       -> spec
+                   , terms
+                   , reserves PoR*
+                   , issuedSupply
+                   , assetOwner+
+                   , inflationAllowance*
+                   , updateRight?
+                   , burnRight?
                   !! supplyMismatch
+                   | invalidProof(RGBTypes.PoR)
+                   | insufficientReserves
 
-    op transfer    :: previous assetOwners+, 
-                   -> beneficiary assetOwners+
+    op Transfer    :: previous assetOwner+ 
+                   -> beneficiary assetOwner+
                    !! nonEqualAmounts
 
     -- question mark after `op` means optional operation, which may not be  
     -- provided by some of schemata implementing the intrface
     
-    op? issue      :: used inflationAllowance+
-                   -> issuedSupply, 
-                      next inflationAllowance?,
-                      beneficiary assetOwners*
-                   !! supplyMismatch | issueExceedsAllowance
+    op? Issue      :: used inflationAllowance+
+                    , reserves PoR*
+                   -> issuedSupply
+                    , future inflationAllowance?
+                    , beneficiary assetOwner*
+                   !! supplyMismatch 
+                    | issueExceedsAllowance
+                    | insufficientReserves
 
-    op? burn       :: used burnRight, proofs RGBTypes.PoR*, burnedSupply
-                   -> next burnRight?
-                   !! supplyMismatch | invalidProof(RGBTypes.PoR)
+    op? Burn       :: used burnRight
+                    , burnProofs RGBTypes.PoR*
+                    , burnedSupply
+                   -> future burnRight?
+                   !! supplyMismatch 
+                    | invalidProof(RGBTypes.PoR)
+                    | insufficientBurn
     
-    op? replace    :: used burnRight, proofs RGBTypes.PoR*, replacedSupply
-                   -> next burnRight?, beneficiary assetOwners+
+    op? Replace    :: used burnRight
+                    , burnProofs RGBTypes.PoR*
+                    , replacedSupply
+                   -> future burnRight?
+                    , beneficiary assetOwner+
                    !! nonEqualAmounts 
                     | supplyMismatch 
                     | invalidProof(RGBTypes.PoR)
+                    | insufficientBurn
 
-    op? rename     :: used updateRight
-                   -> next UpdateRight?, new spec
+    op? Rename     :: used updateRight
+                   -> future updateRight?
+                    , new spec
 ```
 
 ## Compatibility
