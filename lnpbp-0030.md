@@ -52,24 +52,25 @@ interface RGB30
     -- Asset specification containing ticker, name, precision etc.
     global spec :: RGBTypes.DivisibleAssetSpec
 
-    -- Contract text is separated from the nominal since it must not be
+    -- Contract text is separated from the spec since it must not be
     -- changeable by the issuer.
     global terms :: RGBTypes.RicardianContract
 
     -- Ownership right over assets
-    owned assetOwners* :: RGBTypes.Amount
+    owned assetOwner* :: RGBTypes.Amount
     
     -- Point for applying state extensions
     valency issueRight
 
     genesis       -> spec, terms, issueRight
 
-    op transfer    :: previous assetOwners+, 
-                   -> beneficiary assetOwners+
+    op Transfer    :: previous assetOwner+ 
+                   -> beneficiary assetOwner+
                    !! nonEqualAmounts
 
-    op pegIn       :: issueRight, reserves RGBTypes.PoR
-                   -> beneficiary assetOwners+, issuedSupply
+    op PegIn       :: issueRight
+                    , reserves RGBTypes.PoR
+                   -> beneficiary assetOwner+, issuedSupply
                    !! supplyMismatch 
                     | insufficientReserves 
                     | invalidProof(RGBTypes.PoR)
