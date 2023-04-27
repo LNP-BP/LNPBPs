@@ -63,7 +63,7 @@ interface RGB20
     global terms :: RGBTypes.RicardianContract
 
     -- State which accumulates amounts issued
-    global issuedSupply+ :: RGBTypes.Amount
+    global issuedSupply* :: RGBTypes.Amount
     -- State which accumulates amounts burned
     global burnedSupply* :: RGBTypes.Amount
     -- State which accumulates amounts burned and then replaced
@@ -84,7 +84,7 @@ interface RGB20
                    , terms
                    , reserves PoR*
                    , issuedSupply
-                   , assetOwner+
+                   , assetOwner*
                    , inflationAllowance*
                    , updateRight?
                    , burnRight?
@@ -114,7 +114,6 @@ interface RGB20
                    -> future burnRight?
                    !! supplyMismatch 
                     | invalidProof(RGBTypes.PoR)
-                    | insufficientBurn
     
     op? Replace    :: used burnRight
                     , burnProofs RGBTypes.PoR*
@@ -124,7 +123,7 @@ interface RGB20
                    !! nonEqualAmounts 
                     | supplyMismatch 
                     | invalidProof(RGBTypes.PoR)
-                    | insufficientBurn
+                    | insufficientCoverage
 
     op? Rename     :: used updateRight
                    -> future updateRight?
