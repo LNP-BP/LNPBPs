@@ -8,7 +8,8 @@ Authors: Dr Maxim Orlovsky <orlovsky@lnp-bp.org>,
          Zoe Faltibà,
          Carlos Roldan,
          Olga Ukolova,
-         Giacomo Zucco
+         Giacomo Zucco,
+         Armando Dutra
 Comments-URI: <https://github.com/LNP-BP/LNPBPs/issues/70>
 Status: Proposal
 Type: Standards Track

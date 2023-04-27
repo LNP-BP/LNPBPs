@@ -8,6 +8,7 @@ Authors: Dr Maxim Orlovsky <orlovsky@lnp-bp.org>,
          Marco Amadori,
          Nicola Busanello,
          Federico Tenga,
+         Armando Dutra,
          Sabina Sachtachtinskagia,
          Martino Salvetti
 Comments-URI: <https://github.com/LNP-BP/LNPBPs/discussions/140>
