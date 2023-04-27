@@ -112,7 +112,7 @@ interface RGB21
 
     -- Data for all issued tokens
     global tokensData+ :: TokenData
-    global engravingData+ :: EngravingData
+    global engravingData* :: EngravingData
     global isFractional :: Bool
     global attachmentTypes+ :: AttachmentType
 

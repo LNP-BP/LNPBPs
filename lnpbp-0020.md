@@ -67,7 +67,7 @@ interface RGB20
     -- State which accumulates amounts burned
     global burnedSupply* :: RGBTypes.Amount
     -- State which accumulates amounts burned and then replaced
-    global repalcedSupply* :: RGBTypes.Amount
+    global replacedSupply* :: RGBTypes.Amount
 
     -- Right to do a secondary (post-genesis) issue
     owned inflationAllowance* :: RGBTypes.Amount
@@ -97,7 +97,7 @@ interface RGB20
                    !! nonEqualAmounts
 
     -- question mark after `op` means optional operation, which may not be  
-    -- provided by some of schemata implementing the intrface
+    -- provided by some of schemata implementing the interface
     
     op? Issue      :: used inflationAllowance+
                     , reserves PoR*

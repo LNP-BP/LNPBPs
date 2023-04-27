@@ -171,7 +171,7 @@ data MediaType ::
 -- proof of reserves
 data PoR ::
     utxo Bitcoin.Outpoint,
-    proof [Bytes] -- auxilary data which are schema-specific
+    proof [Byte] -- auxilary data which are schema-specific
 ```
 
 ### Work in progress for the next version
