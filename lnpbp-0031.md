@@ -214,7 +214,7 @@ data LockTime :: height Height | blocks U32
 data FullPubkey :: 04, x [U8 ^ 32], y [U8 ^ 32]
 data PubkeyParity :: even=02 | odd=03
 data CompressedPubkey :: parity PubkeyParity, x [U8 ^ 32]
-data Pubkey :: uncompressed FullPubkey | compressed ShortPubkey
+data Pubkey :: uncompressed FullPubkey | compressed CompressedPubkey
 data XonlyPubkey :: [U8 ^ 32]
 
 -- Hash types
