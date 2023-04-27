@@ -59,18 +59,15 @@ Interface specification is the following Contractum code:
 data ItemsCount :: U32
 
 -- each collectible item is unique and must have an id
-data TokenId :: U32
+data TokenIndex :: U32
 
--- Collectibles are owned in fractions of a single item; here the owned
--- fraction means `1/F`. Ownership of the full item is specified `F=1`;
--- half of an item as `F=2` etc.
 data OwnedFraction :: U64
 
 -- allocation of a single token or its fraction to some transaction output
-data Allocation :: TokenId, OwnedFraction
+data Allocation :: TokenIndex, OwnedFraction
 
 data EngravingData :: 
-    appliedTo TokenId, 
+    appliedTo TokenIndex, 
     content EmbeddedMedia
 
 data EmbeddedMedia ::
@@ -82,7 +79,7 @@ data Attachment ::
     digest: [U8 ^ 32] -- this can be any type of 32-byte hash, like SHA256(d), BLACKE3 etc
 
 data TokenData ::
-    id TokenId,
+    id TokenIndex,
     ticker RGBTypes.Ticker?,
     name RGBTypes.Name?,
     details RGBTypes.Details?,
@@ -104,17 +101,17 @@ data AttachmentType ::
     description [Ascii ^ 1..20]
 
 interface RGB21
-    global name :: RGBTypes.AssetNaming
+    -- Asset specification containing ticker, name, precision etc.
+    global spec :: RGBTypes.DivisibleAssetSpec
     
     -- Contract text is separated from the name since it must not be
     -- changeable by the issuer.
     global terms :: RGBTypes.RicardianContract
 
     -- Data for all issued tokens
-    global tokensData+ :: TokenData
-    global engravingData* :: EngravingData
-    global isFractional :: Bool
-    global attachmentTypes+ :: AttachmentType
+    global tokens* :: TokenData
+    global engravings* :: EngravingData
+    global attachmentTypes* :: AttachmentType
 
     -- Right to do a secondary (post-genesis) issue
     owned inflationAllowance* :: RGBTypes.Amount
@@ -122,39 +119,44 @@ interface RGB21
     owned updateRight?
 
     -- Ownership right over assets
-    owned assetOwner+ :: Allocation
+    owned assetOwner* :: Allocation
 
     genesis       -> name
                    , terms,
                    , reserves PoR*
-                   , tokens tokenData+
-                   , assetOwner+
+                   , tokens*
+                   , assetOwner*
                    , inflationAllowance*
                    , updateRight?
+                   , attachmentType*
                   !! invalidProof(RGBTypes.PoR)
+                   -- this error happens when amount of token > 1
+                   | fractionOverflow(TokenIndex)
                    | insufficientReserves
 
     op Transfer    :: previous assetOwner+, 
                    -> beneficiaries assetOwner+
                    !! -- options for operation failure:
-                      inequalFractions(TokenId)
+                      inequalFractions(TokenIndex)
+                    | fractionOverflow(TokenIndex)
                     | nonFractionalToken
 
     op? TransferEngrave :: previous assetOwner+ 
-                    , engravingData  
+                    , engraving  
                    -> beneficiaries assetOwner+
                    !! -- options for operation failure:
-                      inequalFractions(TokenId)
+                      inequalValues(TokenIndex)
                     | nonFractionalToken
                     | nonEngravableToken
 
     op? Issue      :: used inflationAllowance
-                    , newTokens tokenData+
+                    , newTokens tokens*
                     , reserves RGBTypes.PoR*
-                    , newAttachmentTypes attachmentType*
+                    , newAttachmentTypes attachmentTypes*
                    -> future inflationAllowance
                     , beneficiaries assetOwners+
                    !! invalidReserves(RGBTypes.PoR)
+                    | fractionOverflow(TokenIndex)
                     | insufficientAllowance
                     | insufficientReserves
 
