@@ -45,6 +45,21 @@ License: CC0-1.0
 
 ## Design
 
+Overview
+
+### Asset information
+
+### Asset ownership
+
+### Issue
+
+- secondary issue
+- issue delegation
+- cancelling issue
+
+### Burning & replace
+
+### Proof of reserves
 
 
 ## Specification
@@ -80,7 +95,6 @@ interface RGB20
     -- Ownership right over assets
     owned assetOwner+ :: RGBTypes.Amount
 
-    -- !! means error symbols which may be returned
     genesis       -> spec
                    , terms
                    , reserves PoR*
@@ -89,6 +103,7 @@ interface RGB20
                    , inflationAllowance*
                    , updateRight?
                    , burnRight?
+                  -- errors which may be returned:
                   !! supplyMismatch
                    | invalidProof(RGBTypes.PoR)
                    | insufficientReserves
@@ -133,6 +148,15 @@ interface RGB20
 
 ## Compatibility
 
+This standard is the first fungible token interface defined for RGB assets,
+so compatibility with other standards do not apply.
+
+The standard provides a superset for ERC20 token capabilities; however due
+to RGB nature it is not directly compatible with ERC20 and other similar
+standards using account-based blockchains (and not client-side-validation
+on UTXO chains). However, a ERC20 tokens may be re-issued or bridged under
+this standard.
+
 
 ## Rationale
 
@@ -141,9 +165,11 @@ Include from
 - <https://github.com/LNP-BP/LNPBPs/issues/28>
 - <https://github.com/LNP-BP/LNPBPs/issues/50>
 
+
 ## Reference implementation
 
 <https://github.com/RGB-WG/rgb-wallet/blob/master/std/src/interface/rgb20.rs>
+
 
 ## Acknowledgements
 
