@@ -8,7 +8,7 @@ Comments-URI: <https://github.com/LNP-BP/LNPBPs/discussions/140>
 Status: Proposal
 Type: Standards Track
 Created: 2021-06-23
-Updated: 2023-04-20
+Updated: 2023-05-10
 Finalized: ~
 Copyright: (0) public domain
 License: CC0-1.0
@@ -52,9 +52,10 @@ interface RGB30
     -- Asset specification containing ticker, name, precision etc.
     global spec :: RGBTypes.DivisibleAssetSpec
 
-    -- Contract text is separated from the spec since it must not be
-    -- changeable by the issuer.
+    -- Contract text and creation date is separated from the spec since it must
+    -- not be changeable by the issuer.
     global terms :: RGBTypes.RicardianContract
+    global created :: RGBTypes.Timestamp
 
     -- Ownership right over assets
     owned assetOwner* :: RGBTypes.Amount

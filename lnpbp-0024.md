@@ -8,7 +8,7 @@ Comments-URI: <https://github.com/LNP-BP/LNPBPs/discussions>
 Status: Draft
 Type: Standards Track
 Created: 2020-09-10
-Updated: 2022-12-23
+Updated: 2023-05-10
 Finalized: ~
 License: GPL-3.0
 ```
@@ -47,6 +47,8 @@ interface RGB24
     global Root :: Self.ContractId?
     global Name :: Ident
     global Registry { Ident } :: Resolve
+
+    global created :: RGBTypes.Timestamp
 
     owned Registar
 

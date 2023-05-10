@@ -14,6 +14,7 @@ Comments-URI: <https://github.com/LNP-BP/LNPBPs/issues/70>
 Status: Proposal
 Type: Standards Track
 Created: 2020-09-10
+Updated: 2023-05-10
 License: CC0-1.0
 ```
 
@@ -105,9 +106,10 @@ interface RGB21
     -- Asset specification containing ticker, name, precision etc.
     global spec :: RGBTypes.DivisibleAssetSpec
     
-    -- Contract text is separated from the name since it must not be
-    -- changeable by the issuer.
+    -- Contract text and creation date is separated from the spec since it must
+    -- not be changeable by the issuer.
     global terms :: RGBTypes.RicardianContract
+    global created :: RGBTypes.Timestamp
 
     -- Data for all issued tokens
     global tokens* :: TokenData

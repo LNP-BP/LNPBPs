@@ -7,7 +7,7 @@ Comments-URI: <https://github.com/LNP-BP/LNPBPs/discussions/141>
 Status: Proposal
 Type: Standards Track
 Created: 2022-12-23
-Updated: 2023-04-20
+Updated: 2023-05-10
 Finalized: ~
 Copyright: (0) public domain
 License: CC0-1.0
@@ -157,6 +157,10 @@ data DivisibleAssetSpec ::
     precision Precision
     
 data RicardianContract :: [Unicode]
+
+-- UNIX timestamp value defined by POSIX to be a 32-bit signed integer
+-- https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16
+data Timestamp :: I32
 
 -- `reg-name` defined by MIME spec
 -- TODO: filter on the character level with a more precise metric
