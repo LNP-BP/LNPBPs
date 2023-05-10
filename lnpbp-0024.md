@@ -44,24 +44,24 @@ Interface specification is the following Contractum code:
 
 ```haskell
 interface RGB24
-    global Root :: Self.ContractId?
-    global Name :: Ident
-    global Registry { Ident } :: Resolve
+    global root :: ContractId?
+    global name :: Ident
+    global {registry} :: Record
 
     global created :: RGBTypes.Timestamp
 
-    owned Registar
+    owned registar
 
-    op register :: Registar -> Registar <- {Registry+}
+    op Register :: registar, {registry ^ 1..0xFFFF} -> registar
                 !! noRoot |
                    invalidRoot |
                    incompleteRegistry
 
-data Ident :: [Alphanumeric+]
+data Hostname :: [RGBTypes.AlphaNumDash ^ 1..63]
+data DomainName :: [Hostname ^ 1..0xFF]
 
-data Resolve :: record Record | subdomain Subdomain
-data Record :: a IPv4 | aaaa IPv6 | cname Ident -- ...
-data Subdomain :: RGB24.ContractId
+data Record :: host Hostname, entry Entry
+data Entry :: a IPv4 | aaaa IPv6 | cname DomainName | sub RGB24.ContractId
 ```
 
 ## Compatibility
@@ -74,17 +74,17 @@ data Subdomain :: RGB24.ContractId
 
 ```haskell
 schema BaseRegistry implements RGB24
-    op register :: Registar -> Registar <- entries {Registry+}
+    op Register :: registar, entries {registry+} -> registar
                 !! RegistrationError
-        self.Root => root -> (
-            let parent = (root.contract !! noRoot).Registry
+        self.root => root -> (
+            let parent = (root.contract !! noRoot).registry
             parent.isFullyKnown !! incompleteRoot
-            let myself = parent.Registry.get self.Name !! unregisteredName
+            let myself = parent.registry.get self.Name !! unregisteredName
             myself: Resolve.subdomain(contract) => 
-                contract =? self.ContractId !! selfNotRegistered
+                contract =? self.contractId !! selfNotRegistered
         )
-        let registry := self.Registry.isFullyKnown !! incompleteRegistry
-        entries =|> self.Registry.has !! repeatedEntry
+        let registry := self.registry.isFullyKnown !! incompleteRegistry
+        entries =|> self.registry.has !! repeatedEntry
         -- the above is the same as
         -- entries => entry -> self.registry.has entry !! repeatedEntry
         

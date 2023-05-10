@@ -47,14 +47,14 @@ Interface specification is the following Contractum code:
 import RGB21
 
 interface RGB23
-    global Id :: RGB21.ContractId
-    global Deed* :: Entry
+    global id :: RGB21.ContractId
+    global deed* :: Entry
 
     global created :: RGBTypes.Timestamp
 
-    owned Log
+    owned deedRight
 
-    op entry :: Log -> Log <- Deed
+    op Log :: deedRight, deed -> deedRight
 
 data Entry ::
     type MimeType,

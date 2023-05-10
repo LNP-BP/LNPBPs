@@ -70,21 +70,20 @@ data Attestation ::
     signature Sig
 
 interface RGB22
-    global Name :: [Unicode+]
-
+    global name :: RGBTypes.Name
     global created :: RGBTypes.Timestamp
 
-    global Emails{+} :: Email
-    global Facts{*} :: Attestation
-    global Photo? :: (MimeType, [Byte])
+    global {emails+} :: Email
+    global {facts} :: Attestation
+    global photo? :: (MimeType, [Byte])
 
-    owned NameRight
-    owned AttestRight
-    owned RevokableKey{+} :: Pubkey
+    owned nameRight
+    owned attestRight
+    owned {revokableKey+} :: Pubkey
 
-    op revoke :: RevokableKey -> RevokableKey?
-    op rename :: NameRight -> NameRight <- Name, Emails, Photo?
-    op attest :: AttestRight -> AttestRight, {RevokableKey} <- {Attestation}
+    op Revoke :: revokableKey -> revokableKey?
+    op Rename :: nameRight, name, emails, photo? -> nameRight
+    op Attest :: attestRight, {facts ^ 1..0xFFFF} -> attestRight, {revokableKey}
 ```
 
 ## Compatibility
