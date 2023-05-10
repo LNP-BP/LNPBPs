@@ -115,7 +115,7 @@ interface RGB21
     global attachmentTypes* :: AttachmentType
 
     -- Right to do a secondary (post-genesis) issue
-    owned inflationAllowance* :: RGBTypes.Amount
+    owned inflationAllowance* :: ItemsCount
     -- Right to update asset name
     owned updateRight?
 
