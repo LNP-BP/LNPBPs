@@ -8,13 +8,14 @@ Authors: Dr Maxim Orlovsky <orlovsky@lnp-bp.org>,
          Marco Amadori,
          Nicola Busanello,
          Federico Tenga,
+         Armando Dutra,
          Sabina Sachtachtinskagia,
          Martino Salvetti
 Comments-URI: <https://github.com/LNP-BP/LNPBPs/discussions/140>
 Status: Proposal
 Type: Standards Track
 Created: 2019-09-23
-Updated: 2022-12-23
+Updated: 2023-05-10
 Finalized: ~
 Copyright: (0) public domain
 License: CC0-1.0
@@ -44,6 +45,21 @@ License: CC0-1.0
 
 ## Design
 
+Overview
+
+### Asset information
+
+### Asset ownership
+
+### Issue
+
+- secondary issue
+- issue delegation
+- cancelling issue
+
+### Burning & replace
+
+### Proof of reserves
 
 
 ## Specification
@@ -51,156 +67,109 @@ License: CC0-1.0
 Interface specification is the following Contractum code:
 
 ```haskell
--- number of decimal fractions (decimal numbers after floating point)
-data DecFractions :: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 |
-                     14 | 15 | 16 | 17 | 18
-
-data TxOut :: txid [Byte ^ 32], vout U16
-
-data POR :: -- proof of reserves
-    utxo TxOut,
-    proof [Bytes] -- auxilary data which are schema-specific
-
-data Amount :: U64 -- asset amount
-
-data Denomination :: 
-    ticker [Ascii ^ 1..8],
-    name [Ascii ^ 1..40],
-    details [Unicode ^ 40..256]?,
-    precision DecFractions
+-- Defined by LNPBP-31 standard in `rgb.sty` file
+import moment_shirt_uranium_E2hfuv3Za3kVo7MSCvSxC6uhYJEvkmZJ1NPz4g4oZWNw as RGBTypes
 
 interface RGB20
-    global Denomination :: Denomination
+    -- Asset specification containing ticker, name, precision etc.
+    global spec :: RGBTypes.DivisibleAssetSpec
 
-    -- Contract text is separated from the denomination since it must not be
-    -- changeable by an issuer.
-    global Contract :: [Unicode]
-    -- The difference between `global _ :: [_]` and `global _? :: _` is that
-    -- the first indicates that the global state may not be present, while
-    -- the second requires the state must be present and have a form of array
-    -- of the elements.
+    -- Contract text and creation date is separated from the spec since it must
+    -- not be changeable by the issuer.
+    global terms :: RGBTypes.RicardianContract
+    global created :: RGBTypes.Timestamp
 
-    -- state which accumulates amounts issued
-    global Issued* :: Amount
-    -- state which accumulates amounts burned
-    global Burned* :: Amount
-    -- state which accumulates amounts burned and then replaced
-    global Repalced* :: Amount
+    -- State which accumulates amounts issued
+    global issuedSupply* :: RGBTypes.Amount
+    -- State which accumulates amounts burned
+    global burnedSupply* :: RGBTypes.Amount
+    -- State which accumulates amounts burned and then replaced
+    global replacedSupply* :: RGBTypes.Amount
 
-    owned IssueRight* :: Amount
-    owned DenominationRight?
-    owned BurnRight?
+    -- Right to do a secondary (post-genesis) issue
+    owned inflationAllowance* :: RGBTypes.Amount
+    -- Right to update asset Specification
+    owned updateRight?
+    -- Right to burn or replace existing assets
+    owned burnRight?
 
-    owned Assets* :: Amount
+    -- Ownership right over assets
+    owned assetOwner+ :: RGBTypes.Amount
 
-    -- operations are declared as
-    -- `op` NAME `::` CLOSED_SEALS,+ INPUT_METADATA,*
-    --           `->` DEFINED_SEALS,+
-    --           `<-` NEW_GLOBAL_STATE,*
-    --           `!!` ERRORS|*
+    genesis       -> spec
+                   , terms
+                   , reserves PoR*
+                   , issuedSupply
+                   , assetOwner*
+                   , inflationAllowance*
+                   , updateRight?
+                   , burnRight?
+                  -- errors which may be returned:
+                  !! supplyMismatch
+                   | invalidProof(RGBTypes.PoR)
+                   | insufficientReserves
 
-    op transfer    :: inputs [Assets] 
-                   -> beneficiaries [Assets]
-                   !! inequalAmounts
-
-    -- question mark denotes optional operation, which may not be supported by 
-    -- some of schemata implementing the intrface
-    
-    op? issue      :: using IssueRight
-                   -> next IssueRight?, beneficiaries [Assets]
-                   <- amount Issued
+    op Transfer    :: previous assetOwner+ 
+                   -> beneficiary assetOwner+
                    !! nonEqualAmounts
 
-    op? dcntrlIssue -> reserves POR, beneficiaries [Assets]
-                   <- amount Issued
-                   !! invalidReserves
+    -- question mark after `op` means optional operation, which may not be  
+    -- provided by some of schemata implementing the interface
+    
+    op? Issue      :: used inflationAllowance+
+                    , reserves PoR*
+                   -> issuedSupply
+                    , future inflationAllowance?
+                    , beneficiary assetOwner*
+                   !! supplyMismatch 
+                    | issueExceedsAllowance
                     | insufficientReserves
 
-    op? burn       :: using BurnRight, proofs [POR], amount Amount
-                   -> next BurnRight?
-                   <- amount Burned
-                   !! nonEqualAmounts
-                    | invalidProof(POR)
+    op? Burn       :: used burnRight
+                    , burnProofs RGBTypes.PoR*
+                    , burnedSupply
+                   -> future burnRight?
+                   !! supplyMismatch 
+                    | invalidProof(RGBTypes.PoR)
     
-    op? replace    :: using BurnRight, proofs [POR]
-                   -> next BurnRight?, beneficiaries [Assets]
-                   <- amount Replaced
-                   !! nonEqualAmounts
-                    | invalidProof(POR)
+    op? Replace    :: used burnRight
+                    , burnProofs RGBTypes.PoR*
+                    , replacedSupply
+                   -> future burnRight?
+                    , beneficiary assetOwner+
+                   !! nonEqualAmounts 
+                    | supplyMismatch 
+                    | invalidProof(RGBTypes.PoR)
+                    | insufficientCoverage
 
-    op? rename     :: using DenominationRight
-                   -> next DenominationRight?, new Denomination
+    op? Rename     :: used updateRight
+                   -> future updateRight?
+                    , new spec
 ```
 
 ## Compatibility
+
+This standard is the first fungible token interface defined for RGB assets,
+so compatibility with other standards do not apply.
+
+The standard provides a superset for ERC20 token capabilities; however due
+to RGB nature it is not directly compatible with ERC20 and other similar
+standards using account-based blockchains (and not client-side-validation
+on UTXO chains). However, a ERC20 tokens may be re-issued or bridged under
+this standard.
 
 
 ## Rationale
 
 Include from
-- https://github.com/LNP-BP/LNPBPs/issues/27
-- https://github.com/LNP-BP/LNPBPs/issues/28
-- https://github.com/LNP-BP/LNPBPs/issues/50
+- <https://github.com/LNP-BP/LNPBPs/issues/27>
+- <https://github.com/LNP-BP/LNPBPs/issues/28>
+- <https://github.com/LNP-BP/LNPBPs/issues/50>
+
 
 ## Reference implementation
 
-Simple asset issuance:
-
-```Haskell
-import RGB20
-
-schema SimpleAsset
-    global Denomination :: Denomination
-    global Contract :: [Unicode]
-
-    global Issued* :: Amount
-    owned Assets* :: Amount
-
-    genesis -> allocations [Assets]
-            <- totalAmount Issued, naming Denomination, contract Contract
-        sum allocations =? totalAmount !! nonEqualAmounts
-
-    op transfer :: inputs [Assets] -> beneficiaries [Assets]
-        sum inputs =? sum beneficiaries !! nonEqualAmounts
-
-implement RGB20 for SimpleAsset
-    -- all names match interface so no explicit declarations here are needed
-
-let issuerOwned := Seal fac503c4641c3deda72a2d00bc9d6ff1094b15276c386efea403746a91436772, 1
-
-contract sampleAsset := SimpleAsset (
-    naming := Denomination(
-        ticker := "OTI",
-        name := "One time issued token",
-        details := "Absolutely useless",
-        precision := 8
-    ),
-    contract := """
-        THE ASSET TOKEN IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-        EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-        MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-        IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
-        OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-        ARISING FROM, OUT OF OR IN CONNECTION WITH THE ASSET TOKEN OR THE USE
-        OR OTHER DEALINGS IN THE CONTRACT.
-        """,
-    allocations := [
-        (issuerOwned, 10_000_000__0000_0000)
-    ],
-    totalAmount := 10_000_000__0000_0000
-)
-
-let friendOwned := Seal ~, 0
-let issuerChange := Seal ~, 1
-
-transition sendToFriend := SimpleAsset.transfer (
-    inputs := [issuerOwned],
-    beneficiaries := [
-        (friendOwned, 1_000_000__0000_0000),
-        (issuerChange, 9_000_000__0000_0000)
-    ]
-)
-```
+<https://github.com/RGB-WG/rgb-wallet/blob/master/std/src/interface/rgb20.rs>
 
 
 ## Acknowledgements

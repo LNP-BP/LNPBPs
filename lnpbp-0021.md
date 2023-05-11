@@ -9,10 +9,12 @@ Authors: Dr Maxim Orlovsky <orlovsky@lnp-bp.org>,
          Carlos Roldan,
          Olga Ukolova,
          Giacomo Zucco,
+         Armando Dutra
 Comments-URI: <https://github.com/LNP-BP/LNPBPs/issues/70>
 Status: Proposal
 Type: Standards Track
 Created: 2020-09-10
+Updated: 2023-05-10
 License: CC0-1.0
 ```
 
@@ -56,102 +58,114 @@ Interface specification is the following Contractum code:
 ```haskell
 -- # Defining main data structures
 
--- collectibles are usually scarse, so we limit their max number to 64k
 data ItemsCount :: U32
 
 -- each collectible item is unique and must have an id
-data TokenId :: U16
+data TokenIndex :: U32
 
--- Collectibles are owned in fractions of a single item; here the owned
--- fraction means `1/F`. Ownership of the full item is specified `F=1`;
--- half of an item as `F=2` etc.
 data OwnedFraction :: U64
 
-data TxOut :: txid [Byte ^ 32], vout U16
-
 -- allocation of a single token or its fraction to some transaction output
-data Allocation :: TokenId, OwnedFraction
+data Allocation :: TokenIndex, OwnedFraction
 
-data Engraving :: appliedTo TokenId, content Media
+data EngravingData :: 
+    appliedTo TokenIndex, 
+    content EmbeddedMedia
 
-data Media ::
-    type MimeType,
+data EmbeddedMedia ::
+    type RGBTypes.MediaType,
     data [Byte]
 
 data Attachment ::
-    type MimeType,
+    type RGBTypes.MediaType,
     digest: [U8 ^ 32] -- this can be any type of 32-byte hash, like SHA256(d), BLACKE3 etc
 
-data POR :: -- proof of reserves
-    reserves TxOut,
-    proof [Byte] -- schema-specific proof 
-
-data Token ::
-    id TokenId,
-    name [Ascii ^ 1..40],
-    details [Unicode ^ 40..256]?,
-    preview Media?, -- always embedded preview media < 64kb
-    media Attachment?, -- external media which is the main media for the token
+data TokenData ::
+    id TokenIndex,
+    ticker RGBTypes.Ticker?,
+    name RGBTypes.Name?,
+    details RGBTypes.Details?,
+    -- always-embedded preview media < 64kb
+    preview EmbeddedMedia?,
+    -- external media which is the main media for the token
+    media Attachment?,
     attachments { U8 -> ^ ..20 Attachment } -- auxiliary attachments by type (up to 20 attachments)
-    reserves POR? -- output containing locked bitcoins; how reserves are
-                  -- proved is a matter of a specific schema implementation
-
-data Denomination :: 
-    ticker [Ascii ^ 1..8],
-    name [Ascii ^ 1..40],
-    details [Unicode ^ 40..256]?,
-    contract [Unicode]??,
+    -- output containing locked bitcoins; how reserves are proved is a matter
+    -- of a specific schema implementation
+    reserves RGBTypes.PoR? 
 
  -- each attachment type is a mapping from attachment id 
  -- (used as `Token.attachments` keys) to a short Ascii string
  -- verbally explaining the type of the attachment for the UI
  -- (like "sample" etc).
-data AttachmentType :: id U8, description [Ascii ^ 1..20]
-
+data AttachmentType :: 
+    id U8, 
+    description [Ascii ^ 1..20]
 
 interface RGB21
-    global Name :: Denomination
-    global Tokens :: Token+
-    global Engravings :: Engraving+
-    global isFractional :: Bool
-    global AttachmentTypes :: AttachmentType+
+    -- Asset specification containing ticker, name, precision etc.
+    global spec :: RGBTypes.DivisibleAssetSpec
+    
+    -- Contract text and creation date is separated from the spec since it must
+    -- not be changeable by the issuer.
+    global terms :: RGBTypes.RicardianContract
+    global created :: RGBTypes.Timestamp
 
-    owned Allocations+ :: Allocation
-    owned IssueRight* :: Amount
-    owned DenominationRight?
-    -- returns information about known circulating supply
-    read supplyKnown :: Amount
-        count Self.state["Tokens"]
-        -- sum Self.ops["issue"]..closed["usingRight"].state ?? 0
+    -- Data for all issued tokens
+    global tokens* :: TokenData
+    global engravings* :: EngravingData
+    global attachmentTypes* :: AttachmentType
 
-    -- maximum possible asset inflation
-    read supplyLimit :: Amount
-        sum Self.IssueRight..state ?? 0
+    -- Right to do a secondary (post-genesis) issue
+    owned inflationAllowance* :: ItemsCount
+    -- Right to update asset name
+    owned updateRight?
 
-    read isCirculationKnown :: Bool
-        all Self.ops["issue"]..stateKnown
+    -- Ownership right over assets
+    owned assetOwner* :: Allocation
 
-    op transfer    :: inputs [Allocation+] -> beneficiaries [Allocation]
+    genesis       -> name
+                   , terms,
+                   , reserves PoR*
+                   , tokens*
+                   , assetOwner*
+                   , inflationAllowance*
+                   , updateRight?
+                   , attachmentType*
+                  !! invalidProof(RGBTypes.PoR)
+                   -- this error happens when amount of token > 1
+                   | fractionOverflow(TokenIndex)
+                   | insufficientReserves
+
+    op Transfer    :: previous assetOwner+, 
+                   -> beneficiaries assetOwner+
                    !! -- options for operation failure:
-                      inequalFractions(TokenId)
+                      inequalFractions(TokenIndex)
+                    | fractionOverflow(TokenIndex)
                     | nonFractionalToken
 
-    -- question mark denotes optional operation, which may not be supported by 
-    -- some of schemata implementing the interface
+    op? TransferEngrave :: previous assetOwner+ 
+                    , engraving  
+                   -> beneficiaries assetOwner+
+                   !! -- options for operation failure:
+                      inequalValues(TokenIndex)
+                    | nonFractionalToken
+                    | nonEngravableToken
 
-    op? engrave    :: Allocation -> Allocation
-                   <- Engraving
+    op? Issue      :: used inflationAllowance
+                    , newTokens tokens*
+                    , reserves RGBTypes.PoR*
+                    , newAttachmentTypes attachmentTypes*
+                   -> future inflationAllowance
+                    , beneficiaries assetOwners+
+                   !! invalidReserves(RGBTypes.PoR)
+                    | fractionOverflow(TokenIndex)
+                    | insufficientAllowance
+                    | insufficientReserves
 
-    op? issue      :: IssueRight -> IssueRight, beneficiaries {Allocation}
-                   <- tokens {Token}, newAttachmentTypes {attachmentType}*
-                   !! invalidReserves(POR)
-
-    -- decentralized issue
-    op? decentralizedIssue -> tokens {Token}, beneficiaries {Allocation}
-                    !! invalidReserves(POR)
-
-    op? rename :: DenominationRight -> DenominationRight? <- Denomination
-                   <- Nomination
+    op? Rename     :: used updateRight
+                   -> future updateRight?
+                    , new name
 ```
 
 ## Compatibility

@@ -8,7 +8,7 @@ Comments-URI: <https://github.com/LNP-BP/LNPBPs/discussions>
 Status: Proposal
 Type: Standards Track
 Created: 2020-09-10
-Updated: 2022-12-23
+Updated: 2023-05-10
 Finalized: ~
 Copyright: (0) public domain
 License: CC0-1.0
@@ -47,12 +47,14 @@ Interface specification is the following Contractum code:
 import RGB21
 
 interface RGB23
-    global Id :: RGB21.ContractId
-    global Deed* :: Entry
+    global id :: RGB21.ContractId
+    global deed* :: Entry
 
-    owned Log
+    global created :: RGBTypes.Timestamp
 
-    op entry :: Log -> Log <- Deed
+    owned deedRight
+
+    op Log :: deedRight, deed -> deedRight
 
 data Entry ::
     type MimeType,
