@@ -68,7 +68,9 @@ Interface specification is the following Contractum code:
 
 ```haskell
 -- Defined by LNPBP-31 standard in `rgb.sty` file
-import moment_shirt_uranium_E2hfuv3Za3kVo7MSCvSxC6uhYJEvkmZJ1NPz4g4oZWNw as RGBTypes
+import union_raymond_planet_5qk5NKCECpDsFLf3C781omtThzS5jhNRis2vwGVxkrkv as RGBTypes
+
+data Amount :: U64
 
 interface RGB20
     -- Asset specification containing ticker, name, precision etc.
@@ -80,25 +82,25 @@ interface RGB20
     global created :: RGBTypes.Timestamp
 
     -- State which accumulates amounts issued
-    global issuedSupply* :: RGBTypes.Amount
+    global issuedSupply* :: Amount
     -- State which accumulates amounts burned
-    global burnedSupply* :: RGBTypes.Amount
+    global burnedSupply* :: Amount
     -- State which accumulates amounts burned and then replaced
-    global replacedSupply* :: RGBTypes.Amount
+    global replacedSupply* :: Amount
 
     -- Right to do a secondary (post-genesis) issue
-    owned inflationAllowance* :: RGBTypes.Amount
+    owned inflationAllowance* :: Zk64
     -- Right to update asset Specification
     owned updateRight?
     -- Right to burn or replace existing assets
     owned burnRight?
 
     -- Ownership right over assets
-    owned assetOwner+ :: RGBTypes.Amount
+    owned assetOwner+ :: Zk64
 
     genesis       -> spec
                    , terms
-                   , reserves PoR*
+                   , reserves RgbTypes.ProofOfReserves*
                    , issuedSupply
                    , assetOwner*
                    , inflationAllowance*
@@ -106,7 +108,7 @@ interface RGB20
                    , burnRight?
                   -- errors which may be returned:
                   !! supplyMismatch
-                   | invalidProof(RGBTypes.PoR)
+                   | invalidProof(RGBTypes.ProofOfReserves)
                    | insufficientReserves
 
     op Transfer    :: previous assetOwner+ 
@@ -117,7 +119,7 @@ interface RGB20
     -- provided by some of schemata implementing the interface
     
     op? Issue      :: used inflationAllowance+
-                    , reserves PoR*
+                    , reserves RGBTypes.ProofOfReserves*
                    -> issuedSupply
                     , future inflationAllowance?
                     , beneficiary assetOwner*
@@ -126,11 +128,11 @@ interface RGB20
                     | insufficientReserves
 
     op? Burn       :: used burnRight
-                    , burnProofs RGBTypes.PoR*
+                    , burnProofs RGBTypes.ProofOfReserves*
                     , burnedSupply
                    -> future burnRight?
                    !! supplyMismatch 
-                    | invalidProof(RGBTypes.PoR)
+                    | invalidProof(RGBTypes.ProofOfReserves)
     
     op? Replace    :: used burnRight
                     , burnProofs RGBTypes.PoR*
