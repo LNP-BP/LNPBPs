@@ -56,6 +56,9 @@ License: CC0-1.0
 Interface specification is the following Contractum code:
 
 ```haskell
+-- Defined by LNPBP-31 standard in `rgb.sty` file
+import union_raymond_planet_5qk5NKCECpDsFLf3C781omtThzS5jhNRis2vwGVxkrkv as RGBTypes
+
 -- # Defining main data structures
 
 data ItemsCount :: U32
@@ -126,13 +129,13 @@ interface RGB21
 
     genesis       -> name
                    , terms,
-                   , reserves PoR*
+                   , reserves RGBTypes.ProofOfReserves*
                    , tokens*
                    , assetOwner*
                    , inflationAllowance*
                    , updateRight?
                    , attachmentType*
-                  !! invalidProof(RGBTypes.PoR)
+                  !! invalidProof(RGBTypes.ProofOfReserves)
                    -- this error happens when amount of token > 1
                    | fractionOverflow(TokenIndex)
                    | insufficientReserves
@@ -154,11 +157,11 @@ interface RGB21
 
     op? Issue      :: used inflationAllowance
                     , newTokens tokens*
-                    , reserves RGBTypes.PoR*
+                    , reserves RGBTypes.ProofOfReserves*
                     , newAttachmentTypes attachmentTypes*
                    -> future inflationAllowance
                     , beneficiaries assetOwners+
-                   !! invalidReserves(RGBTypes.PoR)
+                   !! invalidReserves(RGBTypes.ProofOfReserves)
                     | fractionOverflow(TokenIndex)
                     | insufficientAllowance
                     | insufficientReserves
