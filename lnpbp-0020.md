@@ -98,11 +98,11 @@ interface RGB20
     -- Ownership right over assets
     private assetOwner* :: Zk64
 
-    genesis       -> spec
+    genesis       :: spec
                    , terms
-                   , reserves RgbTypes.ProofOfReserves*
                    , issuedSupply
-                   , assetOwner*
+                   , reserves {RgbTypes.ProofOfReserves ^ 0..0xFFFF}
+                  -> assetOwner*
                    , inflationAllowance*
                    , updateRight?
                    , burnRight?
@@ -119,7 +119,7 @@ interface RGB20
     -- provided by some of schemata implementing the interface
     
     op? Issue      :: used inflationAllowance+
-                    , reserves RGBTypes.ProofOfReserves*
+                    , reserves {RgbTypes.ProofOfReserves ^ 0..0xFFFF}
                    -> issuedSupply
                     , future inflationAllowance?
                     , beneficiary assetOwner*
@@ -128,8 +128,8 @@ interface RGB20
                     | insufficientReserves
 
     op? Burn       :: used burnRight
-                    , burnProofs RGBTypes.ProofOfReserves*
                     , burnedSupply
+                    , burnProofs {RgbTypes.ProofOfReserves ^ 0..0xFFFF}
                    -> future burnRight?
                    !! supplyMismatch 
                     | invalidProof(RGBTypes.ProofOfReserves)
