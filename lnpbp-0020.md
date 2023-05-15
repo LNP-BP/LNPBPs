@@ -67,8 +67,8 @@ Overview
 Interface specification is the following Contractum code:
 
 ```haskell
--- Defined by LNPBP-31 standard in `rgb.sty` file
-import union_raymond_planet_5qk5NKCECpDsFLf3C781omtThzS5jhNRis2vwGVxkrkv as RGBTypes
+-- Defined by LNPBP-31 standard in `RGBContract.sty` file
+import level_decide_percent_6z2gZQEJsnP4xoNUC94vqYEE9V7gKQbeJhb5521xta5u as RGBContract
 
 data Amount :: U64
 
@@ -89,26 +89,30 @@ interface RGB20
     global replacedSupply* :: Amount
 
     -- Right to do a secondary (post-genesis) issue
-    owned inflationAllowance* :: Zk64
+    public inflationAllowance* :: Zk64
     -- Right to update asset Specification
-    owned updateRight?
-    -- Right to burn or replace existing assets
-    owned burnRight?
+    public updateRight?
+    
+    -- Right to open a new burn & replace epoch
+    public burnEpoch?
+    -- Right to burn or replace existing assets under some epoch
+    public burnRight*
 
     -- Ownership right over assets
-    owned assetOwner+ :: Zk64
+    private assetOwner* :: Zk64
 
-    genesis       -> spec
+    genesis       :: spec
                    , terms
-                   , reserves RgbTypes.ProofOfReserves*
+                   , created
                    , issuedSupply
-                   , assetOwner*
+                   , reserves {RgbTypes.ProofOfReserves ^ 0..0xFFFF}
+                  -> assetOwner*
                    , inflationAllowance*
                    , updateRight?
-                   , burnRight?
+                   , burnEpoch?
                   -- errors which may be returned:
                   !! supplyMismatch
-                   | invalidProof(RGBTypes.ProofOfReserves)
+                   | invalidProof
                    | insufficientReserves
 
     op Transfer    :: previous assetOwner+ 
@@ -119,29 +123,35 @@ interface RGB20
     -- provided by some of schemata implementing the interface
     
     op? Issue      :: used inflationAllowance+
-                    , reserves RGBTypes.ProofOfReserves*
+                    , reserves {RgbTypes.ProofOfReserves ^ 0..0xFFFF}
                    -> issuedSupply
-                    , future inflationAllowance?
+                    , future inflationAllowance*
                     , beneficiary assetOwner*
-                   !! supplyMismatch 
+                   !! supplyMismatch
+                    | invalidProof
                     | issueExceedsAllowance
                     | insufficientReserves
 
+    op? OpenEpoch  :: used burnEpoch
+                   -> next burnEpoch?
+                    , burnRight
+
     op? Burn       :: used burnRight
-                    , burnProofs RGBTypes.ProofOfReserves*
                     , burnedSupply
+                    , burnProofs {RgbTypes.ProofOfReserves ^ 0..0xFFFF}
                    -> future burnRight?
                    !! supplyMismatch 
-                    | invalidProof(RGBTypes.ProofOfReserves)
+                    | invalidProof
+                    | insufficientCoverage
     
     op? Replace    :: used burnRight
-                    , burnProofs RGBTypes.PoR*
                     , replacedSupply
+                    , burnProofs {RgbTypes.ProofOfReserves ^ 0..0xFFFF}
                    -> future burnRight?
                     , beneficiary assetOwner+
                    !! nonEqualAmounts 
                     | supplyMismatch 
-                    | invalidProof(RGBTypes.PoR)
+                    | invalidProof
                     | insufficientCoverage
 
     op? Rename     :: used updateRight
