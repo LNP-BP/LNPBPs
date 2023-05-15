@@ -121,9 +121,10 @@ interface RGB20
     op? Issue      :: used inflationAllowance+
                     , reserves {RgbTypes.ProofOfReserves ^ 0..0xFFFF}
                    -> issuedSupply
-                    , future inflationAllowance?
+                    , future inflationAllowance*
                     , beneficiary assetOwner*
-                   !! supplyMismatch 
+                   !! supplyMismatch
+                    | invalidProof
                     | issueExceedsAllowance
                     | insufficientReserves
 
@@ -133,6 +134,7 @@ interface RGB20
                    -> future burnRight?
                    !! supplyMismatch 
                     | invalidProof
+                    | insufficientCoverage
     
     op? Replace    :: used burnRight
                     , replacedSupply
