@@ -120,12 +120,12 @@ interface RGB21
     global attachmentTypes* :: AttachmentType
 
     -- Right to do a secondary (post-genesis) issue
-    owned inflationAllowance* :: ItemsCount
+    public inflationAllowance* :: ItemsCount
     -- Right to update asset name
-    owned updateRight?
+    public updateRight?
 
     -- Ownership right over assets
-    owned assetOwner* :: Allocation
+    private assetOwner* :: Allocation
 
     genesis       -> name
                    , terms,

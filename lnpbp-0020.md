@@ -89,14 +89,14 @@ interface RGB20
     global replacedSupply* :: Amount
 
     -- Right to do a secondary (post-genesis) issue
-    owned inflationAllowance* :: Zk64
+    public inflationAllowance* :: Zk64
     -- Right to update asset Specification
-    owned updateRight?
+    public updateRight?
     -- Right to burn or replace existing assets
-    owned burnRight?
+    public burnRight?
 
     -- Ownership right over assets
-    owned assetOwner+ :: Zk64
+    private assetOwner* :: Zk64
 
     genesis       -> spec
                    , terms
