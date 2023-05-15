@@ -67,8 +67,8 @@ Overview
 Interface specification is the following Contractum code:
 
 ```haskell
--- Defined by LNPBP-31 standard in `rgb.sty` file
-import union_raymond_planet_5qk5NKCECpDsFLf3C781omtThzS5jhNRis2vwGVxkrkv as RGBTypes
+-- Defined by LNPBP-31 standard in `RGBContract.sty` file
+import level_decide_percent_6z2gZQEJsnP4xoNUC94vqYEE9V7gKQbeJhb5521xta5u as RGBContract
 
 data Amount :: U64
 
