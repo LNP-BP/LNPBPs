@@ -76,18 +76,18 @@ data EngravingData ::
     content EmbeddedMedia
 
 data EmbeddedMedia ::
-    type RGBTypes.MediaType,
+    type RGBContract.MediaType,
     data [Byte]
 
 data Attachment ::
-    type RGBTypes.MediaType,
+    type RGBContract.MediaType,
     digest: [U8 ^ 32] -- this can be any type of 32-byte hash, like SHA256(d), BLACKE3 etc
 
 data TokenData ::
-    id TokenIndex,
-    ticker RGBTypes.Ticker?,
-    name RGBTypes.Name?,
-    details RGBTypes.Details?,
+    index TokenIndex,
+    ticker RGBContract.Ticker?,
+    name RGBContract.Name?,
+    details RGBContract.Details?,
     -- always-embedded preview media < 64kb
     preview EmbeddedMedia?,
     -- external media which is the main media for the token
@@ -95,7 +95,7 @@ data TokenData ::
     attachments { U8 -> ^ ..20 Attachment } -- auxiliary attachments by type (up to 20 attachments)
     -- output containing locked bitcoins; how reserves are proved is a matter
     -- of a specific schema implementation
-    reserves RGBTypes.PoR? 
+    reserves RGBContract.ProofOfReserves? 
 
  -- each attachment type is a mapping from attachment id 
  -- (used as `Token.attachments` keys) to a short Ascii string
@@ -103,16 +103,18 @@ data TokenData ::
  -- (like "sample" etc).
 data AttachmentType :: 
     id U8, 
-    description [Ascii ^ 1..20]
+    name AttachmentName
+
+data AttachmentName :: [Std.AsciiPrintable ^ 1..20]
 
 interface RGB21
     -- Asset specification containing ticker, name, precision etc.
-    global spec :: RGBTypes.DivisibleAssetSpec
+    global spec :: RGBContract.DivisibleAssetSpec
     
     -- Contract text and creation date is separated from the spec since it must
     -- not be changeable by the issuer.
-    global terms :: RGBTypes.RicardianContract
-    global created :: RGBTypes.Timestamp
+    global terms :: RGBContract.RicardianContract
+    global created :: RGBContract.Timestamp
 
     -- Data for all issued tokens
     global tokens* :: TokenData
@@ -127,48 +129,51 @@ interface RGB21
     -- Ownership right over assets
     private assetOwner* :: Allocation
 
-    genesis       -> name
-                   , terms,
-                   , reserves RGBTypes.ProofOfReserves*
-                   , tokens*
-                   , assetOwner*
-                   , inflationAllowance*
-                   , updateRight?
-                   , attachmentType*
-                  !! invalidProof(RGBTypes.ProofOfReserves)
-                   -- this error happens when amount of token > 1
-                   | fractionOverflow(TokenIndex)
-                   | insufficientReserves
+    genesis        -> spec
+                    , terms,
+                    , created,
+                    , tokens*
+                    , assetOwner*
+                    , inflationAllowance*
+                    , updateRight?
+                    , attachmentTypes*
+                    , reserves {RgbTypes.ProofOfReserves ^ 0..0xFFFF}
+                   !! invalidProof
+                    -- this error happens when amount of token > 1
+                    | fractionOverflow
+                    | insufficientReserves
+                    | invalidAttachmentType
 
     op Transfer    :: previous assetOwner+, 
                    -> beneficiaries assetOwner+
                    !! -- options for operation failure:
-                      inequalFractions(TokenIndex)
-                    | fractionOverflow(TokenIndex)
+                      nonEqualValue
+                    | fractionOverflow
                     | nonFractionalToken
 
-    op? TransferEngrave :: previous assetOwner+ 
-                    , engraving  
+    op? Engrave    :: previous assetOwner+ 
+                    , engravings
                    -> beneficiaries assetOwner+
                    !! -- options for operation failure:
-                      inequalValues(TokenIndex)
+                      nonEqualValue
                     | nonFractionalToken
                     | nonEngravableToken
 
     op? Issue      :: used inflationAllowance
                     , newTokens tokens*
-                    , reserves RGBTypes.ProofOfReserves*
                     , newAttachmentTypes attachmentTypes*
+                    , reserves {RgbTypes.ProofOfReserves ^ 0..0xFFFF}
                    -> future inflationAllowance
                     , beneficiaries assetOwners+
-                   !! invalidReserves(RGBTypes.ProofOfReserves)
-                    | fractionOverflow(TokenIndex)
-                    | insufficientAllowance
+                   !! invalidProof
+                    | fractionOverflow
                     | insufficientReserves
+                    | issueExceedsAllowance
+                    | invalidAttachmentType
 
     op? Rename     :: used updateRight
                    -> future updateRight?
-                    , new name
+                    , new spec
 ```
 
 ## Compatibility
