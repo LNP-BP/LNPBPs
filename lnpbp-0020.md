@@ -108,7 +108,7 @@ interface RGB20
                    , burnRight?
                   -- errors which may be returned:
                   !! supplyMismatch
-                   | invalidProof(RGBTypes.ProofOfReserves)
+                   | invalidProof
                    | insufficientReserves
 
     op Transfer    :: previous assetOwner+ 
@@ -132,16 +132,16 @@ interface RGB20
                     , burnProofs {RgbTypes.ProofOfReserves ^ 0..0xFFFF}
                    -> future burnRight?
                    !! supplyMismatch 
-                    | invalidProof(RGBTypes.ProofOfReserves)
+                    | invalidProof
     
     op? Replace    :: used burnRight
-                    , burnProofs RGBTypes.PoR*
                     , replacedSupply
+                    , burnProofs {RgbTypes.ProofOfReserves ^ 0..0xFFFF}
                    -> future burnRight?
                     , beneficiary assetOwner+
                    !! nonEqualAmounts 
                     | supplyMismatch 
-                    | invalidProof(RGBTypes.PoR)
+                    | invalidProof
                     | insufficientCoverage
 
     op? Rename     :: used updateRight
