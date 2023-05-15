@@ -92,8 +92,11 @@ interface RGB20
     public inflationAllowance* :: Zk64
     -- Right to update asset Specification
     public updateRight?
-    -- Right to burn or replace existing assets
-    public burnRight?
+    
+    -- Right to open a new burn & replace epoch
+    public burnEpoch?
+    -- Right to burn or replace existing assets under some epoch
+    public burnRight*
 
     -- Ownership right over assets
     private assetOwner* :: Zk64
@@ -105,7 +108,7 @@ interface RGB20
                   -> assetOwner*
                    , inflationAllowance*
                    , updateRight?
-                   , burnRight?
+                   , burnEpoch?
                   -- errors which may be returned:
                   !! supplyMismatch
                    | invalidProof
@@ -127,6 +130,10 @@ interface RGB20
                     | invalidProof
                     | issueExceedsAllowance
                     | insufficientReserves
+
+    op? OpenEpoch  :: used burnEpoch
+                   -> next burnEpoch?
+                    , burnRight
 
     op? Burn       :: used burnRight
                     , burnedSupply
