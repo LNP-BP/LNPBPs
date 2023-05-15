@@ -103,6 +103,7 @@ interface RGB20
 
     genesis       :: spec
                    , terms
+                   , created
                    , issuedSupply
                    , reserves {RgbTypes.ProofOfReserves ^ 0..0xFFFF}
                   -> assetOwner*
