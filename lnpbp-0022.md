@@ -69,21 +69,31 @@ data Attestation ::
     attestedBy RGB22.ContractId,
     signature Sig
 
-interface RGB22
-    global name :: RGBTypes.Name
-    global created :: RGBTypes.Timestamp
+data FullName :: [Unicode ^ 0..0xFF]
 
-    global {emails+} :: Email
-    global {facts} :: Attestation
-    global photo? :: (MimeType, [Byte])
+interface RGB22
+    global nickName :: RGBTypes.Name
+    global fullName :: FullName
+    global emails+ :: Email
+    global facts* :: Attestation
+    global photo* :: (MimeType, [Byte])
+    global created :: RGBTypes.Timestamp
 
     owned nameRight
     owned attestRight
-    owned {revokableKey+} :: Pubkey
+    owned revokableKey+ :: Pubkey
 
     op Revoke :: revokableKey -> revokableKey?
-    op Rename :: nameRight, name, emails, photo? -> nameRight
-    op Attest :: attestRight, {facts ^ 1..0xFFFF} -> attestRight, {revokableKey}
+    op Rename :: nameRight
+               , nickName
+               , fullName
+               , {emails ^ 0..0xff}
+               , {photo ^ 0..0xff} 
+              -> nameRight
+    op Attest :: attestRight
+               , {facts ^ 1..0xFFFF}
+              -> attestRight
+               , {revokableKey}
 ```
 
 ## Compatibility
