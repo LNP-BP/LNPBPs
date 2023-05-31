@@ -45,13 +45,13 @@ Criteria for a LNP/BP specification proposal:
 |   [3] | Cryptography    | Deterministic definition of transaction output containing cryptographic commitment        | Standard      | Proposal |
 |   [4] | Cryptography    | Multi-protocol commitment scheme with zero-knowledge provable uniqueness                  | Standard      | Proposal |
 |   [5] | Wallet          | Universal short Bitcoin identifiers for blocks, transactions and their inputs & outputs   | Standard      | Proposal |
-|   [6] | Cryptography    | PayTweak: pay-to-contract deterministic bitcoin commitments                               | Standard      | Draft    |
+|   [6] | Cryptography    | ~~PayTweak: pay-to-contract deterministic bitcoin commitments~~                           | Standard      | Rejected |
 |     7 | Cryptography    | Commitments for structural and hierarchical data                                          | Standard      | Proposal |
 |   [8] | Cryptography    | Single-use-seals                                                                          | Informational | Draft    |
 |   [9] | Cryptography    | Client-side-validation                                                                    | Informational | Draft    |
 |  [10] | Cryptography    | Bitcoin transaction output-based single-use-seals                                         | Standard      | Proposal |
 |    11 | Cryptography    | Anchoring multiple deterministic bitcoin commitments in the same transaction output       | Standard      | Final    |
-|    12 | Cryptography    | TapRet: Taproot script tree-based OP_RETURN deterministic bitcoin commitments             | Standard      | Final    |
+|  [12] | Cryptography    | TapRet: Taproot script tree-based OP_RETURN deterministic bitcoin commitments             | Standard      | Final    |
 |  [13] | Smart contracts | RGB: Client-side-validated confidential smart contracts for Bitcoin and Lightning Network | Informational | Draft    |
 |    14 | Smart contracts | RGB Schema: client-side validation rules for RGB smart contracts                          | Standard      | Planned  |
 |    15 | Smart contracts | RGB client-side verification and data serialization                                       | Standard      | Planned  |
