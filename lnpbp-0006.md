@@ -15,7 +15,7 @@ Related standards: LNPBP-1, 2, 4, 7, 9, 92
 ## Abstract
 
 The proposal provides standard mechanism for creating, structuring & verifying
-deterministic bitcoin commitments ("anchoring") to multiple extera-transaction
+deterministic bitcoin commitments ("anchoring") to multiple extra-transaction
 data (client-side-validated etc).
 
 ## Background
@@ -25,7 +25,7 @@ data (client-side-validated etc).
 ## Design
 
 Miltiple protocols may commit to external (non-transaction and non-blockchain) 
-data by constructing a special data structure called *anchor* and commiting
+data by constructing a special data structure called *anchor* and committing
 to its content inside transaction input or output.
 
 
@@ -68,33 +68,33 @@ serialization rules (see LNPBP-7):
 2. `commitment`: a commutment block structure from LNPBP-4
 3. `proof`: a deterministic commitment proof which has the same structure for 
    both LNPBP-2 and LNPBP-92 commitment:
--  1.1. `original_pubkey`: original 33-byte value of the pubkey before tweak;
--       for pay-to-signature (LNPBP-92) tweaks this is `R` value generated
--       from a nonce. BIP-340 keys MUST be encoded as 33 byte value having
--       first byte `0x02`.
--  1.2. `script_info`: an enum, encoded with a first byte representing enum 
--       variant
--       - `0x00 = SinglePubkey`: always used by LNPBP-92 and by LNPBP-2
--          commitments based on P2PK, P2PKH, P2WPKH, legacy SegWit v0 
--          P2WPKH-in-P2SH, P2TR with key spending only (self-tweaked), 
--          OP_RETURN and other bare script outputs.
--       - `0x01 = LockScript`: a Bitcoin script source which knowledge
--         is required to satisfy spending for pre-SegWit P2SH, native SegWit v0 
--         P2WSH. The enum variant byte MUST be followed by a strict-encoded
--         representation of binary script data. This script MUST match
--         `redeemScript` for P2SH and `witnessScript` for P2WSH.
--       - `0x02 = WrappedWitnessScript`:  Bitcoin script source which knowledge
--         is required to satisfy spending for legacy (P2SH-wrapped) SegWit v0,
--         P2WSH-in-P2SH outputs (and, potentially, fututre SegWit versions).
--         The enum variant byte MUST be followed by a strict-encoded
--         representation of binary script data. This script MUST match
--         `witnessScript` for P2WSH; for P2SH wrapped version it also must
--         be a `witnessScript` and not `redeemScript`.
--       - `0x03 = TaprootScript`: a Merkle root of the script spending path
--         of the taproot output or a value of a tweak applied to the internal
--         taproot key if and only if this tweak is not a self-tweak. Must be
--         followed by exatly 32 bytes (without length prefix) of the tweak
--         data in little endinan order.
+   1. `original_pubkey`: original 33-byte value of the pubkey before tweak;
+       for pay-to-signature (LNPBP-92) tweaks this is `R` value generated
+       from a nonce. BIP-340 keys MUST be encoded as 33 byte value having
+       first byte `0x02`.
+   2. `script_info`: an enum, encoded with a first byte representing enum 
+       variant
+       - `0x00 = SinglePubkey`: always used by LNPBP-92 and by LNPBP-2
+          commitments based on P2PK, P2PKH, P2WPKH, legacy SegWit v0 
+          P2WPKH-in-P2SH, P2TR with key spending only (self-tweaked), 
+          OP_RETURN and other bare script outputs.
+       - `0x01 = LockScript`: a Bitcoin script source which knowledge
+         is required to satisfy spending for pre-SegWit P2SH, native SegWit v0 
+         P2WSH. The enum variant byte MUST be followed by a strict-encoded
+         representation of binary script data. This script MUST match
+         `redeemScript` for P2SH and `witnessScript` for P2WSH.
+       - `0x02 = WrappedWitnessScript`:  Bitcoin script source which knowledge
+         is required to satisfy spending for legacy (P2SH-wrapped) SegWit v0,
+         P2WSH-in-P2SH outputs (and, potentially, fututre SegWit versions).
+         The enum variant byte MUST be followed by a strict-encoded
+         representation of binary script data. This script MUST match
+         `witnessScript` for P2WSH; for P2SH wrapped version it also must
+         be a `witnessScript` and not `redeemScript`.
+       - `0x03 = TaprootScript`: a Merkle root of the script spending path
+         of the taproot output or a value of a tweak applied to the internal
+         taproot key if and only if this tweak is not a self-tweak. Must be
+         followed by exatly 32 bytes (without length prefix) of the tweak
+         data in little endinan order.
 
 The list of `script_info` variants is non-exhaustive. If a future version of 
 script info varian byte is met the deserialization of anchor data MUST fail 
