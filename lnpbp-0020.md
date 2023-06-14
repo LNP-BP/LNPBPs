@@ -82,7 +82,7 @@ interface RGB20
     global created :: RGBTypes.Timestamp
 
     -- State which accumulates amounts issued
-    global issuedSupply* :: Amount
+    global issuedSupply+ :: Amount
     -- State which accumulates amounts burned
     global burnedSupply* :: Amount
     -- State which accumulates amounts burned and then replaced
