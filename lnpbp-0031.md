@@ -46,7 +46,7 @@ License: CC0-1.0
 
 The specification is the actual Standard Contractum Library code:
 
-`StdLib.sty`, semantic lib id `alabama_speed_polo_J2wwnFdkbUQt2sg5EZndccZdPZgFUGmLcK3Uw5TbzjRh`:
+`StdLib.sty`, semantic lib id `camel_product_float_9Y12p3rVHBiJh3TZUgup8kMtKggwNX5zPzWH9TgGRiwD`:
 ```haskell
 typelib StdLib -- version v1.1.1-2024.05.13.A
 
@@ -596,32 +596,38 @@ data MerkleBlock      :: depth StdLib.U4
 data MerkleProof      :: pos U16, path [MerkleNode]
 ```
 
-`RGBContract.sty`, semantic lib id `union_raymond_planet_5qk5NKCECpDsFLf3C781omtThzS5jhNRis2vwGVxkrkv`:
+`RGBContract.sty`, semantic lib id `scoop_ocean_contour_DizxAzKBUaXCUkEZDGQegfJXQeK5Nk4pK142eEkC1EBM`:
 ```haskell
 typelib RGBContract -- version v0.10.3-2023.05.13.A
 
 import circus_report_jeep_2bj6eDer24ZBSVq6JgQW2BrARt6vx56vMWzF35J45gzY as Bitcoin
-import alabama_speed_polo_J2wwnFdkbUQt2sg5EZndccZdPZgFUGmLcK3Uw5TbzjRh as StdLib
+import camel_product_float_9Y12p3rVHBiJh3TZUgup8kMtKggwNX5zPzWH9TgGRiwD as StdLib
+
+data BurnMeta :: reserves [ProofOfReserves]
+
+data IssueMeta :: reserves [ProofOfReserves]
+
+data Amount :: U64
 
 -- number of decimal fractions (decimal numbers after floating point)
-data Precision :: indivisible:0 
-                | deci:1 
-                | centi:2 
+data Precision :: indivisible:0
+                | deci:1
+                | centi:2
                 | milli:3
                 | deciMilli:4
-                | centiMilli:5 
-                | micro:6 
-                | deciMicro:7 
-                | centiMicro:8 
-                | nano:9 
-                | deciNano:10 
-                | centiNano:11 
-                | pico:12 
-                | deciPico:13 
-                | centiPico:14 
-                | femto:15 
-                | deciFemto:16 
-                | centiFemto:17 
+                | centiMilli:5
+                | micro:6
+                | deciMicro:7
+                | centiMicro:8
+                | nano:9
+                | deciNano:10
+                | centiNano:11
+                | pico:12
+                | deciPico:13
+                | centiPico:14
+                | femto:15
+                | deciFemto:16
+                | centiFemto:17
                 | atto:18
 
 data Ticker           :: [StdLib.AlphaCapsNum ^ 1..0x8]
@@ -634,7 +640,7 @@ data AssetNaming      :: ticker Ticker
 
 data DivisibleAssetSpec :: naming AssetNaming
                          , precision Precision
-    
+
 data RicardianContract :: [Unicode]
 
 -- UNIX timestamp value defined by POSIX to be a 32-bit signed integer
@@ -649,6 +655,13 @@ data MediaType        :: type MediaRegName
                        , charset MediaRegName?
                       -- We do not support other parameters
 
+data Attachment ::
+    type MediaType,
+    digest: [U8 ^ 32] -- this can be any type of 32-byte hash, like SHA256(d), BLACKE3 etc
+
+data ContractData :: terms RicardianContract
+                   , media Attachment?
+
 -- proof of reserves
 data ProofOfReserves  :: utxo Bitcoin.Outpoint
                        , proof [U8]
@@ -661,7 +674,7 @@ data ProofOfReserves  :: utxo Bitcoin.Outpoint
 mod Collections
 
 fn sum col, el :: col -> el
-    sum [Num], Num := 
+    sum [Num], Num :=
         | [s:xs] -> s + sum xs
         | [s:] -> s
 
@@ -707,7 +720,7 @@ data SegwitVer :: segwit=0 | taproot=0x51 |
     ver2=0x52 | ver3=0x53 | ver4=0x54 | ver5=0x55 | ver6=0x56 | ver7=0x57 |
     ver8=0x58 | ver9=0x59 | ver10=0x5A | ver11=0x5B | ver12=0x5C | ver13=0x5D |
     ver14=0x5E | ver15=0x5F | ver16=0x60
-data FutureSegwitVer :: 
+data FutureSegwitVer ::
     ver2=0x52 | ver3=0x53 | ver4=0x54 | ver5=0x55 | ver6=0x56 | ver7=0x57 |
     ver8=0x58 | ver9=0x59 | ver10=0x5A | ver11=0x5B | ver12=0x5C | ver13=0x5D |
     ver14=0x5E | ver15=0x5F | ver16=0x60

@@ -44,13 +44,16 @@ License: CC0-1.0
 Interface specification is the following Contractum code:
 
 ```haskell
+-- Defined by LNPBP-31 standard in `RGBContract.sty` file
+import scoop_ocean_contour_DizxAzKBUaXCUkEZDGQegfJXQeK5Nk4pK142eEkC1EBM as RGBContract
+
 import RGB21
 
 interface RGB23
     global id :: RGB21.ContractId
     global deed* :: Entry
 
-    global created :: RGBTypes.Timestamp
+    global created :: RGBContract.Timestamp
 
     owned deedRight
 

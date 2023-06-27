@@ -9,6 +9,7 @@ Authors: Dr Maxim Orlovsky <orlovsky@lnp-bp.org>,
          Nicola Busanello,
          Federico Tenga,
          Armando Dutra,
+         Zoe Faltibà,
          Sabina Sachtachtinskagia,
          Martino Salvetti
 Comments-URI: <https://github.com/LNP-BP/LNPBPs/discussions/140>
@@ -68,31 +69,29 @@ Interface specification is the following Contractum code:
 
 ```haskell
 -- Defined by LNPBP-31 standard in `RGBContract.sty` file
-import level_decide_percent_6z2gZQEJsnP4xoNUC94vqYEE9V7gKQbeJhb5521xta5u as RGBContract
-
-data Amount :: U64
+import scoop_ocean_contour_DizxAzKBUaXCUkEZDGQegfJXQeK5Nk4pK142eEkC1EBM as RGBContract
 
 interface RGB20
     -- Asset specification containing ticker, name, precision etc.
-    global spec :: RGBTypes.DivisibleAssetSpec
+    global spec :: RGBContract.DivisibleAssetSpec
 
-    -- Contract text and creation date is separated from the spec since it must
+    -- Contract data and creation date is separated from the spec since it must
     -- not be changeable by the issuer.
-    global terms :: RGBTypes.RicardianContract
-    global created :: RGBTypes.Timestamp
+    global data :: RGBContract.ContractData
+    global created :: RGBContract.Timestamp
 
     -- State which accumulates amounts issued
-    global issuedSupply+ :: Amount
+    global issuedSupply+ :: RGBContract.Amount
     -- State which accumulates amounts burned
-    global burnedSupply* :: Amount
+    global burnedSupply* :: RGBContract.Amount
     -- State which accumulates amounts burned and then replaced
-    global replacedSupply* :: Amount
+    global replacedSupply* :: RGBContract.Amount
 
     -- Right to do a secondary (post-genesis) issue
     public inflationAllowance* :: Zk64
     -- Right to update asset Specification
     public updateRight?
-    
+
     -- Right to open a new burn & replace epoch
     public burnEpoch?
     -- Right to burn or replace existing assets under some epoch
@@ -102,10 +101,10 @@ interface RGB20
     private assetOwner* :: Zk64
 
     genesis       :: spec
-                   , terms
+                   , data
                    , created
                    , issuedSupply
-                   , reserves {RgbTypes.ProofOfReserves ^ 0..0xFFFF}
+                   , reserves {RGBContract.ProofOfReserves ^ 0..0xFFFF}
                   -> assetOwner*
                    , inflationAllowance*
                    , updateRight?
@@ -115,15 +114,15 @@ interface RGB20
                    | invalidProof
                    | insufficientReserves
 
-    op Transfer    :: previous assetOwner+ 
+    op Transfer    :: previous assetOwner+
                    -> beneficiary assetOwner+
                    !! nonEqualAmounts
 
     -- question mark after `op` means optional operation, which may not be  
     -- provided by some of schemata implementing the interface
-    
+
     op? Issue      :: used inflationAllowance+
-                    , reserves {RgbTypes.ProofOfReserves ^ 0..0xFFFF}
+                    , reserves {RGBContract.ProofOfReserves ^ 0..0xFFFF}
                    -> issuedSupply
                     , future inflationAllowance*
                     , beneficiary assetOwner*
@@ -138,19 +137,19 @@ interface RGB20
 
     op? Burn       :: used burnRight
                     , burnedSupply
-                    , burnProofs {RgbTypes.ProofOfReserves ^ 0..0xFFFF}
+                    , burnProofs {RGBContract.ProofOfReserves ^ 0..0xFFFF}
                    -> future burnRight?
-                   !! supplyMismatch 
+                   !! supplyMismatch
                     | invalidProof
                     | insufficientCoverage
-    
+
     op? Replace    :: used burnRight
                     , replacedSupply
-                    , burnProofs {RgbTypes.ProofOfReserves ^ 0..0xFFFF}
+                    , burnProofs {RGBContract.ProofOfReserves ^ 0..0xFFFF}
                    -> future burnRight?
                     , beneficiary assetOwner+
-                   !! nonEqualAmounts 
-                    | supplyMismatch 
+                   !! nonEqualAmounts
+                    | supplyMismatch
                     | invalidProof
                     | insufficientCoverage
 
