@@ -45,36 +45,36 @@ License: CC0-1.0
 Interface specification is the following Contractum code:
 
 ```haskell
--- Defined by LNPBP-31 standard in `rgb.sty` file
-import moment_shirt_uranium_E2hfuv3Za3kVo7MSCvSxC6uhYJEvkmZJ1NPz4g4oZWNw as RGBTypes
+-- Defined by LNPBP-31 standard in `RGBContract.sty` file
+import scoop_ocean_contour_DizxAzKBUaXCUkEZDGQegfJXQeK5Nk4pK142eEkC1EBM as RGBContract
 
 interface RGB30
     -- Asset specification containing ticker, name, precision etc.
-    global spec :: RGBTypes.DivisibleAssetSpec
+    global spec :: RGBContract.DivisibleAssetSpec
 
     -- Contract text and creation date is separated from the spec since it must
     -- not be changeable by the issuer.
-    global terms :: RGBTypes.RicardianContract
-    global created :: RGBTypes.Timestamp
+    global terms :: RGBContract.RicardianContract
+    global created :: RGBContract.Timestamp
 
     -- Ownership right over assets
-    owned assetOwner* :: RGBTypes.Amount
-    
+    owned assetOwner* :: RGBContract.Amount
+
     -- Point for applying state extensions
     valency issueRight
 
     genesis       -> spec, terms, issueRight
 
-    op Transfer    :: previous assetOwner+ 
+    op Transfer    :: previous assetOwner+
                    -> beneficiary assetOwner+
                    !! nonEqualAmounts
 
     op PegIn       :: issueRight
-                    , reserves RGBTypes.PoR
+                    , reserves RGBContract.ProofOfReserves
                    -> beneficiary assetOwner+, issuedSupply
-                   !! supplyMismatch 
-                    | insufficientReserves 
-                    | invalidProof(RGBTypes.PoR)
+                   !! supplyMismatch
+                    | insufficientReserves
+                    | invalidProof(RGBContract.ProofOfReserves)
 ```
 
 ## Compatibility

@@ -57,7 +57,7 @@ Interface specification is the following Contractum code:
 
 ```haskell
 -- Defined by LNPBP-31 standard in `RGBContract.sty` file
-import level_decide_percent_6z2gZQEJsnP4xoNUC94vqYEE9V7gKQbeJhb5521xta5u as RGBContract
+import scoop_ocean_contour_DizxAzKBUaXCUkEZDGQegfJXQeK5Nk4pK142eEkC1EBM as RGBContract
 
 -- # Defining main data structures
 
@@ -71,17 +71,13 @@ data OwnedFraction :: U64
 -- allocation of a single token or its fraction to some transaction output
 data Allocation :: TokenIndex, OwnedFraction
 
-data EngravingData :: 
-    appliedTo TokenIndex, 
+data EngravingData ::
+    appliedTo TokenIndex,
     content EmbeddedMedia
 
 data EmbeddedMedia ::
     type RGBContract.MediaType,
     data [Byte]
-
-data Attachment ::
-    type RGBContract.MediaType,
-    digest: [U8 ^ 32] -- this can be any type of 32-byte hash, like SHA256(d), BLACKE3 etc
 
 data TokenData ::
     index TokenIndex,
@@ -91,18 +87,18 @@ data TokenData ::
     -- always-embedded preview media < 64kb
     preview EmbeddedMedia?,
     -- external media which is the main media for the token
-    media Attachment?,
-    attachments { U8 -> ^ ..20 Attachment } -- auxiliary attachments by type (up to 20 attachments)
+    media RGBContract.Attachment?,
+    attachments { U8 -> ^ ..20 RGBContract.Attachment } -- auxiliary attachments by type (up to 20 attachments)
     -- output containing locked bitcoins; how reserves are proved is a matter
     -- of a specific schema implementation
-    reserves RGBContract.ProofOfReserves? 
+    reserves RGBContract.ProofOfReserves?
 
- -- each attachment type is a mapping from attachment id 
+ -- each attachment type is a mapping from attachment id
  -- (used as `Token.attachments` keys) to a short Ascii string
  -- verbally explaining the type of the attachment for the UI
  -- (like "sample" etc).
-data AttachmentType :: 
-    id U8, 
+data AttachmentType ::
+    id U8,
     name AttachmentName
 
 data AttachmentName :: [Std.AsciiPrintable ^ 1..20]
@@ -110,7 +106,7 @@ data AttachmentName :: [Std.AsciiPrintable ^ 1..20]
 interface RGB21
     -- Asset specification containing ticker, name, precision etc.
     global spec :: RGBContract.DivisibleAssetSpec
-    
+
     -- Contract text and creation date is separated from the spec since it must
     -- not be changeable by the issuer.
     global terms :: RGBContract.RicardianContract
@@ -137,21 +133,21 @@ interface RGB21
                     , inflationAllowance*
                     , updateRight?
                     , attachmentTypes*
-                    , reserves {RgbTypes.ProofOfReserves ^ 0..0xFFFF}
+                    , reserves {RGBContract.ProofOfReserves ^ 0..0xFFFF}
                    !! invalidProof
                     -- this error happens when amount of token > 1
                     | fractionOverflow
                     | insufficientReserves
                     | invalidAttachmentType
 
-    op Transfer    :: previous assetOwner+, 
+    op Transfer    :: previous assetOwner+,
                    -> beneficiaries assetOwner+
                    !! -- options for operation failure:
                       nonEqualValue
                     | fractionOverflow
                     | nonFractionalToken
 
-    op? Engrave    :: previous assetOwner+ 
+    op? Engrave    :: previous assetOwner+
                     , engravings
                    -> beneficiaries assetOwner+
                    !! -- options for operation failure:
@@ -162,7 +158,7 @@ interface RGB21
     op? Issue      :: used inflationAllowance
                     , newTokens tokens*
                     , newAttachmentTypes attachmentTypes*
-                    , reserves {RgbTypes.ProofOfReserves ^ 0..0xFFFF}
+                    , reserves {RGBContract.ProofOfReserves ^ 0..0xFFFF}
                    -> future inflationAllowance
                     , beneficiaries assetOwners+
                    !! invalidProof

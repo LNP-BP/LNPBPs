@@ -37,10 +37,10 @@ License: CC0-1.0
 ## Motivation
 
 Single-use-seal primitive represents an efficient enhancement for WoT model of
-key revocation: it provides independent parties an ability to detect and 
+key revocation: it provides independent parties an ability to detect and
 timestamp key revocation without contacting the owner of the original identity.
 
-RGB-22 standard is created to leverage this advantage and provide an 
+RGB-22 standard is created to leverage this advantage and provide an
 alternative WoT solution to GPG/PGP. It can be combined with Storm protocol,
 as a better alternative to PGP key servers.
 
@@ -53,6 +53,9 @@ as a better alternative to PGP key servers.
 Interface specification is the following Contractum code:
 
 ```haskell
+-- Defined by LNPBP-31 standard in `RGBContract.sty` file
+import scoop_ocean_contour_DizxAzKBUaXCUkEZDGQegfJXQeK5Nk4pK142eEkC1EBM as RGBContract
+
 data XonlyPubkey :: [Byte ^ 32]
 data SchnorrSig :: [Byte ^ 64]
 data EdKey :: [Byte ^ 32]
@@ -61,7 +64,7 @@ data Fact :: [Byte+] -- JSON encoded string
 
 data Pubkey :: secp256k1(XonlyPubkey) | curve25519(EdKey)
 data Sig ::
-    secp256k1(XonlyPubkey, SchnorrSig) | 
+    secp256k1(XonlyPubkey, SchnorrSig) |
     ed25519(EdKey, EdSig)
 
 data Attestation ::
@@ -72,12 +75,12 @@ data Attestation ::
 data FullName :: [Unicode ^ 0..0xFF]
 
 interface RGB22
-    global nickName :: RGBTypes.Name
+    global nickName :: RGBContract.Name
     global fullName :: FullName
     global emails+ :: Email
     global facts* :: Attestation
     global photo* :: (MimeType, [Byte])
-    global created :: RGBTypes.Timestamp
+    global created :: RGBContract.Timestamp
 
     owned nameRight
     owned attestRight
@@ -88,7 +91,7 @@ interface RGB22
                , nickName
                , fullName
                , {emails ^ 0..0xff}
-               , {photo ^ 0..0xff} 
+               , {photo ^ 0..0xff}
               -> nameRight
     op Attest :: attestRight
                , {facts ^ 1..0xFFFF}
@@ -123,10 +126,10 @@ schema BaseIdentity
     owned AttestRight
     owned RevokableKey{+} :: Pubkey
 
-    genesis :: name Name, emails {Emails+}, keys {RevokableKey+} 
+    genesis :: name Name, emails {Emails+}, keys {RevokableKey+}
             !! invalidKey
         keys => key -> checkKey key
-     
+
     op revoke :: old RevokableKey -> new RevokableKey?
               !! invalidKey
                | sameKey
@@ -135,7 +138,7 @@ schema BaseIdentity
 
     op rename :: NameRight -> NameRight <- Name, {Emails+}
 
-    op attest :: AttestRight -> AttestRight, {RevokableKey} 
+    op attest :: AttestRight -> AttestRight, {RevokableKey}
               <- atts {Attestation}
               !! invalidSig
         atts => a -> a.signature:
@@ -187,7 +190,7 @@ emails:
 facts: []
 photo: ~
 revokableKey:
-  - 4459eaee3f84a1cd7529534d99b553a633671582c42640438071930e741253cf:1: 
+  - 4459eaee3f84a1cd7529534d99b553a633671582c42640438071930e741253cf:1:
     curve25519
       0: 0219db0a4e0eb8cb833608c08d76b9b279ec44a851ab82cc6fd68a9b32624bfa8b
 ```

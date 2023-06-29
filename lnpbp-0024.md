@@ -43,12 +43,17 @@ License: GPL-3.0
 Interface specification is the following Contractum code:
 
 ```haskell
+-- Defined by LNPBP-31 standard in `RGBContract.sty` file
+import scoop_ocean_contour_DizxAzKBUaXCUkEZDGQegfJXQeK5Nk4pK142eEkC1EBM as RGBContract
+
+import camel_product_float_9Y12p3rVHBiJh3TZUgup8kMtKggwNX5zPzWH9TgGRiwD as StdLib
+
 interface RGB24
     global root :: ContractId?
     global name :: Ident
     global {registry} :: Record
 
-    global created :: RGBTypes.Timestamp
+    global created :: RGBContract.Timestamp
 
     owned registar
 
@@ -57,7 +62,7 @@ interface RGB24
                    invalidRoot |
                    incompleteRegistry
 
-data Hostname :: [RGBTypes.AlphaNumDash ^ 1..63]
+data Hostname :: [StdLib.AlphaNumDash ^ 1..63]
 data DomainName :: [Hostname ^ 1..0xFF]
 
 data Record :: host Hostname, entry Entry
@@ -80,15 +85,15 @@ schema BaseRegistry implements RGB24
             let parent = (root.contract !! noRoot).registry
             parent.isFullyKnown !! incompleteRoot
             let myself = parent.registry.get self.Name !! unregisteredName
-            myself: Resolve.subdomain(contract) => 
+            myself: Resolve.subdomain(contract) =>
                 contract =? self.contractId !! selfNotRegistered
         )
         let registry := self.registry.isFullyKnown !! incompleteRegistry
         entries =|> self.registry.has !! repeatedEntry
         -- the above is the same as
         -- entries => entry -> self.registry.has entry !! repeatedEntry
-        
-data RegistrationError :: 
+
+data RegistrationError ::
     noRoot |
     unregisteredName |
     incompleteRoot |
