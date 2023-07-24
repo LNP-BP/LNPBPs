@@ -643,9 +643,8 @@ data DivisibleAssetSpec :: naming AssetNaming
 
 data RicardianContract :: [Unicode]
 
--- UNIX timestamp value defined by POSIX to be a 32-bit signed integer
--- https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16
-data Timestamp        :: I32
+-- UNIX timestamp value able to cover dates after 2038 year
+data Timestamp        :: I64
 
 data MimeChar         :: excl:33 | hash:35 | dollar:36 | amp:38 | plus:43 | dash:45 | dot:46 | zero:48 | one:49 | two:50 | three:51 | four:52 | five:53 | six:54 | seven:55 | eight:56 | nine:57 | caret:94 | lodash:95 | a:97 | b:98 | c:99 | d:100 | e:101 | f:102 | g:103 | h:104 | i:105 | j:106 | k:107 | l:108 | m:109 | n:110 | o:111 | p:112 | q:113 | r:114 | s:115 | t:116 | u:117 | v:118 | w:119 | x:120 | y:121 | z:122
 data MediaRegName     :: [MimeChar ^ 1..0x40]
