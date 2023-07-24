@@ -8,7 +8,7 @@ Comments-URI: <https://github.com/LNP-BP/LNPBPs/discussions/140>
 Status: Proposal
 Type: Standards Track
 Created: 2021-06-23
-Updated: 2023-05-10
+Updated: 2023-07-24
 Finalized: ~
 Copyright: (0) public domain
 License: CC0-1.0
@@ -46,15 +46,13 @@ Interface specification is the following Contractum code:
 
 ```haskell
 -- Defined by LNPBP-31 standard in `RGBContract.sty` file
-import scoop_ocean_contour_DizxAzKBUaXCUkEZDGQegfJXQeK5Nk4pK142eEkC1EBM as RGBContract
+import urn:ubideco:stl:6vbr9ZrtsD9aBjo5qRQ36QEZPVucqvRRjKCPqE8yPeJr#choice-little-boxer as RGBContract
 
 interface RGB30
     -- Asset specification containing ticker, name, precision etc.
     global spec :: RGBContract.DivisibleAssetSpec
 
-    -- Contract text and creation date is separated from the spec since it must
-    -- not be changeable by the issuer.
-    global terms :: RGBContract.RicardianContract
+    global data :: RGBContract.ContractData
     global created :: RGBContract.Timestamp
 
     -- Ownership right over assets
