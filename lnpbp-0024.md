@@ -8,7 +8,7 @@ Comments-URI: <https://github.com/LNP-BP/LNPBPs/discussions>
 Status: Draft
 Type: Standards Track
 Created: 2020-09-10
-Updated: 2023-05-10
+Updated: 2023-07-24
 Finalized: ~
 License: GPL-3.0
 ```
@@ -44,13 +44,13 @@ Interface specification is the following Contractum code:
 
 ```haskell
 -- Defined by LNPBP-31 standard in `RGBContract.sty` file
-import scoop_ocean_contour_DizxAzKBUaXCUkEZDGQegfJXQeK5Nk4pK142eEkC1EBM as RGBContract
+import urn:ubideco:stl:6vbr9ZrtsD9aBjo5qRQ36QEZPVucqvRRjKCPqE8yPeJr#choice-little-boxer as RGBContract
 
-import camel_product_float_9Y12p3rVHBiJh3TZUgup8kMtKggwNX5zPzWH9TgGRiwD as StdLib
+import urn:ubideco:stl:9KALDYR8Nyjq4FdMW6kYoL7vdkWnqPqNuFnmE9qHpNjZ#justice-rocket-type as Std
 
 interface RGB24
-    global root :: ContractId?
-    global name :: Ident
+    global root :: RGBContract.ContractId?
+    global name :: Std.Ident
     global {registry} :: Record
 
     global created :: RGBContract.Timestamp
@@ -62,11 +62,11 @@ interface RGB24
                    invalidRoot |
                    incompleteRegistry
 
-data Hostname :: [StdLib.AlphaNumDash ^ 1..63]
+data Hostname :: [Std.AlphaNumDash ^ 1..63]
 data DomainName :: [Hostname ^ 1..0xFF]
 
 data Record :: host Hostname, entry Entry
-data Entry :: a IPv4 | aaaa IPv6 | cname DomainName | sub RGB24.ContractId
+data Entry :: a IPv4 | aaaa IPv6 | cname DomainName | sub RGBContract.ContractId
 ```
 
 ## Compatibility
