@@ -148,7 +148,7 @@ text.
 
 ## Reference implementation
 
-<https://github.com/LNP-BP/rust-lnpbp/blob/master/src/dbc/tx.rs>
+<https://github.com/BP-WG/bp-core/blob/master/dbc/src>
 
 
 ## Acknowledgements
