@@ -104,7 +104,7 @@ so compatibility with other standards do not apply.
 
 ## Reference implementation
 
-<https://github.com/RGB-WG/rgb-wallet/blob/master/std/src/interface/rgb25.rs>
+<https://github.com/RGB-WG/rgb-std/blob/master/src/interface/rgb25.rs>
 
 
 ## Acknowledgements
