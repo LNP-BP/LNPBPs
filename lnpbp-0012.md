@@ -180,7 +180,7 @@ TBD
 
 ## Reference implementation
 
-TBD
+<https://github.com/BP-WG/bp-core/blob/master/dbc/src/tapret>
 
 ## Rationale
 
