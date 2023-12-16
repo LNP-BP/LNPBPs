@@ -180,7 +180,7 @@ Include from
 
 ## Reference implementation
 
-<https://github.com/RGB-WG/rgb-wallet/blob/master/std/src/interface/rgb20.rs>
+<https://github.com/RGB-WG/rgb-std/blob/master/src/interface/rgb20.rs>
 
 
 ## Acknowledgements
