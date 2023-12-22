@@ -180,6 +180,7 @@ interface RGB21
 
 ## Reference implementation
 
+https://github.com/RGB-WG/rgb-std/blob/master/src/interface/rgb21.rs
 
 ## Acknowledgements
 
