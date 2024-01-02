@@ -93,11 +93,11 @@ serialization rules (see LNPBP-7):
        - `0x03 = TaprootScript`: a Merkle root of the script spending path
          of the taproot output or a value of a tweak applied to the internal
          taproot key if and only if this tweak is not a self-tweak. Must be
-         followed by exatly 32 bytes (without length prefix) of the tweak
+         followed by exactly 32 bytes (without length prefix) of the tweak
          data in little endinan order.
 
 The list of `script_info` variants is non-exhaustive. If a future version of 
-script info varian byte is met the deserialization of anchor data MUST fail 
+script info variant byte is met the deserialization of anchor data MUST fail 
 with explicit error and the anchor MUST not be verified.
 
 If the anchor data does not match the provided script pubkey (for instance,
@@ -111,7 +111,7 @@ Anchor data contain extra information which is not required for the DBC
 validation and represents additional proofs for non-DBC validation procedures.
 This information is contained in `commitment` field of the *anchor* data
 structure containing LNPBP-4 multi-message commitment entrypy value, used
-for proving the absense of some specific protocol within the commitment tree.
+for proving the absence of some specific protocol within the commitment tree.
 This information MAY be discarded for privacy reasons when the *anchor* data
 are passed to a third-party with a special *conceal* procedure as described
 in LNPBP-4 and LNPBP-9 standards.
