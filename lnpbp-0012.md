@@ -1,5 +1,5 @@
 ```
-LNPBP: 0006
+LNPBP: 0012
 Vertical: Bitcoin protocol
 Title: Tapret: taproot-based OP_RETURN deterministic bitcoin commitments
 Author: Dr Maxim Orlovsky <orlovsky@lnp-bp.org>,
@@ -120,7 +120,7 @@ given order:
    the taproot script tree hashing partner;
 5. 1 byte: number `u` of uniqueness proof elements (see below), must be less or
    equal to `2^(n+1) - 2`, otherwise the proof must be considered invalid;
-6. sequence of `m` **uniquness proofs**, each consisting of:
+6. sequence of `m` **uniqueness proofs**, each consisting of:
    6.1. 1 byte: proof type, either `0x00`, `0x01` or `0x02`. The proof type
    defines length of the proof data and their semantic meaning:
    6.1. the proof type `0x00` (called `empty`) means that node is absent at the
