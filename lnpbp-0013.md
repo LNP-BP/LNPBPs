@@ -74,7 +74,7 @@ also gives a foundation for a high level of protocol scalability and privacy.
 
 As a security mechanism RGB uses **single-use seals** defined over bitcoin
 transaction outputs, which provides ability for any party having smart contract
-state history to verify it's uniquiness. In other words, RGB leverages Bitcoin
+state history to verify it's uniqueness. In other words, RGB leverages Bitcoin
 script for its security model and definition of the **ownership** and **access
 rights**.
 
