@@ -31,7 +31,7 @@ Still, existing lightning network, defined by a set of BOLT standards, has
 multiple limitations. LNP/BP standards LNPBP-50, 51, 52 proposed an extended
 version of the lightning network called Bifrost. It is a part of more general
 Lightning network protocol and allows creation of more complex, functional
-and secure forms of payment channels, wich is the aim of this proposal.
+and secure forms of payment channels, which is the aim of this proposal.
 
 
 ## Motivation
@@ -137,7 +137,7 @@ flag.
 ### Funding transaction inputs use sign-to-contract scheme
 
 With pay-to-contract commitments if any of channel participants have the same 
-RGB asset or other P2C-commited protocol data they will be required to merge 
+RGB asset or other P2C-committed protocol data they will be required to merge 
 their state transitions, expose the private asset data for all other 
 participants and exchange full RGB consignments before signing funding 
 transaction. This creates significant privacy leak, more attach vectors and

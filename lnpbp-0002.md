@@ -170,7 +170,7 @@ The **reveal protocol** is usually run between the committing and verifying
 parties; however it may be used by the committing party to make the proofs 
 of the commitment public. These proofs include:
 * `scriptPubkey` from the transaction output containing the commitment;
-* *original message* `msg` to which the *comitting party* has committed;
+* *original message* `msg` to which the *committing party* has committed;
 * *extra-transaction proof* (ETP), constructed at the 5th step of the 
   [commitment protocol](#commitment);
 * (optional) proofs that the `scriptPubkey` is a part of a transaction 
@@ -325,7 +325,7 @@ key to spend the output.
 With Taproot we can't tweak the public key contained in the `scriptPubkey`
 directly since it will invalidate its commitment to the Tapscript and to the
 intermediate key, rendering output unspendable. Thus, we put tweak into the
-underlying intermediate public key as the only avaliable option.
+underlying intermediate public key as the only available option.
 
 
 ## Reference implementation
