@@ -165,7 +165,7 @@ script contracts [2].
 ### Use of `option_anchors`
 
 HTLC construction in Bifrost always requires use of equivalent of legacy BOLT-9
-"anchored outputs" option. This addresses a vulnarability caused by the absence 
+"anchored outputs" option. This addresses a vulnerability caused by the absence 
 of self-delay seqnence lock, where local party had an incentive to non-cooperatively
 close the channel in order to instantly get access to the local funds.
 
