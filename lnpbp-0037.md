@@ -33,7 +33,7 @@ License: CC0-1.0
 
 ## Abstract
 
-This work proposes a way to levearge existing standards on Bitcoin and the Lightning Netowrk to embed
+This work proposes a way to levearge existing standards on Bitcoin and the Lightning Network to embed
 extra details related to assets and other protocol-specific informations into payment URIs and Lightning invoices.
 
 
@@ -120,7 +120,7 @@ specified in an implied preferred order.
 
 This protocol is somewhat a generalization of the Bitcoin and Lightning counterparty, and while it tries to be very
 similar both implementation-wise and end-result-wise (to look more familiar to people already using the existing
-protocols), some changes make it incompatible with existing standards. This acts as an extra precautios to avoid loss
+protocols), some changes make it incompatible with existing standards. This acts as an extra precaution to avoid loss
 of funds from people that might mistake a Bitcoin URI with an asset-enabled one.
 
 
@@ -130,7 +130,7 @@ of funds from people that might mistake a Bitcoin URI with an asset-enabled one.
 
 UTXO-based addresses are encoded exactly like standard Bech32 addresses with witness version of 0 (more commonly known
 as P2WPKH and P2WSH), however this proposal doesn't conflict in any way with them because, because neither of them has
-the same lenght as one of the existing type of addresses. From BIP-173[2]:
+the same length as one of the existing type of addresses. From BIP-173[2]:
 
 > Decoders SHOULD enforce known-length restrictions on witness programs. For example, BIP141 specifies If the version
 > byte is 0, but the witness program is neither 20 nor 32 bytes, the script must fail.
