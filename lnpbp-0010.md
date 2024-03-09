@@ -69,7 +69,7 @@ transactions.
 
 ## Design
 
-Bitcoin transaction output-based single-use-seals (TxOSUS) is a particular application of [single-use-seals](lnpbp-0006.md) to bitcoin transaction graph, either as a part of any bitcoin blockchain (longest PoW chain, federated sidechain etc) or state channel (Lightning network channel and other types of state channels), i.e. in terms of single-use-seals, seal medium is represented by a bitcoin transaction graph.
+Bitcoin transaction output-based single-use-seals (TxOSUS, short for Transaction Output Single Use Seals) is a particular application of [single-use-seals](lnpbp-0006.md) to bitcoin transaction graph, either as a part of any bitcoin blockchain (longest PoW chain, federated sidechain etc) or state channel (Lightning network channel and other types of state channels), i.e. in terms of single-use-seals, seal medium is represented by a bitcoin transaction graph.
 
 The parties running protocol agree on some transaction output in any given bitcoin transaction graph as a place with special meaning ("seal"), and require that a future transaction spending this output ("witness transaction") contained a [deterministic bitcoin commitment](lnpbp-0008.md) to some a message. Any independent party having access to the transaction graph MUST:
 
