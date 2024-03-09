@@ -62,7 +62,7 @@ at any of the steps, the verification procedure MUST also fail.
 
 ### Anchor structure and serialization
 
-Ahcnor consists of the following fields, serialized according to the strict
+Anchor consists of the following fields, serialized according to the strict
 serialization rules (see LNPBP-7):
 1. `txid`: 32-byte transaction id
 2. `commitment`: a commutment block structure from LNPBP-4
