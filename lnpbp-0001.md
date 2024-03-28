@@ -133,8 +133,8 @@ practices into a single algorithm, that avoids all of those issues.
 ### Commitment procedure
 
 For a given message `msg`, a list of public keys from the `Secp256k1` curve 
-`P* := {P1, P2, ..., Pn}`, `n > 0`, with some selected original public key `Po` 
-from this list (`Po ∈ S`), and a protocol-specific `tag` known to both parties, 
+`P* := {P1, P2, ..., Pn}`, `n > 0`, with a selected original public key `Po` 
+from this list (`Po ∈ P*`), and a protocol-specific `tag` known to both parties, 
 the **commit procedure** runs as follows:
 
 1. Reduce list `P*` to a set of unique public keys `P`, by removing all 
