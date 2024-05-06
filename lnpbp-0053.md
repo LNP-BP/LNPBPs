@@ -129,7 +129,7 @@ Channel may be downgraded from Bifrost to legacy Lightning network if and only i
 Bifrost channel breaking one of these requirements may be made downgradable by
 removing channel protocols until all of the the requirements are met.
 
-Channel resulting from downgrade will always use `anchnor_output` BOLT-9 feature
+Channel resulting from downgrade will always use `anchor_output` BOLT-9 feature
 flag.
 
 ## Rationale
