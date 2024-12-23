@@ -106,7 +106,7 @@ PTLC           | `/6`              | `m/9735'/chain'/1'/ln_ver'/channel'/6`
 
 **Funding wallet** used for keeping funds by a lightning node for 
 constructing funding transactions is derived with 
-`/chain'/2'/case/index` path, where `case` is an eqivalent of `change` field
+`/chain'/2'/case/index` path, where `case` is an equivalent of `change` field
 with RGB extensions (see ___) and `index` is a sequential index number.
 
 Example of extended keys used by lightning node #0 on bitcoin network
