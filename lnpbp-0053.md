@@ -65,7 +65,7 @@ Second, we update channel transactions to use Taproot, Schnorr signatures,
 MuSig, TapScript – and enable sign-to-contract and pay-to-contract commitments
 required for client-side-validation (like RGB smart contracts).
 
-Third, we genralize the structure of payment channel transactions for an
+Third, we generalize the structure of payment channel transactions for an
 arbitrary number of participants.
 
 Finally, we re-define a set of messages controlling channel creation and 
