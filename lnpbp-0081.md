@@ -45,6 +45,20 @@ Based on bitcoin merklization with following modifications:
 
 ## Specification
 
+Merkle node is represented by a single SHA256 hash over the following data,
+serialized as a byte stream without any separators:
+- branch type (byte)
+- tag (128-bit number)
+- depth (byte)
+- width (4 bytes, little-endian)
+- child node 1 (32 bytes)
+- child node 2 (32 bytes)
+
+If one or both of the child nodes are absent, a constant consisting of 16 `0xFF`
+bytes is used.
+
+The root is produced via `CommitmentId` procedure
+
 ## Compatibility
 
 ## Rationale

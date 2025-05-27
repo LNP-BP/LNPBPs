@@ -99,7 +99,7 @@ Criteria for a LNP/BP specification proposal:
 |    63 | Smart contracts | Prometheus+: prometheus over LN with tokenized RGB reputation                             | Standard      | Planned  |
 | 64-79 | *Reserved*      | *For the future use by lightning network protocol extensions*                             |               |          |
 |  [80] | Cryptography    | Merkle mountain ranges                                                                    | Standard      | Final    |
-|    81 | Cryptography    | Tagged merkle trees for client-side-validation                                            | Standard      | Draft    |
+|  [81] | Cryptography    | Tagged merkle trees for client-side-validation                                            | Standard      | Draft    |
 |    82 | Cryptography    | OpenTimestamps bitcoin transaction commitments                                            | Standard      | Final    |
 |    83 | Cryptography    | OpenTimestamps proof construction & verification                                          | Standard      | Final    |
 |    83 | Cryptography    | OpenTimestamps proof serialization                                                        | Standard      | Final    |
