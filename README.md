@@ -1,12 +1,13 @@
 # LNPBPs: LNP/BP Standards Repository
 
-LNP/BP stands for "Bitcoin Protocol / Lightning Network Protocol". This 
-repository covers standards & best practices for Layer 2+ in cases when they do
+LNP/BP stands for "Bitcoin Protocol / Lightning Network Protocol".
+This repository covers standards & best practices for Layer 2+ in cases when they do
 not require soft- or hard-forks of the Bitcoin blockchain level and are not 
 directly related to issues covered in Lightning Network RFCs (BOLTs).
 
-Basically, LNP/BPs cover everything that can be anchored to Bitcoin 
-transactions, defines primitives for L2+ solution design and describes complex 
+LNPBP sstandards cover client-side validation protocols,
+which can be anchored or build on top of to Bitcoin.
+It includes primitives for L2+ solution design and describes complex
 use cases which can be built from some primitives. This allows such solutions as
 financial assets, storage, messaging, computing and different forms of secondary
 markets leveraging Bitcoin security model and Bitcoin as a method of 
@@ -52,32 +53,20 @@ Criteria for a LNP/BP specification proposal:
 |  [10] | Cryptography    | Bitcoin transaction output-based single-use-seals                                         | Standard      | Proposal |
 |    11 | Cryptography    | Anchoring multiple deterministic bitcoin commitments in the same transaction output       | Standard      | Final    |
 |  [12] | Cryptography    | TapRet: Taproot script tree-based OP_RETURN deterministic bitcoin commitments             | Standard      | Final    |
-|  [13] | Smart contracts | RGB: Client-side-validated confidential smart contracts for Bitcoin and Lightning Network | Informational | Draft    |
-|    14 | Smart contracts | RGB Schema: client-side validation rules for RGB smart contracts                          | Standard      | Planned  |
-|    15 | Smart contracts | RGB client-side verification and data serialization                                       | Standard      | Planned  |
-|    16 | Smart contracts | AluVM instruction set architecture extensions for handling RGB state validation           | Standard      | Planned  |
-| 17-18 | *Reserved*      | *For the future use by RGB extensions*                                                    |               |          |
+| 13-18 | *Reserved*      | *For the future use*                                                                      |               |          |
 |    19 | Cryptography    | *Reserved for sign-to-contract deterministic bitcoin commitments*                         |               |          |
-|  [20] | Wallet          | RGB fungible assets interface (RGB-20)                                                    | Standard      | Final    |
-|  [21] | Wallet          | RGB non-fungible collectibles interface (RGB-21)                                          | Standard      | Proposal |
-|  [22] | Wallet          | RGB reputation and identity interface (RGB-22)                                            | Standard      | Draft    |
-|  [23] | Wallet          | RGB verifiable-unique history log for auditable data (RGB-23)                             | Standard      | Planned  |
-|  [24] | Wallet          | RGB schema for decentralized global domain name system (RGB-24)                           | Standard      | Planned  |
-| 25-29 | *Reserved*      | *For the future use by RGB schemata*                                                      |               |          |
-|  [30] | Wallet          | Interface for fungible RGB assets with decentralized issue (RGB-30)                       | Standard      | Final    |
-|  [31] | *Reserved*      | Standard Contractum Libraries (SCL)                                                       | Standard      | Draft    |
+| 20-31 | *Reserved*      | *For the future use*                                                                      |               |          |
 |    32 | Wallet          | BIP-32 derivation path extension for read-only wallets                                    | Standard      | Draft    |
 |  [33] | Smart contracts | Lightspeed: micro-payments for Lightning Network                                          | Draft         |          |
 |  [34] | Smart contracts | Zero-knowledge arguments for data persistence using probabilistic checkable proofs        | Standard      | Draft    |
 |  [35] | Smart contracts | Bifrost: LN message extensions for RGB data propagation                                   | Standard      | Planned  |
-|    36 | *Reserved*      | *For future use by bitcoin protocol extensions*                                           |               |          |
-|  [37] | Wallet          | ~~Invoicing formats for RGB-20 fungible assets schema~~                                   | Standard      | Rejected |
+| 36-37 | *Reserved*      | *For future use by bitcoin protocol extensions*                                           |               |          |
 |  [38] | Wallet          | Universal LNP/BP invoices                                                                 | Standard      | Draft    |
 |    39 | *Reserved*      | *For future use by bitcoin protocol extensions*                                           |               |          |
 |  [40] | Smart contracts | Storm: trustless storage with escrow contracts                                            | Standard      | Draft    |
 |    41 | Smart contracts | Lightning network message extensions for Storm                                            | Standard      | Planned  |
-|    42 | *Reserved*      | *For future use by lightning network protocol extensions*                                 |               |          |
-|  [43] | Wallet          | RGB-enabled BIP43 purpose field & identity system                                         | Standard      | Draft    |
+|    42 | *Reserved*      | *For future use*                                                                          |               |          |
+|    43 | *Reserved*      | *For future use by bitcoin protocol extensions*                                           |               |          |
 |    44 | Wallet          | Script templating: key derivations within Bitcoin scripts                                 | Standard      | Planned  |
 |    45 | Smart contracts | Lightning network message extensions for decentralized exchange functionality             | Standard      | Planned  |
 |    46 | Wallet          | Deterministic derivation paths for LNP                                                    | Draft         |          |
