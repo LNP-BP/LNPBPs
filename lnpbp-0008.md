@@ -115,8 +115,8 @@ achieved in a trust-minimized manner (i.e. Bitcoin blockchain).
 ## Reference implementation
 
 The reference implementation is version `1.0` of 
-[`single_use_seals` crate](single_use_seals), which is a part of the 
-[client-side-validation library](client_side_validation) developed and
+[`single_use_seals` crate][single_use_seals], which is a part of the 
+[client-side-validation library][client_side_validation] developed and
 maintained Dr Maxim Orlovsky at LNP/BP Strandards Association.
 
 If the implementation differs from the spec, the spec has a higher priority.
@@ -141,4 +141,4 @@ If the implementation differs from the spec, the spec has a higher priority.
 This document is licensed under the Creative Commons CC0 1.0 Universal license.
 
 [single_use_seals]: https://crates.io/crates/single_use_seals
-[client_side_valudation]: https://crates.io/crates/client_side_validation
+[client_side_validation]: https://crates.io/crates/client_side_validation
